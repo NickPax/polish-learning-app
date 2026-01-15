@@ -353,883 +353,358 @@ h1 {
 </div>
 
 <script>
-// === COMPREHENSION-OPTIMIZED VOCABULARY SETS ===
-const vocabSets = {
-  1: [
-    { word: "tak", meaning: "yes" },
-    { word: "nie", meaning: "no" },
-    { word: "proszę", meaning: "please" },
-    { word: "jest", meaning: "is" },
-    { word: "ma", meaning: "has" },
-    { word: "chce", meaning: "wants" },
-    { word: "tu", meaning: "here" },
-    { word: "teraz", meaning: "now" },
-    { word: "no", meaning: "well" },
-    { word: "eee", meaning: "uh" }
-  ],
-  2: [
-    { word: "myślę", meaning: "I think" },
-    { word: "wiem", meaning: "I know" },
-    { word: "rozumiem", meaning: "I understand" },
-    { word: "mówi", meaning: "says" },
-    { word: "ale", meaning: "but" },
-    { word: "bo", meaning: "because" },
-    { word: "więc", meaning: "so" },
-    { word: "już", meaning: "already" },
-    { word: "jeszcze", meaning: "still" },
-    { word: "bardzo", meaning: "very" }
-  ],
-  3: [
-    { word: "pewnie", meaning: "probably" },
-    { word: "chyba", meaning: "maybe" },
-    { word: "ponieważ", meaning: "because (formal)" },
-    { word: "jednak", meaning: "however" },
-    { word: "mimo że", meaning: "although" },
-    { word: "gdyby", meaning: "if (hypothetical)" },
-    { word: "ważne", meaning: "important" },
-    { word: "trudno", meaning: "it's difficult" },
-    { word: "właśnie", meaning: "just" },
-    { word: "raczej", meaning: "rather" }
-  ],
-  4: [
-    { word: "przecież", meaning: "after all" },
-    { word: "właściwie", meaning: "actually" },
-    { word: "oczywiście", meaning: "of course" },
-    { word: "niestety", meaning: "unfortunately" },
-    { word: "na szczęście", meaning: "fortunately" },
-    { word: "powinien", meaning: "should" },
-    { word: "mógłby", meaning: "could" },
-    { word: "trochę", meaning: "a little" },
-    { word: "serio?", meaning: "seriously?" },
-    { word: "naprawdę", meaning: "really" }
-  ]
-};
+// Wait for DOM to load
+document.addEventListener('DOMContentLoaded', () => {
+  // === VOCABULARY SETS ===
+  const vocabSets = {
+    1: [
+      { word: "tak", meaning: "yes" },
+      { word: "nie", meaning: "no" },
+      { word: "proszę", meaning: "please" },
+      { word: "jest", meaning: "is" },
+      { word: "ma", meaning: "has" },
+      { word: "chce", meaning: "wants" },
+      { word: "tu", meaning: "here" },
+      { word: "teraz", meaning: "now" },
+      { word: "no", meaning: "well" },
+      { word: "eee", meaning: "uh" }
+    ],
+    2: [
+      { word: "myślę", meaning: "I think" },
+      { word: "wiem", meaning: "I know" },
+      { word: "rozumiem", meaning: "I understand" },
+      { word: "mówi", meaning: "says" },
+      { word: "ale", meaning: "but" },
+      { word: "bo", meaning: "because" },
+      { word: "więc", meaning: "so" },
+      { word: "już", meaning: "already" },
+      { word: "jeszcze", meaning: "still" },
+      { word: "bardzo", meaning: "very" }
+    ],
+    3: [
+      { word: "pewnie", meaning: "probably" },
+      { word: "chyba", meaning: "maybe" },
+      { word: "ponieważ", meaning: "because (formal)" },
+      { word: "jednak", meaning: "however" },
+      { word: "mimo że", meaning: "although" },
+      { word: "gdyby", meaning: "if (hypothetical)" },
+      { word: "ważne", meaning: "important" },
+      { word: "trudno", meaning: "it's difficult" },
+      { word: "właśnie", meaning: "just" },
+      { word: "raczej", meaning: "rather" }
+    ],
+    4: [
+      { word: "przecież", meaning: "after all" },
+      { word: "właściwie", meaning: "actually" },
+      { word: "oczywiście", meaning: "of course" },
+      { word: "niestety", meaning: "unfortunately" },
+      { word: "na szczęście", meaning: "fortunately" },
+      { word: "powinien", meaning: "should" },
+      { word: "mógłby", meaning: "could" },
+      { word: "trochę", meaning: "a little" },
+      { word: "serio?", meaning: "seriously?" },
+      { word: "naprawdę", meaning: "really" }
+    ]
+  };
 
-// TOPICS (for context only)
-const topics = {
-  travel: { name: "Travel & Directions", icon: "fa-plane" },
-  food: { name: "Food & Dining", icon: "fa-utensils" },
-  work: { name: "Work & Office", icon: "fa-briefcase" },
-  daily: { name: "Daily Life", icon: "fa-home" },
-  shopping: { name: "Shopping", icon: "fa-shopping-bag" },
-  health: { name: "Health", icon: "fa-heartbeat" },
-  family: { name: "Family & Friends", icon: "fa-users" },
-  city: { name: "City Life", icon: "fa-city" },
-  learning: { name: "Learning Polish", icon: "fa-book" },
-  media: { name: "News & Media", icon: "fa-newspaper" }
-};
+  const topics = {
+    travel: { name: "Travel & Directions", icon: "fa-plane" },
+    food: { name: "Food & Dining", icon: "fa-utensils" },
+    work: { name: "Work & Office", icon: "fa-briefcase" },
+    daily: { name: "Daily Life", icon: "fa-home" },
+    shopping: { name: "Shopping", icon: "fa-shopping-bag" },
+    health: { name: "Health", icon: "fa-heartbeat" },
+    family: { name: "Family & Friends", icon: "fa-users" },
+    city: { name: "City Life", icon: "fa-city" },
+    learning: { name: "Learning Polish", icon: "fa-book" },
+    media: { name: "News & Media", icon: "fa-newspaper" }
+  };
 
-// CONTEXT TEMPLATES (use only ultra-common nouns)
-const sentenceTemplates = [
-  `"___ jest tu?"`,
-  `"___ chce kawę."`,
-  `"___ rozumiem."`,
-  `"___ już poszedł?"`,
-  `"___ bo nie wiem."`,
-  `"___ ale to ważne."`,
-  `"___ powinien to zrobić."`,
-  `"___ niestety, nie mogę."`,
-  `"___ właśnie teraz!"`,
-  `"___ pewnie masz rację."`
-];
+  const sentenceTemplates = [
+    `"___ jest tu?"`,
+    `"___ chce kawę."`,
+    `"___ rozumiem."`,
+    `"___ już poszedł?"`,
+    `"___ bo nie wiem."`,
+    `"___ ale to ważne."`,
+    `"___ powinien to zrobić."`,
+    `"___ niestety, nie mogę."`,
+    `"___ właśnie teraz!"`,
+    `"___ pewnie masz rację."`
+  ];
 
-let currentLevel = 1;
-let currentTopic = null;
-let exercises = [];
-let currentExercise = 0;
-let points = 0;
-let userAnswers = [];
-let isDarkMode = localStorage.getItem('darkMode') === 'true';
+  let currentLevel = 1;
+  let currentTopic = null;
+  let exercises = [];
+  let currentExercise = 0;
+  let points = 0;
+  let userAnswers = [];
+  let isDarkMode = localStorage.getItem('darkMode') === 'true';
 
-// DOM
-const levelSelectScreen = document.getElementById('level-select-screen');
-const topicSelectionScreen = document.getElementById('topic-selection-screen');
-const exerciseScreen = document.getElementById('exercise-screen');
-const completionScreen = document.getElementById('completion-screen');
-const progressContainer = document.getElementById('progress-container');
-const exerciseContainer = document.getElementById('exercise-container');
-const progressFill = document.getElementById('progress-fill');
-const progressText = document.getElementById('progress-text');
-const pointsDisplay = document.getElementById('points');
-const finalScoreEl = document.getElementById('final-score');
-const completionMessage = document.getElementById('completion-message');
-const themeToggle = document.getElementById('theme-toggle');
+  // DOM Elements
+  const levelSelectScreen = document.getElementById('level-select-screen');
+  const topicSelectionScreen = document.getElementById('topic-selection-screen');
+  const exerciseScreen = document.getElementById('exercise-screen');
+  const completionScreen = document.getElementById('completion-screen');
+  const progressContainer = document.getElementById('progress-container');
+  const exerciseContainer = document.getElementById('exercise-container');
+  const progressFill = document.getElementById('progress-fill');
+  const progressText = document.getElementById('progress-text');
+  const pointsDisplay = document.getElementById('points');
+  const finalScoreEl = document.getElementById('final-score');
+  const completionMessage = document.getElementById('completion-message');
+  const themeToggle = document.getElementById('theme-toggle');
 
-// Theme
-applyTheme();
-themeToggle.addEventListener('click', () => {
-  isDarkMode = !isDarkMode;
-  localStorage.setItem('darkMode', isDarkMode);
+  // Apply theme on load
   applyTheme();
   themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-});
 
-function applyTheme() {
-  const root = document.documentElement;
-  if (isDarkMode) {
-    root.style.setProperty('--bg', 'var(--dark-bg)');
-    root.style.setProperty('--text', 'var(--text-dark)');
-    root.style.setProperty('--card', 'var(--card-dark)');
-    root.style.setProperty('--border', 'var(--border-dark)');
-    root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
-    root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.6)');
-    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
-    root.style.setProperty('--feedback-correct-text', 'white');
-    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
-    root.style.setProperty('--feedback-incorrect-text', 'white');
-  } else {
-    root.style.setProperty('--bg', 'var(--light-bg)');
-    root.style.setProperty('--text', 'var(--text-light)');
-    root.style.setProperty('--card', 'var(--card-light)');
-    root.style.setProperty('--border', 'var(--border-light)');
-    root.style.setProperty('--option-bg', 'var(--option-bg-light)');
-    root.style.setProperty('--bg-sentence', '#f8fafc');
-    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
-    root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
-    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
-    root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
-  }
-}
-
-// Level selection
-document.getElementById('go-to-topics').addEventListener('click', () => {
-  currentLevel = parseInt(document.getElementById('vocab-level').value);
-  levelSelectScreen.classList.add('hidden');
-  renderTopicSelection();
-  topicSelectionScreen.classList.remove('hidden');
-});
-
-function renderTopicSelection() {
-  const container = document.getElementById('topic-options-container');
-  container.innerHTML = '';
-  Object.keys(topics).forEach(key => {
-    const t = topics[key];
-    const el = document.createElementAbsolutely! Below is the **complete, ready-to-run HTML file** that **perfectly merges**:
-
-✅ The **original app’s structure** (topic selection, progress bar, scoring, dark mode, TTS, navigation)  
-✅ Your **four comprehension-optimized Polish vocabulary sets** (Core Survival → Pragmatic Nuance)  
-✅ **No topic-specific nouns** — only high-frequency verbs, particles, adverbs, and function words  
-✅ **Dynamic exercise generation**: same vocabulary reused across all topics for spaced repetition  
-✅ Fixes: score display (`10/50`), scroll-to-next, Polish TTS (`pl-PL`)
-
----
-
-### 📄 `polish-comprehension-hybrid.html`
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PolskiComprehend – Real Polish Through Context</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-:root {
-  --primary: #7e22ce;
-  --secondary: #6b21a8;
-  --success: #4ade80;
-  --light-bg: #f8f9fa;
-  --dark-bg: #0f172a;
-  --card-light: #ffffff;
-  --card-dark: #1e293b;
-  --text-light: #1e293b;
-  --text-dark: #f1f5f9;
-  --border-light: #e2e8f0;
-  --border-dark: #334155;
-  --option-bg-light: white;
-  --option-bg-dark: #334155;
-  --correct: #4ade80;
-  --incorrect: #f87171;
-  --feedback-correct-light: #dcfce7;
-  --feedback-correct-dark: #064e3b;
-  --feedback-incorrect-light: #fee2e2;
-  --feedback-incorrect-dark: #7f1d1d;
-  --warning: #fbbf24;
-}
-body {
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 20px;
-  transition: background-color 0.3s, color 0.3s;
-}
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-header {
-  text-align: center;
-  padding: 20px 0;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.logo-container {
-  text-align: center;
-  flex: 1;
-}
-h1 {
-  font-size: 2.5rem;
-  color: var(--primary);
-  margin-bottom: 10px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-.subtitle {
-  color: var(--secondary);
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-.theme-toggle {
-  background: var(--card);
-  border: 1px solid var(--border);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-.level-select-screen, .topic-selection-screen, .exercise-screen, .completion-screen {
-  text-align: center;
-  padding: 40px 20px;
-}
-.btn {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-primary {
-  background: var(--primary);
-  color: white;
-}
-.btn-primary:hover {
-  background: var(--secondary);
-}
-.progress-container {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-  border: 1px solid var(--border);
-}
-.progress-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-weight: 600;
-  color: var(--secondary);
-}
-.progress-bar {
-  height: 12px;
-  background: var(--option-bg);
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--success));
-  border-radius: 6px;
-  width: 0%;
-  transition: width 0.5s ease;
-}
-.points-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--warning);
-}
-.exercise-container {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
-}
-.exercise-title {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: var(--secondary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: space-between;
-}
-.topic-name {
-  font-weight: 600;
-  color: var(--primary);
-}
-.back-btn {
-  background: none;
-  border: none;
-  color: var(--secondary);
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.sentence {
-  font-size: 1.4rem;
-  line-height: 1.6;
-  margin-bottom: 25px;
-  padding: 15px;
-  background: var(--bg-sentence);
-  border-radius: 8px;
-  border-left: 4px solid var(--primary);
-  text-align: center;
-}
-.options-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
-}
-.option-btn {
-  padding: 12px 15px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  background: var(--option-bg);
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 600;
-  color: var(--text);
-}
-.option-btn:hover:not(:disabled) {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.option-btn:disabled {
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-.option-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
-.option-btn.correct { background: var(--correct); color: white; border-color: var(--correct); }
-.option-btn.incorrect { background: var(--incorrect); color: white; border-color: var(--incorrect); }
-
-.feedback {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 600;
-  display: none;
-}
-.feedback.correct { background: var(--feedback-correct); color: var(--feedback-correct-text); display: block; }
-.feedback.incorrect { background: var(--feedback-incorrect); color: var(--feedback-incorrect-text); display: block; }
-
-.navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-.btn-nav {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-prev { background: var(--border); color: var(--text); }
-.btn-prev:hover { background: var(--primary); color: white; }
-.btn-next { background: var(--primary); color: white; }
-.btn-next:hover { background: var(--secondary); }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.topic-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
-}
-.topic-option {
-  padding: 25px 15px;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 600;
-  color: var(--text);
-  position: relative;
-}
-.topic-option:hover {
-  border-color: var(--primary);
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-}
-.topic-option i {
-  display: block;
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: var(--primary);
-}
-
-.hidden { display: none; }
-
-@media (max-width: 600px) {
-  header { flex-direction: column; gap: 15px; }
-  h1 { font-size: 2rem; }
-  .sentence { font-size: 1.2rem; }
-  .options-container, .topic-options { grid-template-columns: 1fr; }
-}
-</style>
-</head>
-<body>
-<div class="container">
-<header>
-  <div class="logo-container">
-    <h1><i class="fas fa-language"></i> PolskiComprehend</h1>
-    <p class="subtitle">Master real Polish through high-frequency words in varied contexts.</p>
-  </div>
-  <div class="theme-toggle" id="theme-toggle">
-    <i class="fas fa-moon"></i>
-  </div>
-</header>
-
-<!-- Level Selection Screen -->
-<div class="level-select-screen" id="level-select-screen">
-  <h2>Select Your Comprehension Level</h2>
-  <p>Choose a vocabulary set optimized for real-world listening and reading.</p>
-  <div style="max-width:400px; margin:30px auto;">
-    <select id="vocab-level" style="width:100%; padding:12px; font-size:1.1rem; border:2px solid var(--border); border-radius:8px; background:var(--option-bg); color:var(--text);">
-      <option value="1">Set 1 – Core Survival & Spoken Glue</option>
-      <option value="2">Set 2 – High-Frequency Expansion</option>
-      <option value="3">Set 3 – Precision & Structural Control</option>
-      <option value="4">Set 4 – Pragmatic & Nuance Control</option>
-    </select>
-  </div>
-  <button class="btn btn-primary" id="go-to-topics">Choose Topic to Practice</button>
-</div>
-
-<!-- Topic Selection -->
-<div class="topic-selection-screen hidden" id="topic-selection-screen">
-  <h2>Choose a Practice Context</h2>
-  <p>Select any topic—vocabulary comes from your chosen level.</p>
-  <div class="topic-options" id="topic-options-container">
-    <!-- Populated by JS -->
-  </div>
-</div>
-
-<!-- Progress & Exercise -->
-<div class="progress-container hidden" id="progress-container">
-  <div class="progress-header">
-    <span>Progress</span>
-    <span id="progress-text">0/5</span>
-  </div>
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill"></div>
-  </div>
-  <div class="points-display">
-    <i class="fas fa-star"></i>
-    <span id="points">0</span> Points
-  </div>
-</div>
-
-<div class="exercise-screen hidden" id="exercise-screen">
-  <div class="exercise-container" id="exercise-container">
-    <!-- Filled dynamically -->
-  </div>
-</div>
-
-<!-- Completion -->
-<div class="completion-screen hidden" id="completion-screen">
-  <h2 id="completion-message">Great Job! 🌟</h2>
-  <p>You've completed the topic!</p>
-  <div class="final-score">Your Score: <span id="final-score">0</span>/50 points</div>
-  <div style="margin-top:20px;">
-    <button class="btn btn-primary" id="new-topic-btn">Practice Another Topic</button>
-    <button class="btn" style="background:#64748b; margin-top:10px;" id="change-level-btn">Change Level</button>
-  </div>
-</div>
-
-<script>
-// === COMPREHENSION-OPTIMIZED VOCABULARY SETS ===
-const vocabSets = {
-  1: [
-    { word: "tak", meaning: "yes" },
-    { word: "nie", meaning: "no" },
-    { word: "proszę", meaning: "please" },
-    { word: "jest", meaning: "is" },
-    { word: "ma", meaning: "has" },
-    { word: "chce", meaning: "wants" },
-    { word: "tu", meaning: "here" },
-    { word: "teraz", meaning: "now" },
-    { word: "no", meaning: "well" },
-    { word: "eee", meaning: "uh" }
-  ],
-  2: [
-    { word: "myślę", meaning: "I think" },
-    { word: "wiem", meaning: "I know" },
-    { word: "rozumiem", meaning: "I understand" },
-    { word: "mówi", meaning: "says" },
-    { word: "ale", meaning: "but" },
-    { word: "bo", meaning: "because" },
-    { word: "więc", meaning: "so" },
-    { word: "już", meaning: "already" },
-    { word: "jeszcze", meaning: "still" },
-    { word: "bardzo", meaning: "very" }
-  ],
-  3: [
-    { word: "pewnie", meaning: "probably" },
-    { word: "chyba", meaning: "maybe" },
-    { word: "ponieważ", meaning: "because (formal)" },
-    { word: "jednak", meaning: "however" },
-    { word: "mimo że", meaning: "although" },
-    { word: "gdyby", meaning: "if (hypothetical)" },
-    { word: "ważne", meaning: "important" },
-    { word: "trudno", meaning: "it's difficult" },
-    { word: "właśnie", meaning: "just" },
-    { word: "raczej", meaning: "rather" }
-  ],
-  4: [
-    { word: "przecież", meaning: "after all" },
-    { word: "właściwie", meaning: "actually" },
-    { word: "oczywiście", meaning: "of course" },
-    { word: "niestety", meaning: "unfortunately" },
-    { word: "na szczęście", meaning: "fortunately" },
-    { word: "powinien", meaning: "should" },
-    { word: "mógłby", meaning: "could" },
-    { word: "trochę", meaning: "a little" },
-    { word: "serio?", meaning: "seriously?" },
-    { word: "naprawdę", meaning: "really" }
-  ]
-};
-
-// TOPICS (for context only)
-const topics = {
-  travel: { name: "Travel & Directions", icon: "fa-plane" },
-  food: { name: "Food & Dining", icon: "fa-utensils" },
-  work: { name: "Work & Office", icon: "fa-briefcase" },
-  daily: { name: "Daily Life", icon: "fa-home" },
-  shopping: { name: "Shopping", icon: "fa-shopping-bag" },
-  health: { name: "Health", icon: "fa-heartbeat" },
-  family: { name: "Family & Friends", icon: "fa-users" },
-  city: { name: "City Life", icon: "fa-city" },
-  learning: { name: "Learning Polish", icon: "fa-book" },
-  media: { name: "News & Media", icon: "fa-newspaper" }
-};
-
-// CONTEXT TEMPLATES (use only ultra-common nouns)
-const sentenceTemplates = [
-  `"___ jest tu?"`,
-  `"___ chce kawę."`,
-  `"___ rozumiem."`,
-  `"___ już poszedł?"`,
-  `"___ bo nie wiem."`,
-  `"___ ale to ważne."`,
-  `"___ powinien to zrobić."`,
-  `"___ niestety, nie mogę."`,
-  `"___ właśnie teraz!"`,
-  `"___ pewnie masz rację."`
-];
-
-let currentLevel = 1;
-let currentTopic = null;
-let exercises = [];
-let currentExercise = 0;
-let points = 0;
-let userAnswers = [];
-let isDarkMode = localStorage.getItem('darkMode') === 'true';
-
-// DOM
-const levelSelectScreen = document.getElementById('level-select-screen');
-const topicSelectionScreen = document.getElementById('topic-selection-screen');
-const exerciseScreen = document.getElementById('exercise-screen');
-const completionScreen = document.getElementById('completion-screen');
-const progressContainer = document.getElementById('progress-container');
-const exerciseContainer = document.getElementById('exercise-container');
-const progressFill = document.getElementById('progress-fill');
-const progressText = document.getElementById('progress-text');
-const pointsDisplay = document.getElementById('points');
-const finalScoreEl = document.getElementById('final-score');
-const completionMessage = document.getElementById('completion-message');
-const themeToggle = document.getElementById('theme-toggle');
-
-// Theme
-applyTheme();
-themeToggle.addEventListener('click', () => {
-  isDarkMode = !isDarkMode;
-  localStorage.setItem('darkMode', isDarkMode);
-  applyTheme();
-  themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-});
-
-function applyTheme() {
-  const root = document.documentElement;
-  if (isDarkMode) {
-    root.style.setProperty('--bg', 'var(--dark-bg)');
-    root.style.setProperty('--text', 'var(--text-dark)');
-    root.style.setProperty('--card', 'var(--card-dark)');
-    root.style.setProperty('--border', 'var(--border-dark)');
-    root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
-    root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.6)');
-    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
-    root.style.setProperty('--feedback-correct-text', 'white');
-    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
-    root.style.setProperty('--feedback-incorrect-text', 'white');
-  } else {
-    root.style.setProperty('--bg', 'var(--light-bg)');
-    root.style.setProperty('--text', 'var(--text-light)');
-    root.style.setProperty('--card', 'var(--card-light)');
-    root.style.setProperty('--border', 'var(--border-light)');
-    root.style.setProperty('--option-bg', 'var(--option-bg-light)');
-    root.style.setProperty('--bg-sentence', '#f8fafc');
-    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
-    root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
-    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
-    root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
-  }
-}
-
-// Level selection
-document.getElementById('go-to-topics').addEventListener('click', () => {
-  currentLevel = parseInt(document.getElementById('vocab-level').value);
-  levelSelectScreen.classList.add('hidden');
-  renderTopicSelection();
-  topicSelectionScreen.classList.remove('hidden');
-});
-
-function renderTopicSelection() {
-  const container = document.getElementById('topic-options-container');
-  container.innerHTML = '';
-  Object.keys(topics).forEach(key => {
-    const t = topics[key];
-    const el = document.createElement('div');
-    el.className = 'topic-option';
-    el.innerHTML = `<i class="fas ${t.icon}"></i>${t.name}`;
-    el.onclick = () => startTopic(key);
-    container.appendChild(el);
+  // Theme toggle
+  themeToggle.addEventListener('click', () => {
+    isDarkMode = !isDarkMode;
+    localStorage.setItem('darkMode', isDarkMode);
+    applyTheme();
+    themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
   });
-}
 
-function startTopic(topicKey) {
-  currentTopic = topicKey;
-  topicSelectionScreen.classList.add('hidden');
-  progressContainer.classList.remove('hidden');
-  exerciseScreen.classList.remove('hidden');
-  
-  // Generate 5 exercises using selected level + topic context
-  const vocab = vocabSets[currentLevel];
-  exercises = [];
-  for (let i = 0; i < 5; i++) {
-    const item = vocab[i % vocab.length];
-    const template = sentenceTemplates[i % sentenceTemplates.length];
-    
-    // Missing-word exercise
-    const sentence = template.replace("___", "________");
-    const distractors = vocab
-      .filter(v => v.word !== item.word)
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 3)
-      .map(v => v.word);
-    
-    const options = [item.word, ...distractors].sort(() => 0.5 - Math.random());
-    const correct = options.indexOf(item.word);
-    
-    exercises.push({
-      type: 'missing-word',
-      sentence,
-      options,
-      correct,
-      explanation: `"${item.word}" means "${item.meaning}".`
+  function applyTheme() {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.style.setProperty('--bg', 'var(--dark-bg)');
+      root.style.setProperty('--text', 'var(--text-dark)');
+      root.style.setProperty('--card', 'var(--card-dark)');
+      root.style.setProperty('--border', 'var(--border-dark)');
+      root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
+      root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.6)');
+      root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
+      root.style.setProperty('--feedback-correct-text', 'white');
+      root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
+      root.style.setProperty('--feedback-incorrect-text', 'white');
+    } else {
+      root.style.setProperty('--bg', 'var(--light-bg)');
+      root.style.setProperty('--text', 'var(--text-light)');
+      root.style.setProperty('--card', 'var(--card-light)');
+      root.style.setProperty('--border', 'var(--border-light)');
+      root.style.setProperty('--option-bg', 'var(--option-bg-light)');
+      root.style.setProperty('--bg-sentence', '#f8fafc');
+      root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
+      root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
+      root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
+      root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
+    }
+  }
+
+  // Level selection
+  document.getElementById('go-to-topics').addEventListener('click', () => {
+    currentLevel = parseInt(document.getElementById('vocab-level').value);
+    levelSelectScreen.classList.add('hidden');
+    renderTopicSelection();
+    topicSelectionScreen.classList.remove('hidden');
+  });
+
+  function renderTopicSelection() {
+    const container = document.getElementById('topic-options-container');
+    container.innerHTML = '';
+    Object.keys(topics).forEach(key => {
+      const t = topics[key];
+      const el = document.createElement('div');
+      el.className = 'topic-option';
+      el.innerHTML = `<i class="fas ${t.icon}"></i>${t.name}`;
+      el.onclick = () => startTopic(key);
+      container.appendChild(el);
     });
   }
-  
-  currentExercise = 0;
-  points = 0;
-  userAnswers = new Array(5).fill(null);
-  pointsDisplay.textContent = points;
-  updateProgress();
-  loadExercise();
-}
 
-function loadExercise() {
-  const ex = exercises[currentExercise];
-  exerciseContainer.innerHTML = '';
-  
-  const title = document.createElement('div');
-  title.className = 'exercise-title';
-  title.innerHTML = `
-    <span><i class="fas fa-puzzle-piece"></i> Fill in the Blank</span>
-    <div>
-      <span class="topic-name">${topics[currentTopic].name}</span>
-      <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i> Topics</button>
-    </div>
-  `;
-  exerciseContainer.appendChild(title);
-  
-  setTimeout(() => {
-    document.getElementById('back-btn').onclick = () => {
-      exerciseScreen.classList.add('hidden');
-      progressContainer.classList.add('hidden');
-      topicSelectionScreen.classList.remove('hidden');
-    };
-  }, 0);
-  
-  const content = document.createElement('div');
-  content.style.flex = '1';
-  content.style.display = 'flex';
-  content.style.flexDirection = 'column';
-  content.style.justifyContent = 'center';
-  
-  const sentenceEl = document.createElement('div');
-  sentenceEl.className = 'sentence';
-  sentenceEl.textContent = ex.sentence;
-  content.appendChild(sentenceEl);
-  
-  const optionsContainer = document.createElement('div');
-  optionsContainer.className = 'options-container';
-  ex.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    if (userAnswers[currentExercise] !== null) btn.disabled = true;
-    btn.onclick = () => handleAnswer(i, ex.correct, ex);
-    optionsContainer.appendChild(btn);
-  });
-  content.appendChild(optionsContainer);
-  
-  const feedback = document.createElement('div');
-  feedback.className = 'feedback';
-  feedback.id = 'feedback';
-  content.appendChild(feedback);
-  
-  exerciseContainer.appendChild(content);
-  addNavigation();
-}
-
-function handleAnswer(selected, correct, exercise) {
-  userAnswers[currentExercise] = selected;
-  if (selected === correct) {
-    points += 10;
+  function startTopic(topicKey) {
+    currentTopic = topicKey;
+    topicSelectionScreen.classList.add('hidden');
+    progressContainer.classList.remove('hidden');
+    exerciseScreen.classList.remove('hidden');
+    
+    const vocab = vocabSets[currentLevel];
+    exercises = [];
+    for (let i = 0; i < 5; i++) {
+      const item = vocab[i % vocab.length];
+      const template = sentenceTemplates[i % sentenceTemplates.length];
+      
+      const sentence = template.replace("___", "________");
+      const distractors = vocab
+        .filter(v => v.word !== item.word)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map(v => v.word);
+      
+      const options = [item.word, ...distractors].sort(() => 0.5 - Math.random());
+      const correct = options.indexOf(item.word);
+      
+      exercises.push({
+        type: 'missing-word',
+        sentence,
+        options,
+        correct,
+        explanation: `"${item.word}" means "${item.meaning}".`
+      });
+    }
+    
+    currentExercise = 0;
+    points = 0;
+    userAnswers = new Array(5).fill(null);
     pointsDisplay.textContent = points;
+    updateProgress();
+    loadExercise();
   }
-  
-  document.querySelectorAll('.option-btn').forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === selected) btn.classList.add(selected === correct ? 'correct' : 'incorrect');
-    else if (i === correct) btn.classList.add('correct');
-  });
-  
-  document.getElementById('feedback').textContent = exercise.explanation;
-  document.getElementById('feedback').className = `feedback ${selected === correct ? 'correct' : 'incorrect'}`;
-  
-  document.querySelector('.btn-next').disabled = false;
-  scrollToNextButton();
-}
 
-function addNavigation() {
-  const nav = document.createElement('div');
-  nav.className = 'navigation';
-  
-  const prev = document.createElement('button');
-  prev.className = 'btn-nav btn-prev';
-  prev.textContent = 'Previous';
-  prev.disabled = currentExercise === 0;
-  prev.onclick = () => {
-    if (currentExercise > 0) {
-      currentExercise--;
-      loadExercise();
-      updateProgress();
+  function loadExercise() {
+    const ex = exercises[currentExercise];
+    exerciseContainer.innerHTML = '';
+    
+    const title = document.createElement('div');
+    title.className = 'exercise-title';
+    title.innerHTML = `
+      <span><i class="fas fa-puzzle-piece"></i> Fill in the Blank</span>
+      <div>
+        <span class="topic-name">${topics[currentTopic].name}</span>
+        <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i> Topics</button>
+      </div>
+    `;
+    exerciseContainer.appendChild(title);
+    
+    // Use setTimeout to ensure back-btn exists before attaching listener
+    setTimeout(() => {
+      const backBtn = document.getElementById('back-btn');
+      if (backBtn) {
+        backBtn.onclick = () => {
+          exerciseScreen.classList.add('hidden');
+          progressContainer.classList.add('hidden');
+          topicSelectionScreen.classList.remove('hidden');
+        };
+      }
+    }, 0);
+    
+    const content = document.createElement('div');
+    content.style.flex = '1';
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.justifyContent = 'center';
+    
+    const sentenceEl = document.createElement('div');
+    sentenceEl.className = 'sentence';
+    sentenceEl.textContent = ex.sentence;
+    content.appendChild(sentenceEl);
+    
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'options-container';
+    ex.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      if (userAnswers[currentExercise] !== null) btn.disabled = true;
+      btn.onclick = () => handleAnswer(i, ex.correct, ex);
+      optionsContainer.appendChild(btn);
+    });
+    content.appendChild(optionsContainer);
+    
+    const feedback = document.createElement('div');
+    feedback.className = 'feedback';
+    feedback.id = 'feedback';
+    content.appendChild(feedback);
+    
+    exerciseContainer.appendChild(content);
+    addNavigation();
+  }
+
+  function handleAnswer(selected, correct, exercise) {
+    userAnswers[currentExercise] = selected;
+    if (selected === correct) {
+      points += 10;
+      pointsDisplay.textContent = points;
     }
+    
+    document.querySelectorAll('.option-btn').forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === selected) btn.classList.add(selected === correct ? 'correct' : 'incorrect');
+      else if (i === correct) btn.classList.add('correct');
+    });
+    
+    document.getElementById('feedback').textContent = exercise.explanation;
+    document.getElementById('feedback').className = `feedback ${selected === correct ? 'correct' : 'incorrect'}`;
+    
+    document.querySelector('.btn-next').disabled = false;
+    scrollToNextButton();
+  }
+
+  function addNavigation() {
+    const nav = document.createElement('div');
+    nav.className = 'navigation';
+    
+    const prev = document.createElement('button');
+    prev.className = 'btn-nav btn-prev';
+    prev.textContent = 'Previous';
+    prev.disabled = currentExercise === 0;
+    prev.onclick = () => {
+      if (currentExercise > 0) {
+        currentExercise--;
+        loadExercise();
+        updateProgress();
+      }
+    };
+    
+    const next = document.createElement('button');
+    next.className = 'btn-nav btn-next';
+    next.textContent = currentExercise === 4 ? 'Finish Topic' : 'Next';
+    next.disabled = userAnswers[currentExercise] === null;
+    next.onclick = () => {
+      if (currentExercise < 4) {
+        currentExercise++;
+        loadExercise();
+        updateProgress();
+      } else {
+        finishTopic();
+      }
+    };
+    
+    nav.appendChild(prev);
+    nav.appendChild(next);
+    exerciseContainer.appendChild(nav);
+  }
+
+  function updateProgress() {
+    const percent = ((currentExercise + 1) / 5) * 100;
+    progressFill.style.width = `${percent}%`;
+    progressText.textContent = `${currentExercise + 1}/5`;
+  }
+
+  function scrollToNextButton() {
+    setTimeout(() => {
+      const btn = document.querySelector('.btn-next');
+      if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+  }
+
+  function finishTopic() {
+    exerciseScreen.classList.add('hidden');
+    progressContainer.classList.add('hidden');
+    completionScreen.classList.remove('hidden');
+    
+    let msg = "Keep practicing! 📚";
+    if (points >= 45) msg = "Outstanding! 🌟";
+    else if (points >= 35) msg = "Great job! 👏";
+    else if (points >= 25) msg = "Good effort! 💪";
+    
+    completionMessage.textContent = msg;
+    finalScoreEl.textContent = points; // ✅ Correct: only number
+  }
+
+  // Completion screen buttons
+  document.getElementById('new-topic-btn').onclick = () => {
+    completionScreen.classList.add('hidden');
+    topicSelectionScreen.classList.remove('hidden');
   };
-  
-  const next = document.createElement('button');
-  next.className = 'btn-nav btn-next';
-  next.textContent = currentExercise === 4 ? 'Finish Topic' : 'Next';
-  next.disabled = userAnswers[currentExercise] === null;
-  next.onclick = () => {
-    if (currentExercise < 4) {
-      currentExercise++;
-      loadExercise();
-      updateProgress();
-    } else {
-      finishTopic();
-    }
+  document.getElementById('change-level-btn').onclick = () => {
+    completionScreen.classList.add('hidden');
+    levelSelectScreen.classList.remove('hidden');
   };
-  
-  nav.appendChild(prev);
-  nav.appendChild(next);
-  exerciseContainer.appendChild(nav);
-}
-
-function updateProgress() {
-  const percent = ((currentExercise + 1) / 5) * 100;
-  progressFill.style.width = `${percent}%`;
-  progressText.textContent = `${currentExercise + 1}/5`;
-}
-
-function scrollToNextButton() {
-  setTimeout(() => {
-    const btn = document.querySelector('.btn-next');
-    if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 150);
-}
-
-function finishTopic() {
-  exerciseScreen.classList.add('hidden');
-  progressContainer.classList.add('hidden');
-  completionScreen.classList.remove('hidden');
-  
-  let msg = "Keep practicing! 📚";
-  if (points >= 45) msg = "Outstanding! 🌟";
-  else if (points >= 35) msg = "Great job! 👏";
-  else if (points >= 25) msg = "Good effort! 💪";
-  
-  completionMessage.textContent = msg;
-  finalScoreEl.textContent = points; // ✅ FIXED: no "/50" duplication
-}
-
-// Completion buttons
-document.getElementById('new-topic-btn').onclick = () => {
-  completionScreen.classList.add('hidden');
-  topicSelectionScreen.classList.remove('hidden');
-};
-document.getElementById('change-level-btn').onclick = () => {
-  completionScreen.classList.add('hidden');
-  levelSelectScreen.classList.remove('hidden');
-};
-
-// TTS helper (not used in this version but available)
-function speakText(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'pl-PL';
-  u.rate = 0.95;
-  speechSynthesis.speak(u);
-}
-
-// Init
+});
 </script>
 </body>
 </html>
