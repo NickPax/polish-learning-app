@@ -478,14 +478,14 @@ height: 40px;
 <!-- LEVEL SELECTION -->
 <div class="level-selection-screen" id="level-selection-screen">
 <h2>Select Your Comprehension Level</h2>
-<p>Choose a vocabulary set optimized for real-world listening and reading.</p>
+<p style="max-width:600px; margin:0 auto 30px;">Choose a vocabulary set optimized for real-world listening and reading comprehension.</p>
 <div class="topic-options" id="level-options-container"></div>
 </div>
 
 <!-- TOPIC SELECTION -->
 <div class="topic-selection-screen hidden" id="topic-selection-screen">
 <h2>Choose a Practice Context</h2>
-<p>Vocabulary comes from your selected level.</p>
+<p style="max-width:600px; margin:0 auto 30px;">Select any topic to practice with your chosen vocabulary level.</p>
 <div class="topic-options" id="topic-options-container"></div>
 </div>
 
@@ -592,8 +592,37 @@ const listeningExercises = {
     {audioText: "Pies szczeka głośno.", topics: ["Describing animals", "Talking about weather", "Discussing food", "Asking for help"], correct: 0, explanation: "The speaker describes a dog barking loudly."},
     {audioText: "Ptak fruwa wysoko w niebie.", topics: ["Describing animals", "Talking about travel", "Discussing hobbies", "Asking for directions"], correct: 0, explanation: "The speaker describes a bird flying high in the sky."},
     {audioText: "W lesie można spotkać jelenie i lisy.", topics: ["Forest animals", "City life", "Ocean creatures", "Farm animals"], correct: 0, explanation: "The speaker describes forest animals."}
+  ],
+  work: [
+    {audioText: "Mam ważne spotkanie z szefem.", topics: ["Work meetings", "Social events", "Medical appointments", "Travel plans"], correct: 0, explanation: "The speaker mentions an important meeting with their boss."},
+    {audioText: "Czy mógłbyś przesłać mi tę prezentację mailem?", topics: ["Work requests", "Social invitations", "Complaints", "Personal news"], correct: 0, explanation: "The speaker politely requests a presentation via email."},
+    {audioText: "Firma rekrutuje nowych pracowników do działu marketingu.", topics: ["Job openings", "Company news", "Office gossip", "Customer complaints"], correct: 0, explanation: "The sentence announces job openings in marketing."}
+  ],
+  health: [
+    {audioText: "Mam silny ból brzucha i mdłości.", topics: ["Illness symptoms", "Travel plans", "Food preferences", "Weather conditions"], correct: 0, explanation: "The speaker describes stomach pain and nausea."},
+    {audioText: "Powinieneś pić więcej wody i mniej kawy.", topics: ["Health advice", "Work instructions", "Social suggestions", "Shopping tips"], correct: 0, explanation: "The speaker gives hydration advice."},
+    {audioText: "Idę na wizytę do dentysty.", topics: ["Medical appointments", "Social events", "Work meetings", "Travel plans"], correct: 0, explanation: "The speaker mentions a dentist appointment."}
+  ],
+  shopping: [
+    {audioText: "Ile to kosztuje ta kurtka?", topics: ["Asking for price", "Asking for size", "Returning items", "Opening hours"], correct: 0, explanation: "The speaker asks for the price of a jacket."},
+    {audioText: "Czy macie te buty w rozmiarze 40?", topics: ["Asking for size", "Asking for price", "Product availability", "Store layout"], correct: 0, explanation: "The speaker asks if shoes are available in size 40."},
+    {audioText: "Chciałbym zamienić tę spodnie.", topics: ["Returning items", "Asking for discounts", "Requesting assistance", "Complaining about quality"], correct: 0, explanation: "The speaker wants to exchange trousers."}
+  ],
+  daily: [
+    {audioText: "Która godzina?", topics: ["Asking for time", "Asking for directions", "Requesting help", "Making plans"], correct: 0, explanation: "The speaker asks what time it is."},
+    {audioText: "Nie czuję się dobrze. Mam gorączkę.", topics: ["Describing illness", "Making plans", "Talking about food", "Discussing weather"], correct: 0, explanation: "The speaker describes feeling unwell with a fever."},
+    {audioText: "Idę do lekarza.", topics: ["Medical visits", "Work meetings", "Social events", "Shopping trips"], correct: 0, explanation: "The speaker says they're going to the doctor."}
+  ],
+  learning: [
+    {audioText: "Nie rozumiem tego słowa.", topics: ["Language learning", "Work discussions", "Social conversations", "Shopping interactions"], correct: 0, explanation: "The speaker says they don't understand a word."},
+    {audioText: "Jak się mówi 'apple' po polsku?", topics: ["Vocabulary questions", "Grammar questions", "Pronunciation practice", "Cultural questions"], correct: 0, explanation: "The speaker asks for a translation."},
+    {audioText: "Czy możesz to powtórzyć?", topics: ["Requesting repetition", "Asking for clarification", "Making complaints", "Giving instructions"], correct: 0, explanation: "The speaker asks for repetition."}
+  ],
+  media: [
+    {audioText: "Niestety, wczoraj doszło do powodzi.", topics: ["Disaster news", "Sports results", "Entertainment news", "Weather forecast"], correct: 0, explanation: "The sentence reports a flood disaster."},
+    {audioText: "Na szczęście nikt się nie poranił.", topics: ["Good news", "Bad news", "Sports updates", "Political news"], correct: 0, explanation: "The speaker shares relief that no one was injured."},
+    {audioText: "Według ankiety, 70% Polaków popiera reformę.", topics: ["Survey results", "Opinion polls", "Election results", "Economic reports"], correct: 0, explanation: "The sentence presents survey results."}
   ]
-  // Add more topics as needed
 };
 
 // DOM elements
@@ -679,14 +708,20 @@ function renderLevelSelection() {
   });
 }
 
-// Render topic selection
+// Render topic selection - ✅ ALL 10 TOPICS
 function renderTopicSelection() {
   topicOptionsContainer.innerHTML = '';
   const topics = [
     {key: "food", name: "Food & Dining", icon: "utensils"},
     {key: "travel", name: "Travel & Directions", icon: "plane"},
+    {key: "work", name: "Work & Office", icon: "briefcase"},
+    {key: "daily", name: "Daily Life", icon: "home"},
+    {key: "shopping", name: "Shopping", icon: "shopping-bag"},
+    {key: "health", name: "Health & Body", icon: "heartbeat"},
     {key: "family", name: "Family & Friends", icon: "users"},
-    {key: "animals", name: "Animals & Nature", icon: "paw"}
+    {key: "city", name: "Cities & Places", icon: "city"},
+    {key: "learning", name: "Learning Polish", icon: "book"},
+    {key: "media", name: "News & Media", icon: "newspaper"}
   ];
   
   topics.forEach(topic => {
@@ -1016,8 +1051,14 @@ function getTopicName(topic) {
   const names = {
     food: "Food & Dining",
     travel: "Travel & Directions",
+    work: "Work & Office",
+    daily: "Daily Life",
+    shopping: "Shopping",
+    health: "Health & Body",
     family: "Family & Friends",
-    animals: "Animals & Nature"
+    city: "Cities & Places",
+    learning: "Learning Polish",
+    media: "News & Media"
   };
   return names[topic] || topic;
 }
