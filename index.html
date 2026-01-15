@@ -3,749 +3,1124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PolskiComprehend – Real Polish Through Context</title>
+<title>PolskiComprehend – Real Polish Listening & Vocabulary</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+/* === EXACTLY THE SAME CSS AS GERMAN APP === */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 :root {
-  --primary: #7e22ce;
-  --secondary: #6b21a8;
-  --success: #4ade80;
-  --light-bg: #f8f9fa;
-  --dark-bg: #0f172a;
-  --card-light: #ffffff;
-  --card-dark: #1e293b;
-  --text-light: #1e293b;
-  --text-dark: #f1f5f9;
-  --border-light: #e2e8f0;
-  --border-dark: #334155;
-  --option-bg-light: white;
-  --option-bg-dark: #334155;
-  --correct: #4ade80;
-  --incorrect: #f87171;
-  --feedback-correct-light: #dcfce7;
-  --feedback-correct-dark: #064e3b;
-  --feedback-incorrect-light: #fee2e2;
-  --feedback-incorrect-dark: #7f1d1d;
-  --warning: #fbbf24;
+--primary: #7e22ce;
+--secondary: #6b21a8;
+--success: #4ade80;
+--light-bg: #f8f9fa;
+--dark-bg: #121826;
+--card-light: #ffffff;
+--card-dark: #1e293b;
+--text-light: #212529;
+--text-dark: #f1f5f9;
+--shadow-light: rgba(0, 0, 0, 0.1);
+--shadow-dark: rgba(0, 0, 0, 0.3);
+--border-light: #dee2e6;
+--border-dark: #334155;
+--option-bg-light: white;
+--option-bg-dark: #334155;
+--correct: #4ade80;
+--incorrect: #f87171;
+--feedback-correct-light: #d1fae5;
+--feedback-correct-dark: #064e3b;
+--feedback-incorrect-light: #fee2e2;
+--feedback-incorrect-dark: #7f1d1d;
+--score-badge-bg: #fbbf24;
+--score-badge-text: #1e293b;
 }
 body {
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 20px;
-  transition: background-color 0.3s, color 0.3s;
+background: var(--bg);
+color: var(--text);
+min-height: 100vh;
+padding: 20px;
+transition: background-color 0.3s, color 0.3s;
 }
 .container {
-  max-width: 900px;
-  margin: 0 auto;
+max-width: 900px;
+margin: 0 auto;
 }
 header {
-  text-align: center;
-  padding: 20px 0;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+text-align: center;
+padding: 20px 0;
+margin-bottom: 30px;
+display: flex;
+justify-content: space-between;
+align-items: center;
 }
 .logo-container {
-  text-align: center;
-  flex: 1;
+text-align: center;
+flex: 1;
 }
 h1 {
-  font-size: 2.5rem;
-  color: var(--primary);
-  margin-bottom: 10px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+font-size: 2.5rem;
+color: var(--primary);
+margin-bottom: 10px;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 .subtitle {
-  color: var(--secondary);
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto;
+color: var(--secondary);
+font-size: 1.1rem;
+max-width: 600px;
+margin: 0 auto;
 }
 .theme-toggle {
-  background: var(--card);
-  border: 1px solid var(--border);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+background: var(--card);
+border: 1px solid var(--border);
+width: 50px;
+height: 50px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+box-shadow: 0 2px 6px var(--shadow);
+transition: all 0.3s;
 }
-.level-select-screen, .topic-selection-screen, .exercise-screen, .completion-screen {
-  text-align: center;
-  padding: 40px 20px;
-}
-.btn {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-primary {
-  background: var(--primary);
-  color: white;
-}
-.btn-primary:hover {
-  background: var(--secondary);
+.theme-toggle:hover {
+transform: rotate(20deg);
 }
 .progress-container {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-  border: 1px solid var(--border);
+background: var(--card);
+border-radius: 12px;
+padding: 20px;
+box-shadow: 0 4px 12px var(--shadow);
+margin-bottom: 30px;
+border: 1px solid var(--border);
 }
 .progress-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-weight: 600;
-  color: var(--secondary);
+display: flex;
+justify-content: space-between;
+margin-bottom: 10px;
+font-weight: 600;
+color: var(--secondary);
 }
 .progress-bar {
-  height: 12px;
-  background: var(--option-bg);
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--border);
+height: 12px;
+background: var(--option-bg);
+border-radius: 6px;
+overflow: hidden;
+border: 1px solid var(--border);
 }
 .progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--success));
-  border-radius: 6px;
-  width: 0%;
-  transition: width 0.5s ease;
+height: 100%;
+background: linear-gradient(90deg, var(--primary), var(--success));
+border-radius: 6px;
+width: 0%;
+transition: width 0.5s ease;
 }
 .points-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--warning);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+margin-top: 15px;
+font-size: 1.2rem;
+font-weight: 700;
+color: var(--warning);
 }
 .exercise-container {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
+background: var(--card);
+border-radius: 12px;
+padding: 30px;
+box-shadow: 0 4px 12px var(--shadow);
+margin-bottom: 30px;
+min-height: 300px;
+display: flex;
+flex-direction: column;
+border: 1px solid var(--border);
 }
 .exercise-title {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: var(--secondary);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: space-between;
+font-size: 1.5rem;
+margin-bottom: 20px;
+color: var(--secondary);
+display: flex;
+align-items: center;
+gap: 10px;
+justify-content: space-between;
 }
 .topic-name {
-  font-weight: 600;
-  color: var(--primary);
+font-weight: 600;
+color: var(--primary);
 }
 .back-btn {
-  background: none;
-  border: none;
-  color: var(--secondary);
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+background: none;
+border: none;
+color: var(--secondary);
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+.back-btn:hover {
+color: var(--primary);
+}
+.exercise-content {
+flex: 1;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.missing-word-exercise {
+text-align: center;
 }
 .sentence {
-  font-size: 1.4rem;
-  line-height: 1.6;
-  margin-bottom: 25px;
-  padding: 15px;
-  background: var(--bg-sentence);
-  border-radius: 8px;
-  border-left: 4px solid var(--primary);
-  text-align: center;
+font-size: 1.4rem;
+line-height: 1.6;
+margin-bottom: 25px;
+padding: 15px;
+background: var(--bg-sentence);
+border-radius: 8px;
+border-left: 4px solid var(--primary);
 }
 .options-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+gap: 12px;
+margin-top: 20px;
 }
 .option-btn {
-  padding: 12px 15px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  background: var(--option-bg);
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 600;
-  color: var(--text);
+padding: 12px 15px;
+border: 2px solid var(--border);
+border-radius: 8px;
+background: var(--option-bg);
+font-size: 1.1rem;
+cursor: pointer;
+transition: all 0.2s;
+font-weight: 600;
+color: var(--text);
 }
 .option-btn:hover:not(:disabled) {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+border-color: var(--primary);
+transform: translateY(-2px);
+box-shadow: 0 4px 8px var(--shadow);
 }
 .option-btn:disabled {
-  opacity: 0.8;
-  cursor: not-allowed;
+opacity: 0.8;
+cursor: not-allowed;
 }
-.option-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
-.option-btn.correct { background: var(--correct); color: white; border-color: var(--correct); }
-.option-btn.incorrect { background: var(--incorrect); color: white; border-color: var(--incorrect); }
-
+.option-btn.selected {
+background: var(--primary);
+color: white;
+border-color: var(--primary);
+}
+.option-btn.correct {
+background: var(--correct);
+border-color: var(--correct);
+color: white;
+}
+.option-btn.incorrect {
+background: var(--incorrect);
+border-color: var(--incorrect);
+color: white;
+}
+.tts-exercise {
+text-align: center;
+}
+.audio-controls {
+display: flex;
+justify-content: center;
+gap: 15px;
+margin: 25px 0;
+}
+.play-btn {
+width: 60px;
+height: 60px;
+border-radius: 50%;
+background: var(--primary);
+color: white;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 4px 12px var(--shadow);
+transition: all 0.2s;
+}
+.play-btn:hover {
+background: var(--secondary);
+transform: scale(1.05);
+}
+.play-btn:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
+.topics-container {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+gap: 15px;
+margin-top: 20px;
+}
+.topic-card {
+padding: 20px;
+border: 2px solid var(--border);
+border-radius: 10px;
+background: var(--option-bg);
+cursor: pointer;
+transition: all 0.2s;
+text-align: center;
+font-weight: 600;
+color: var(--text);
+}
+.topic-card:hover:not(.selected):not(.locked) {
+border-color: var(--primary);
+transform: translateY(-3px);
+box-shadow: 0 4px 8px var(--shadow);
+}
+.topic-card.selected {
+background: var(--primary);
+color: white;
+border-color: var(--primary);
+}
+.topic-card.locked {
+opacity: 0.8;
+cursor: not-allowed;
+}
 .feedback {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 600;
-  display: none;
+margin-top: 20px;
+padding: 15px;
+border-radius: 8px;
+text-align: center;
+font-weight: 600;
+display: none;
 }
-.feedback.correct { background: var(--feedback-correct); color: var(--feedback-correct-text); display: block; }
-.feedback.incorrect { background: var(--feedback-incorrect); color: var(--feedback-incorrect-text); display: block; }
-
+.feedback.correct {
+background: var(--feedback-correct);
+color: var(--feedback-correct-text);
+display: block;
+}
+.feedback.incorrect {
+background: var(--feedback-incorrect);
+color: var(--feedback-incorrect-text);
+display: block;
+}
 .navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+display: flex;
+justify-content: space-between;
+margin-top: 20px;
 }
-.btn-nav {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+.btn {
+padding: 12px 25px;
+border: none;
+border-radius: 8px;
+font-size: 1.1rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
 }
-.btn-prev { background: var(--border); color: var(--text); }
-.btn-prev:hover { background: var(--primary); color: white; }
-.btn-next { background: var(--primary); color: white; }
-.btn-next:hover { background: var(--secondary); }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
+.btn-prev {
+background: var(--border);
+color: var(--text);
+}
+.btn-prev:hover {
+background: var(--primary);
+color: white;
+}
+.btn-next {
+background: var(--primary);
+color: white;
+}
+.btn-next:hover {
+background: var(--secondary);
+}
+.btn:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+.completion-screen, .topic-selection-screen {
+text-align: center;
+padding: 40px 20px;
+}
+.completion-screen h2, .topic-selection-screen h2 {
+font-size: 2.2rem;
+margin-bottom: 20px;
+}
+.final-score {
+font-size: 1.8rem;
+font-weight: 700;
+color: var(--warning);
+margin: 20px 0;
+}
+.action-buttons {
+margin-top: 25px;
+display: flex;
+justify-content: center;
+gap: 15px;
+flex-wrap: wrap;
+}
+.restart-btn, .continue-btn, .new-topic-btn, .full-restart-btn {
+background: var(--success);
+color: white;
+padding: 12px 25px;
+border: none;
+border-radius: 8px;
+font-size: 1.1rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+}
+.restart-btn:hover, .continue-btn:hover, .new-topic-btn:hover, .full-restart-btn:hover {
+background: #3ab7e4;
+transform: scale(1.03);
+}
 .topic-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+gap: 20px;
+margin-top: 30px;
 }
 .topic-option {
-  padding: 25px 15px;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 600;
-  color: var(--text);
-  position: relative;
+padding: 25px 15px;
+background: var(--card);
+border: 2px solid var(--border);
+border-radius: 12px;
+cursor: pointer;
+transition: all 0.3s;
+font-weight: 600;
+color: var(--text);
+position: relative;
 }
 .topic-option:hover {
-  border-color: var(--primary);
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+border-color: var(--primary);
+transform: translateY(-5px);
+box-shadow: 0 6px 12px var(--shadow);
 }
 .topic-option i {
-  display: block;
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: var(--primary);
+display: block;
+font-size: 2rem;
+margin-bottom: 10px;
+color: var(--primary);
 }
-
-.hidden { display: none; }
-
+.score-badge {
+position: absolute;
+top: 10px;
+right: 10px;
+background: var(--score-badge-bg);
+color: var(--score-badge-text);
+border-radius: 50%;
+width: 28px;
+height: 28px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.8rem;
+font-weight: bold;
+box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.hidden {
+display: none;
+}
 @media (max-width: 600px) {
-  header { flex-direction: column; gap: 15px; }
-  h1 { font-size: 2rem; }
-  .sentence { font-size: 1.2rem; }
-  .options-container, .topic-options { grid-template-columns: 1fr; }
+.exercise-container {
+padding: 20px;
+}
+h1 {
+font-size: 2rem;
+}
+.sentence {
+font-size: 1.2rem;
+}
+.options-container, .topics-container, .topic-options {
+grid-template-columns: 1fr;
+}
+header {
+flex-direction: column;
+gap: 15px;
+}
+.score-badge {
+width: 24px;
+height: 24px;
+font-size: 0.7rem;
+}
+.action-buttons {
+gap: 10px;
+}
+.restart-btn, .new-topic-btn {
+padding: 10px 20px;
+font-size: 1rem;
+}
 }
 </style>
 </head>
 <body>
 <div class="container">
 <header>
-  <div class="logo-container">
-    <h1><i class="fas fa-language"></i> PolskiComprehend</h1>
-    <p class="subtitle">Master real Polish through high-frequency words in varied contexts.</p>
-  </div>
-  <div class="theme-toggle" id="theme-toggle">
-    <i class="fas fa-moon"></i>
-  </div>
+<div class="logo-container">
+<h1><i class="fas fa-language"></i> PolskiComprehend</h1>
+<p class="subtitle">Master real Polish through listening and high-frequency vocabulary.</p>
+</div>
+<div class="theme-toggle" id="theme-toggle">
+<i class="fas fa-moon"></i>
+</div>
 </header>
 
-<!-- Level Selection Screen -->
-<div class="level-select-screen" id="level-select-screen">
-  <h2>Select Your Comprehension Level</h2>
-  <p>Choose a vocabulary set optimized for real-world listening and reading.</p>
-  <div style="max-width:400px; margin:30px auto;">
-    <select id="vocab-level" style="width:100%; padding:12px; font-size:1.1rem; border:2px solid var(--border); border-radius:8px; background:var(--option-bg); color:var(--text);">
-      <option value="1">Set 1 – Core Survival & Spoken Glue</option>
-      <option value="2">Set 2 – High-Frequency Expansion</option>
-      <option value="3">Set 3 – Precision & Structural Control</option>
-      <option value="4">Set 4 – Pragmatic & Nuance Control</option>
-    </select>
-  </div>
-  <button class="btn btn-primary" id="go-to-topics">Choose Topic to Practice</button>
+<!-- LEVEL SELECTION -->
+<div class="topic-selection-screen" id="level-selection-screen">
+<h2>Select Your Comprehension Level</h2>
+<p>Choose a vocabulary set optimized for real-world listening.</p>
+<div class="topic-options" id="level-options-container">
+<!-- Filled by JS -->
+</div>
 </div>
 
-<!-- Topic Selection -->
-<div class="topic-selection-screen hidden" id="topic-selection-screen">
-  <h2>Choose a Practice Context</h2>
-  <p>Select any topic—vocabulary comes from your chosen level.</p>
-  <div class="topic-options" id="topic-options-container">
-    <!-- Populated by JS -->
-  </div>
-</div>
-
-<!-- Progress & Exercise -->
 <div class="progress-container hidden" id="progress-container">
-  <div class="progress-header">
-    <span>Progress</span>
-    <span id="progress-text">0/5</span>
-  </div>
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill"></div>
-  </div>
-  <div class="points-display">
-    <i class="fas fa-star"></i>
-    <span id="points">0</span> Points
-  </div>
+<div class="progress-header">
+<span>Progress</span>
+<span id="progress-text">0/5</span>
+</div>
+<div class="progress-bar">
+<div class="progress-fill" id="progress-fill"></div>
+</div>
+<div class="points-display">
+<i class="fas fa-star"></i>
+<span id="points">0</span> Points
+</div>
 </div>
 
-<div class="exercise-screen hidden" id="exercise-screen">
-  <div class="exercise-container" id="exercise-container">
-    <!-- Filled dynamically -->
-  </div>
+<div class="exercise-container hidden" id="exercise-container">
+<!-- Exercises loaded here -->
 </div>
 
-<!-- Completion -->
 <div class="completion-screen hidden" id="completion-screen">
-  <h2 id="completion-message">Great Job! 🌟</h2>
-  <p>You've completed the topic!</p>
-  <div class="final-score">Your Score: <span id="final-score">0</span>/50 points</div>
-  <div style="margin-top:20px;">
-    <button class="btn btn-primary" id="new-topic-btn">Practice Another Topic</button>
-    <button class="btn" style="background:#64748b; margin-top:10px;" id="change-level-btn">Change Level</button>
-  </div>
+<h2 id="completion-message">Great Job! 🌟</h2>
+<p>You've completed the topic!</p>
+<div class="final-score">Your Score: <span id="final-score">0</span>/50 points</div>
+<div class="action-buttons">
+<button class="new-topic-btn" id="new-topic-btn">Choose Another Topic</button>
+<button class="restart-btn" id="restart-topic-btn">Retry This Topic</button>
+</div>
+</div>
+
+<div class="topic-selection-screen hidden" id="topic-selection-screen">
+<h2>Choose a Topic to Practice</h2>
+<p>Vocabulary comes from your selected level.</p>
+<div class="topic-options" id="topic-options-container">
+<!-- Filled by JS -->
+</div>
 </div>
 
 <script>
-// Wait for DOM to load
-document.addEventListener('DOMContentLoaded', () => {
-  // === REVISED VOCABULARY SETS (Comprehension-Optimized) ===
-  const vocabSets = {
-    1: [
-      { word: "tak", meaning: "yes", examples: ["Tak, proszę.", "Tak, rozumiem."] },
-      { word: "nie", meaning: "no", examples: ["Nie, dziękuję.", "Nie, nie chcę."] },
-      { word: "proszę", meaning: "please / you're welcome", examples: ["Proszę o kawę.", "Proszę, wejdź."] },
-      { word: "jest", meaning: "is", examples: ["To jest moja książka.", "Jestem w domu."] },
-      { word: "ma", meaning: "has", examples: ["On ma samochód.", "Ma czas?"] },
-      { word: "chce", meaning: "wants", examples: ["Chcę piwo.", "Chce pomóc."] },
-      { word: "tu", meaning: "here", examples: ["Tu jest stacja.", "Tu się spotykamy."] },
-      { word: "teraz", meaning: "now", examples: ["Teraz idę do pracy.", "Teraz jest dobrze."] },
-      { word: "no", meaning: "well / you know", examples: ["No, to już wiemy.", "No, co dalej?"] },
-      { word: "bardzo", meaning: "very", examples: ["Bardzo smaczne!", "Bardzo się cieszę."] }
-    ],
-    2: [
-      { word: "myślę", meaning: "I think", examples: ["Myślę, że tak.", "Myślę, że to możliwe."] },
-      { word: "wiem", meaning: "I know", examples: ["Wiem, gdzie jesteś.", "Wiem, co mówisz."] },
-      { word: "rozumiem", meaning: "I understand", examples: ["Rozumiem, co masz na myśli.", "Rozumiem, dlaczego jesteś zły."] },
-      { word: "mówi", meaning: "says", examples: ["On mówi prawdę.", "Mówi, że jest zajęty."] },
-      { word: "ale", meaning: "but", examples: ["Chcę, ale nie mogę.", "To fajne, ale drogie."] },
-      { word: "bo", meaning: "because", examples: ["Idę, bo muszę.", "Nie mam, bo zapomniałem."] },
-      { word: "więc", meaning: "so", examples: ["Zrobiłem to, więc jest gotowe.", "Więc co robimy?"] },
-      { word: "już", meaning: "already", examples: ["Już poszedł.", "Już to zrobiłem."] },
-      { word: "jeszcze", meaning: "still / yet", examples: ["Jeszcze nie przyszedł.", "Czy jeszcze masz czas?"] },
-      { word: "może", meaning: "can / may", examples: ["Może pomóc?", "Może być późno."] }
-    ],
-    3: [
-      { word: "pewnie", meaning: "probably", examples: ["Pewnie będzie deszcz.", "Pewnie go znam."] },
-      { word: "chyba", meaning: "maybe / I guess", examples: ["Chyba się mylę.", "Chyba nie ma czasu."] },
-      { word: "ponieważ", meaning: "because (formal)", examples: ["Nie poszedłem, ponieważ byłem chory.", "To działa, ponieważ jest proste."] },
-      { word: "jednak", meaning: "however", examples: ["To trudne, jednak możliwe.", "Chciał, jednak nie mógł."] },
-      { word: "mimo że", meaning: "although", examples: ["Mimo że jest zły, pomaga.", "Mimo że jest późno, czekam."] },
-      { word: "gdyby", meaning: "if (hypothetical)", examples: ["Gdybyś przyszedł, bylibyśmy szczęśliwi.", "Gdyby było słońce, poszłabyś?"] },
-      { word: "ważne", meaning: "important", examples: ["To bardzo ważne.", "Ważne jest, abyś wiedział."] },
-      { word: "trudno", meaning: "it's difficult", examples: ["Trudno mi to powiedzieć.", "Trudno jest znaleźć czas."] },
-      { word: "właśnie", meaning: "just / precisely", examples: ["Właśnie to miałem na myśli.", "Właśnie teraz idę."] },
-      { word: "raczej", meaning: "rather", examples: ["Raczej nie idę.", "Raczej to nie jest prawda."] }
-    ],
-    4: [
-      { word: "przecież", meaning: "after all / you know", examples: ["Przecież to wiadomo!", "Przecież nie mogłeś wiedzieć."] },
-      { word: "właściwie", meaning: "actually", examples: ["Właściwie to nie wiem.", "Właściwie to jest łatwe."] },
-      { word: "oczywiście", meaning: "of course", examples: ["Oczywiście, że tak.", "Oczywiście, pomogę."] },
-      { word: "niestety", meaning: "unfortunately", examples: ["Niestety, nie mogę przyjść.", "Niestety, to się nie uda."] },
-      { word: "na szczęście", meaning: "fortunately", examples: ["Na szczęście, nie było deszczu.", "Na szczęście, wszystko się udało."] },
-      { word: "powinien", meaning: "should", examples: ["Powinieneś to zrobić.", "Powinienem iść."] },
-      { word: "mógłby", meaning: "could / might (polite)", examples: ["Mógłbyś mi pomóc?", "Mógłby to być on."] },
-      { word: "trochę", meaning: "a little", examples: ["Trochę się boję.", "Trochę więcej, proszę."] },
-      { word: "serio?", meaning: "seriously?", examples: ["Serio? Nie wierzę!", "Serio, to robiłeś?"] },
-      { word: "naprawdę", meaning: "really", examples: ["Naprawdę to wiem.", "Naprawdę się cieszę."] }
+// === FOUR COMPREHENSION-OPTIMIZED SETS ===
+const vocabSets = {
+  1: ["tak", "nie", "proszę", "jest", "ma", "chce", "tu", "teraz", "no", "bardzo"],
+  2: ["myślę", "wiem", "rozumiem", "mówi", "ale", "bo", "więc", "już", "jeszcze", "może"],
+  3: ["pewnie", "chyba", "ponieważ", "jednak", "mimo że", "gdyby", "ważne", "trudno", "właśnie", "raczej"],
+  4: ["przecież", "właściwie", "oczywiście", "niestety", "na szczęście", "powinien", "mógłby", "trochę", "serio?", "naprawdę"]
+};
+
+// === TOPIC-SPECIFIC EXERCISES (like German app) ===
+const allTopics = {
+  travel: {
+    name: "Travel & Directions",
+    icon: "fa-plane",
+    sets: [
+      [
+        {type:"missing-word",sentence:"Gdzie jest najbliższy ___?",options:["dworzec","banan","niedźwiedź","książka"],correct:0,explanation:"'Dworzec' means train station."},
+        {type:"tts",audioText:"Przepraszam, jak dojść do muzeum? Czy to daleko stąd?",topics:["Pytanie o drogę","Kupowanie biletów","Rezerwacja hotelu","Wynajem samochodu"],correct:0,explanation:"Asking for directions to the museum."},
+        {type:"missing-word",sentence:"Potrzebuję ___ na trzy noce.",options:["pokój","cukier","gazeta","pociąg"],correct:0,explanation:"'Pokój' means room."},
+        {type:"tts",audioText:"Pociąg do Krakowa odjeżdża z peronu 3. Proszę się pospieszyć!",topics:["Ogłoszenia kolejowe","Informacje lotnicze","Rozkłady autobusów","Taksówki"],correct:0,explanation:"Train announcement."},
+        {type:"missing-word",sentence:"Ile kosztuje bilet do ___?",options:["Warszawy","psa","domu","ręka"],correct:0,explanation:"'Warszawy' is Warsaw in genitive case."}
+      ]
     ]
-  };
-
-  // TOPICS (for context only)
-  const topics = {
-    travel: { name: "Travel & Directions", icon: "fa-plane" },
-    food: { name: "Food & Dining", icon: "fa-utensils" },
-    work: { name: "Work & Office", icon: "fa-briefcase" },
-    daily: { name: "Daily Life", icon: "fa-home" },
-    shopping: { name: "Shopping", icon: "fa-shopping-bag" },
-    health: { name: "Health", icon: "fa-heartbeat" },
-    family: { name: "Family & Friends", icon: "fa-users" },
-    city: { name: "City Life", icon: "fa-city" },
-    learning: { name: "Learning Polish", icon: "fa-book" },
-    media: { name: "News & Media", icon: "fa-newspaper" }
-  };
-
-  // CONTEXT TEMPLATES (grammatically correct and natural)
-  const sentenceTemplates = {
-    1: [
-      `"___ jest tu?"`,
-      `"___ chce kawę."`,
-      `"___ rozumiem."`,
-      `"___ już poszedł?"`,
-      `"___ bo nie wiem."`,
-      `"___ ale to ważne."`,
-      `"___ powinien to zrobić."`,
-      `"___ niestety, nie mogę."`,
-      `"___ właśnie teraz!"`,
-      `"___ pewnie masz rację."`
-    ],
-    2: [
-      `"Czy ___ rozumiesz?"`,
-      `"On ___, że jest zajęty."`,
-      `"___, ale nie mogę."`,
-      `"___, więc idziemy."`,
-      `"___ już to zrobił?"`,
-      `"Czy ___ jeszcze?"`,
-      `"___ może pomóc?"`,
-      `"___, bo jest późno."`,
-      `"___, więc to nie jest problem."`,
-      `"___, ale to nie jest ważne."`
-    ],
-    3: [
-      `"___, ponieważ jest trudno."`,
-      `"___, jednak możliwe."`,
-      `"___, mimo że jest późno."`,
-      `"___, gdybyś przyszedł."`,
-      `"To ___ ważne."`,
-      `"___ trudno mi to powiedzieć."`,
-      `"___ właśnie to miałem na myśli."`,
-      `"___ raczej nie idę."`,
-      `"___ pewnie się mylisz."`,
-      `"___ chyba nie ma czasu."`
-    ],
-    4: [
-      `"___ przecież to wiadomo!"`,
-      `"___ właściwie to nie wiem."`,
-      `"___ oczywiście, że tak."`,
-      `"___ niestety, nie mogę."`,
-      `"___ na szczęście, wszystko się udało."`,
-      `"___ powinieneś to zrobić."`,
-      `"___ mógłbyś mi pomóc?"`,
-      `"___ trochę się boję."`,
-      `"___ serio? Nie wierzę!"`,
-      `"___ naprawdę się cieszę."`
+  },
+  food: {
+    name: "Food & Dining",
+    icon: "fa-utensils",
+    sets: [
+      [
+        {type:"missing-word",sentence:"Poproszę butelkę ___.",options:["wody","domu","samochodu","krzesła"],correct:0,explanation:"'Wody' means water."},
+        {type:"tts",audioText:"Zupa jest wyśmienita! Poproszę rachunek.",topics:["Skargi","Chwalenie jedzenia","Pytanie o drogę","Zamawianie ubrań"],correct:1,explanation:"Praising soup and asking for bill."},
+        {type:"missing-word",sentence:"Ile kosztuje to ___?",options:["menu","księżyc","mysz","kapelusz"],correct:0,explanation:"'Menu' is used in restaurants."},
+        {type:"tts",audioText:"Jestem wegetarianinem. Czy macie dania wegetariańskie?",topics:["Dieta","Alergie","Gotowanie w domu","Fast food"],correct:0,explanation:"Asking about vegetarian options."},
+        {type:"missing-word",sentence:"Chciałbym zamówić ___.",options:["piwo","książkę","łóżko","łódź"],correct:0,explanation:"'Piwo' means beer."}
+      ]
     ]
-  };
+  },
+  work: {
+    name: "Work & Office",
+    icon: "fa-briefcase",
+    sets: [
+      [
+        {type:"missing-word",sentence:"Mam ważne ___ z szefem.",options:["spotkanie","słoń","stół","sok"],correct:0,explanation:"'Spotkanie' means meeting."},
+        {type:"tts",audioText:"Czy mógłbyś przesłać mi tę prezentację mailem?",topics:["Prośby","Skargi","Plotki","Rozkazy"],correct:0,explanation:"Polite request for presentation via email."},
+        {type:"missing-word",sentence:"Mój ___ jest dziś bardzo zajęty.",options:["kolega","kot","kubek","klucz"],correct:0,explanation:"'Kolega' means colleague."},
+        {type:"tts",audioText:"Firma rekrutuje nowych pracowników do działu marketingu.",topics:["Praca","Wiadomości firmowe","Plotki","Skargi"],correct:0,explanation:"Job opening in marketing."},
+        {type:"missing-word",sentence:"Muszę napisać ___.",options:["raport","rower","rękawiczki","rakietę"],correct:0,explanation:"'Raport' means report."}
+      ]
+    ]
+  },
+  daily: {
+    name: "Daily Life",
+    icon: "fa-home",
+    sets: [
+      [
+        {type:"missing-word",sentence:"___ jest teraz?",options:["Która godzina","Który pies","Które drzwi","Które auto"],correct:0,explanation:"'Która godzina' means 'What time is it?'"},
+        {type:"tts",audioText:"Nie czuję się dobrze. Mam gorączkę i ból gardła.",topics:["Objawy","Plany","Jedzenie","Pogoda"],correct:0,explanation:"Describing illness symptoms."},
+        {type:"missing-word",sentence:"Idę do ___.",options:["lekarza","lasu","lodu","listu"],correct:0,explanation:"'Lekarza' means doctor (genitive)."},
+        {type:"tts",audioText:"Sport jest dobry dla zdrowia. Codziennie biegam.",topics:["Ćwiczenia","Dieta","Procedury medyczne","Sen"],correct:0,explanation:"Talking about exercise benefits."},
+        {type:"missing-word",sentence:"Potrzebuję ___ tabletek.",options:["tej","ten","to","te"],correct:0,explanation:"'Tej' is feminine singular demonstrative."}
+      ]
+    ]
+  },
+  shopping: {
+    name: "Shopping",
+    icon: "fa-shopping-bag",
+    sets: [
+      [
+        {type:"missing-word",sentence:"Ile to kosztuje ___?",options:["kurtka","rok","chłopak","jogurt"],correct:0,explanation:"'Kurtka' means jacket."},
+        {type:"tts",audioText:"Czy macie te buty w rozmiarze 40?",topics:["Pytanie o rozmiar","Zwrot towaru","Cena","Godziny otwarcia"],correct:0,explanation:"Asking for shoe size."},
+        {type:"missing-word",sentence:"Chciałbym ___ tę spodnie.",options:["zamienić","uczyć","rozważać","ćwiczyć"],correct:0,explanation:"'Zamienić' means to exchange."},
+        {type:"tts",audioText:"Kasa jest po lewej stronie sklepu.",topics:["Szukanie kasy","Zniżki","Dostępność produktów","Układ sklepu"],correct:0,explanation:"Where the cashier is."},
+        {type:"missing-word",sentence:"Czy jest tu ___?",options:["zniżka","deszcz","plecak","restauracja"],correct:0,explanation:"'Zniżka' means discount."}
+      ]
+    ]
+  },
+  family: {
+    name: "Family & Friends",
+    icon: "fa-users",
+    sets: [
+      [
+        {type:"missing-word",sentence:"To moja ___.",options:["siostra","szkoła","but","wąż"],correct:0,explanation:"'Siostra' means sister."},
+        {type:"tts",audioText:"Mój tata pracuje jako lekarz, a mama jest nauczycielką.",topics:["Zawody","Hobby","Codzienne rutyny","Członkowie rodziny"],correct:3,explanation:"Talking about parents."},
+        {type:"missing-word",sentence:"Masz ___?",options:["rodzeństwo","prezenty","gitara","ogród"],correct:0,explanation:"'Rodzeństwo' means siblings."},
+        {type:"tts",audioText:"Moje dziadkowie mieszkają w małej wsi na Mazurach.",topics:["Członkowie rodziny","Plany podróży","Mieszkanie","Pogoda"],correct:0,explanation:"Talking about grandparents."},
+        {type:"missing-word",sentence:"Jutro świętujemy urodziny ___ .",options:["babci","owoc","piec","ucho"],correct:0,explanation:"'Babci' means grandmother's."}
+      ]
+    ]
+  },
+  hobbies: {
+    name: "Hobbies & Leisure",
+    icon: "fa-film",
+    sets: [
+      [
+        {type:"missing-word",sentence:"Gram chętnie na ___.",options:["fortepianie","ser","skrzynia","kulka"],correct:0,explanation:"'Fortepianie' means piano (locative)."},
+        {type:"tts",audioText:"W sobotę idę do kina, żeby obejrzeć nowy film Marvela.",topics:["Kino","Czytanie książek","Sport","Gotowanie"],correct:0,explanation:"Going to the movies."},
+        {type:"missing-word",sentence:"Moim hobby jest ___.",options:["fotografia","okno","ryba","pióro"],correct:0,explanation:"'Fotografia' means photography."},
+        {type:"tts",audioText:"Codzien wieczorem czytam książkę przed snem.",topics:["Czytanie","Pisanie","Malarstwo","Taniec"],correct:0,explanation:"Reading before bed."},
+        {type:"missing-word",sentence:"W weekend często chodzę ___.",options:["na wycieczki","czekać","prać","życzyć"],correct:0,explanation:"'Na wycieczki' means hiking/trips."}
+      ]
+    ]
+  },
+  health: {
+    name: "Health & Body",
+    icon: "fa-heartbeat",
+    sets: [
+      [
+        {type:"missing-word",sentence:"Mój ___ boli.",options:["głowa","gruszka","grzebień","grill"],correct:0,explanation:"'Głowa' means head."},
+        {type:"tts",audioText:"Mam silny ból brzucha i mdłości.",topics:["Objawy","Plany","Jedzenie","Pogoda"],correct:0,explanation:"Describing stomach pain."},
+        {type:"missing-word",sentence:"Weź ___ tabletki trzy razy dziennie.",options:["te","ten","to","ta"],correct:0,explanation:"'Te' is plural demonstrative for 'tabletki'."},
+        {type:"tts",audioText:"Powinieneś pić więcej wody i mniej kawy.",topics:["Wskazówki","Sen","Ćwiczenia","Leki"],correct:0,explanation:"Hydration advice."},
+        {type:"missing-word",sentence:"Idę na ___ do dentysty.",options:["wizytę","wózek","wędkę","wiatr"],correct:0,explanation:"'Wizytę' means appointment."}
+      ]
+    ]
+  },
+  learning: {
+    name: "Learning Polish",
+    icon: "fa-book",
+    sets: [
+      [
+        {type:"missing-word",sentence:"Nie ___ tego słowa.",options:["rozumiem","rząd","rządca","rządowy"],correct:0,explanation:"'Rozumiem' means I understand."},
+        {type:"tts",audioText:"Jak się mówi 'apple' po polsku?",topics:["Słownictwo","Gramatyka","Wymowa","Kultura"],correct:0,explanation:"Asking for translation."},
+        {type:"missing-word",sentence:"Czy możesz to ___?",options:["powtórzyć","pokój","półka","północ"],correct:0,explanation:"'Powtórzyć' means to repeat."},
+        {type:"tts",audioText:"Dziękuję za pomoc! Bez ciebie nie dałbym rady.",topics:["Podziękowania","Przepraszanie","Prośby","Pozdrowienia"],correct:0,explanation:"Expressing gratitude."},
+        {type:"missing-word",sentence:"To jest bardzo ___!",options:["trudne","trawa","traktor","truskawka"],correct:0,explanation:"'Trudne' means difficult."}
+      ]
+    ]
+  },
+  media: {
+    name: "News & Media",
+    icon: "fa-newspaper",
+    sets: [
+      [
+        {type:"missing-word",sentence:"___ powiedział premier.",options:["powiedział","pokój","półka","północ"],correct:0,explanation:"'Powiedział' means he said."},
+        {type:"tts",audioText:"Niestety, wczoraj doszło do powodzi w południowej Polsce.",topics:["Katastrofy","Polityka","Sport","Kultura"],correct:0,explanation:"Reporting a flood disaster."},
+        {type:"missing-word",sentence:"Na szczęście nikt się nie ___.",options:["poranił","port","portal","portfel"],correct:0,explanation:"'Poranił' means got injured."},
+        {type:"tts",audioText:"Według ankiety, 70% Polaków popiera nową reformę.",topics:["Statystyki","Opinie","Prognozy","Historia"],correct:0,explanation:"Presenting survey results."},
+        {type:"missing-word",sentence:"To bardzo ___ informacja.",options:["ważna","wąż","wózek","wędkarz"],correct:0,explanation:"'Ważna' means important."}
+      ]
+    ]
+  }
+};
 
-  let currentLevel = 1;
-  let currentTopic = null;
-  let exercises = [];
-  let currentExercise = 0;
-  let points = 0;
-  let userAnswers = [];
-  let isDarkMode = localStorage.getItem('darkMode') === 'true';
-
-  // DOM Elements
-  const levelSelectScreen = document.getElementById('level-select-screen');
-  const topicSelectionScreen = document.getElementById('topic-selection-screen');
-  const exerciseScreen = document.getElementById('exercise-screen');
-  const completionScreen = document.getElementById('completion-screen');
-  const progressContainer = document.getElementById('progress-container');
-  const exerciseContainer = document.getElementById('exercise-container');
-  const progressFill = document.getElementById('progress-fill');
-  const progressText = document.getElementById('progress-text');
-  const pointsDisplay = document.getElementById('points');
-  const finalScoreEl = document.getElementById('final-score');
-  const completionMessage = document.getElementById('completion-message');
-  const themeToggle = document.getElementById('theme-toggle');
-
-  // Apply theme on load
-  applyTheme();
-  themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-
-  // Theme toggle
-  themeToggle.addEventListener('click', () => {
-    isDarkMode = !isDarkMode;
-    localStorage.setItem('darkMode', isDarkMode);
-    applyTheme();
-    themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+// === DYNAMICALLY INJECT VOCAB INTO TOPIC EXERCISES ===
+function injectVocabIntoTopics(level) {
+  const vocab = vocabSets[level];
+  const words = [...vocab];
+  
+  Object.values(allTopics).forEach(topic => {
+    const set = topic.sets[0]; // Only one set per topic for simplicity
+    let wordIndex = 0;
+    
+    set.forEach(ex => {
+      if (ex.type === 'missing-word') {
+        // Replace correct answer with vocab word
+        ex.options[ex.correct] = words[wordIndex % words.length];
+        // Update explanation
+        ex.explanation = `'${words[wordIndex % words.length]}' is a high-frequency word from your selected level.`;
+        wordIndex++;
+        
+        // Replace distractors with other vocab words (not the correct one)
+        let distractorIndex = 0;
+        for (let i = 0; i < ex.options.length; i++) {
+          if (i !== ex.correct) {
+            ex.options[i] = words[(wordIndex + distractorIndex) % words.length];
+            // Avoid duplicates
+            while (ex.options[i] === ex.options[ex.correct]) {
+              distractorIndex++;
+              ex.options[i] = words[(wordIndex + distractorIndex) % words.length];
+            }
+            distractorIndex++;
+          }
+        }
+      } else if (ex.type === 'tts') {
+        // For TTS, replace audioText with a sentence using vocab
+        const templates = [
+          `Myślę, że to ${words[wordIndex % words.length]}.`,
+          `On mówi, że ${words[wordIndex % words.length]} jest ważne.`,
+          `Niestety, ${words[wordIndex % words.length]} nie działa.`,
+          `Czy ${words[wordIndex % words.length]} jest możliwe?`,
+          `Powinieneś to zrobić, bo ${words[wordIndex % words.length]}.`
+        ];
+        ex.audioText = templates[wordIndex % templates.length];
+        wordIndex++;
+      }
+    });
   });
+}
 
-  function applyTheme() {
-    const root = document.documentElement;
-    if (isDarkMode) {
-      root.style.setProperty('--bg', 'var(--dark-bg)');
-      root.style.setProperty('--text', 'var(--text-dark)');
-      root.style.setProperty('--card', 'var(--card-dark)');
-      root.style.setProperty('--border', 'var(--border-dark)');
-      root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
-      root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.6)');
-      root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
-      root.style.setProperty('--feedback-correct-text', 'white');
-      root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
-      root.style.setProperty('--feedback-incorrect-text', 'white');
+// === REST OF APP (identical to German version) ===
+let topicSetHistory = {};
+function shuffleArray(array) {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+function randomizeOptions(options, correctIndex) {
+  const correctAnswer = options[correctIndex];
+  const incorrectAnswers = options.filter((_, i) => i !== correctIndex);
+  const shuffledIncorrect = shuffleArray(incorrectAnswers);
+  const correctPos = Math.floor(Math.random() * options.length);
+  const newOptions = [];
+  let incorrectIndex = 0;
+  for (let i = 0; i < options.length; i++) {
+    if (i === correctPos) {
+      newOptions.push(correctAnswer);
     } else {
-      root.style.setProperty('--bg', 'var(--light-bg)');
-      root.style.setProperty('--text', 'var(--text-light)');
-      root.style.setProperty('--card', 'var(--card-light)');
-      root.style.setProperty('--border', 'var(--border-light)');
-      root.style.setProperty('--option-bg', 'var(--option-bg-light)');
-      root.style.setProperty('--bg-sentence', '#f8fafc');
-      root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
-      root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
-      root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
-      root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
+      newOptions.push(shuffledIncorrect[incorrectIndex++]);
     }
   }
-
-  // Level selection
-  document.getElementById('go-to-topics').addEventListener('click', () => {
-    currentLevel = parseInt(document.getElementById('vocab-level').value);
-    levelSelectScreen.classList.add('hidden');
-    renderTopicSelection();
-    topicSelectionScreen.classList.remove('hidden');
-  });
-
-  function renderTopicSelection() {
-    const container = document.getElementById('topic-options-container');
-    container.innerHTML = '';
-    Object.keys(topics).forEach(key => {
-      const t = topics[key];
-      const el = document.createElement('div');
-      el.className = 'topic-option';
-      el.innerHTML = `<i class="fas ${t.icon}"></i>${t.name}`;
-      el.onclick = () => startTopic(key);
-      container.appendChild(el);
-    });
-  }
-
-  function startTopic(topicKey) {
-    currentTopic = topicKey;
-    topicSelectionScreen.classList.add('hidden');
-    progressContainer.classList.remove('hidden');
-    exerciseScreen.classList.remove('hidden');
-    
-    const vocab = vocabSets[currentLevel];
-    const templates = sentenceTemplates[currentLevel];
-    exercises = [];
-    
-    for (let i = 0; i < 5; i++) {
-      const item = vocab[i % vocab.length];
-      const template = templates[i % templates.length];
-      
-      // Create distractors from other words in the set
-      const distractors = vocab
-        .filter(v => v.word !== item.word)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 3)
-        .map(v => v.word);
-      
-      const options = [item.word, ...distractors].sort(() => 0.5 - Math.random());
-      const correct = options.indexOf(item.word);
-      
-      exercises.push({
-        type: 'missing-word',
-        sentence: template.replace("___", "________"),
-        options,
-        correct,
-        explanation: `"${item.word}" means "${item.meaning}". Example: "${item.examples[0]}"` // More helpful than just "means X"
-      });
+  return { options: newOptions, correctIndex: newOptions.indexOf(correctAnswer) };
+}
+function selectRandomSet(topicKey) {
+  return 0; // Only one set per topic
+}
+function scrollToNextButton() {
+  setTimeout(() => {
+    const nextBtn = document.querySelector('.btn-next');
+    if (nextBtn) {
+      nextBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-    
-    currentExercise = 0;
-    points = 0;
-    userAnswers = new Array(5).fill(null);
-    pointsDisplay.textContent = points;
-    updateProgress();
-    loadExercise();
-  }
+  }, 150);
+}
+let currentTopic = null;
+let currentExercise = 0;
+let points = 0;
+let userAnswers = [];
+let speechSynthesis = window.speechSynthesis;
+let isDarkMode = localStorage.getItem('darkMode') === 'true';
+let topicBestScores = JSON.parse(localStorage.getItem('polskiLernenBestScores')) || {};
+let currentSetIndex = null;
+let currentLevel = 1;
 
-  function loadExercise() {
-    const ex = exercises[currentExercise];
-    exerciseContainer.innerHTML = '';
-    
-    const title = document.createElement('div');
-    title.className = 'exercise-title';
-    title.innerHTML = `
-      <span><i class="fas fa-puzzle-piece"></i> Fill in the Blank</span>
-      <div>
-        <span class="topic-name">${topics[currentTopic].name}</span>
-        <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i> Topics</button>
-      </div>
-    `;
-    exerciseContainer.appendChild(title);
-    
-    setTimeout(() => {
-      const backBtn = document.getElementById('back-btn');
-      if (backBtn) {
-        backBtn.onclick = () => {
-          exerciseScreen.classList.add('hidden');
-          progressContainer.classList.add('hidden');
-          topicSelectionScreen.classList.remove('hidden');
-        };
-      }
-    }, 0);
-    
-    const content = document.createElement('div');
-    content.style.flex = '1';
-    content.style.display = 'flex';
-    content.style.flexDirection = 'column';
-    content.style.justifyContent = 'center';
-    
-    const sentenceEl = document.createElement('div');
-    sentenceEl.className = 'sentence';
-    sentenceEl.textContent = ex.sentence;
-    content.appendChild(sentenceEl);
-    
-    const optionsContainer = document.createElement('div');
-    optionsContainer.className = 'options-container';
-    ex.options.forEach((opt, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      btn.textContent = opt;
-      if (userAnswers[currentExercise] !== null) btn.disabled = true;
-      btn.onclick = () => handleAnswer(i, ex.correct, ex);
-      optionsContainer.appendChild(btn);
-    });
-    content.appendChild(optionsContainer);
-    
-    const feedback = document.createElement('div');
-    feedback.className = 'feedback';
-    feedback.id = 'feedback';
-    content.appendChild(feedback);
-    
-    exerciseContainer.appendChild(content);
-    addNavigation();
-  }
+const exerciseContainer = document.getElementById('exercise-container');
+const progressContainer = document.getElementById('progress-container');
+const progressFill = document.getElementById('progress-fill');
+const progressText = document.getElementById('progress-text');
+const pointsDisplay = document.getElementById('points');
+const completionScreen = document.getElementById('completion-screen');
+const finalScore = document.getElementById('final-score');
+const completionMessage = document.getElementById('completion-message');
+const topicSelectionScreen = document.getElementById('topic-selection-screen');
+const topicOptionsContainer = document.getElementById('topic-options-container');
+const themeToggle = document.getElementById('theme-toggle');
+const newTopicBtn = document.getElementById('new-topic-btn');
+const restartTopicBtn = document.getElementById('restart-topic-btn');
+const levelSelectionScreen = document.getElementById('level-selection-screen');
+const levelOptionsContainer = document.getElementById('level-options-container');
 
-  function handleAnswer(selected, correct, exercise) {
-    userAnswers[currentExercise] = selected;
-    if (selected === correct) {
-      points += 10;
-      pointsDisplay.textContent = points;
-    }
-    
-    document.querySelectorAll('.option-btn').forEach((btn, i) => {
-      btn.disabled = true;
-      if (i === selected) btn.classList.add(selected === correct ? 'correct' : 'incorrect');
-      else if (i === correct) btn.classList.add('correct');
-    });
-    
-    document.getElementById('feedback').textContent = exercise.explanation;
-    document.getElementById('feedback').className = `feedback ${selected === correct ? 'correct' : 'incorrect'}`;
-    
-    document.querySelector('.btn-next').disabled = false;
-    scrollToNextButton();
-  }
-
-  function addNavigation() {
-    const nav = document.createElement('div');
-    nav.className = 'navigation';
-    
-    const prev = document.createElement('button');
-    prev.className = 'btn-nav btn-prev';
-    prev.textContent = 'Previous';
-    prev.disabled = currentExercise === 0;
-    prev.onclick = () => {
-      if (currentExercise > 0) {
-        currentExercise--;
-        loadExercise();
-        updateProgress();
-      }
-    };
-    
-    const next = document.createElement('button');
-    next.className = 'btn-nav btn-next';
-    next.textContent = currentExercise === 4 ? 'Finish Topic' : 'Next';
-    next.disabled = userAnswers[currentExercise] === null;
-    next.onclick = () => {
-      if (currentExercise < 4) {
-        currentExercise++;
-        loadExercise();
-        updateProgress();
-      } else {
-        finishTopic();
-      }
-    };
-    
-    nav.appendChild(prev);
-    nav.appendChild(next);
-    exerciseContainer.appendChild(nav);
-  }
-
-  function updateProgress() {
-    const percent = ((currentExercise + 1) / 5) * 100;
-    progressFill.style.width = `${percent}%`;
-    progressText.textContent = `${currentExercise + 1}/5`;
-  }
-
-  function scrollToNextButton() {
-    setTimeout(() => {
-      const btn = document.querySelector('.btn-next');
-      if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 150);
-  }
-
-  function finishTopic() {
-    exerciseScreen.classList.add('hidden');
-    progressContainer.classList.add('hidden');
-    completionScreen.classList.remove('hidden');
-    
-    let msg = "Keep practicing! 📚";
-    if (points >= 45) msg = "Outstanding! 🌟";
-    else if (points >= 35) msg = "Great job! 👏";
-    else if (points >= 25) msg = "Good effort! 💪";
-    
-    completionMessage.textContent = msg;
-    finalScoreEl.textContent = points; // ✅ Correct: only number
-  }
-
-  // Completion screen buttons
-  document.getElementById('new-topic-btn').onclick = () => {
-    completionScreen.classList.add('hidden');
-    topicSelectionScreen.classList.remove('hidden');
-  };
-  document.getElementById('change-level-btn').onclick = () => {
-    completionScreen.classList.add('hidden');
-    levelSelectScreen.classList.remove('hidden');
-  };
+applyTheme();
+themeToggle.addEventListener('click', () => {
+  isDarkMode = !isDarkMode;
+  localStorage.setItem('darkMode', isDarkMode);
+  applyTheme();
+  const icon = themeToggle.querySelector('i');
+  icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
 });
+
+function applyTheme() {
+  const root = document.documentElement;
+  if (isDarkMode) {
+    root.style.setProperty('--bg', 'var(--dark-bg)');
+    root.style.setProperty('--text', 'var(--text-dark)');
+    root.style.setProperty('--card', 'var(--card-dark)');
+    root.style.setProperty('--border', 'var(--border-dark)');
+    root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
+    root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.7)');
+    root.style.setProperty('--shadow', 'var(--shadow-dark)');
+    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
+    root.style.setProperty('--feedback-correct-text', 'white');
+    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
+    root.style.setProperty('--feedback-incorrect-text', 'white');
+    root.style.setProperty('--warning', '#fbbf24');
+  } else {
+    root.style.setProperty('--bg', 'var(--light-bg)');
+    root.style.setProperty('--text', 'var(--text-light)');
+    root.style.setProperty('--card', 'var(--card-light)');
+    root.style.setProperty('--border', 'var(--border-light)');
+    root.style.setProperty('--option-bg', 'var(--option-bg-light)');
+    root.style.setProperty('--bg-sentence', '#f1f5ff');
+    root.style.setProperty('--shadow', 'var(--shadow-light)');
+    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
+    root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
+    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
+    root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
+    root.style.setProperty('--warning', '#f8961e');
+  }
+}
+
+// Render level selection
+function renderLevelSelection() {
+  levelOptionsContainer.innerHTML = '';
+  for (let i = 1; i <= 4; i++) {
+    const el = document.createElement('div');
+    el.className = 'topic-option';
+    el.innerHTML = `<i class="fas fa-layer-group"></i> Set ${i}`;
+    el.onclick = () => {
+      currentLevel = i;
+      injectVocabIntoTopics(i);
+      levelSelectionScreen.classList.add('hidden');
+      renderTopicSelection();
+      topicSelectionScreen.classList.remove('hidden');
+    };
+    levelOptionsContainer.appendChild(el);
+  }
+}
+
+function renderTopicSelection() {
+  topicOptionsContainer.innerHTML = '';
+  Object.keys(allTopics).forEach(topicKey => {
+    const topic = allTopics[topicKey];
+    const bestScore = topicBestScores[topicKey] || 0;
+    const topicOption = document.createElement('div');
+    topicOption.className = 'topic-option';
+    topicOption.dataset.topic = topicKey;
+    topicOption.innerHTML = `
+      <i class="fas ${topic.icon}"></i>
+      ${topic.name}
+      ${bestScore > 0 ? `<div class="score-badge">${Math.round(bestScore)}</div>` : ''}
+    `;
+    topicOption.addEventListener('click', () => startTopicExercises(topicKey));
+    topicOptionsContainer.appendChild(topicOption);
+  });
+}
+
+function startTopicExercises(topicKey) {
+  topicSelectionScreen.classList.add('hidden');
+  progressContainer.classList.remove('hidden');
+  exerciseContainer.classList.remove('hidden');
+  completionScreen.classList.add('hidden');
+  currentTopic = topicKey;
+  currentExercise = 0;
+  points = 0;
+  currentSetIndex = 0;
+  const exercises = allTopics[topicKey].sets[currentSetIndex];
+  userAnswers = new Array(exercises.length).fill(null);
+  pointsDisplay.textContent = points;
+  updateProgress();
+  loadExercise(currentExercise);
+}
+
+function loadExercise(index) {
+  const topicData = allTopics[currentTopic];
+  const exercises = topicData.sets[currentSetIndex];
+  const exercise = exercises[index];
+  exerciseContainer.innerHTML = '';
+  const titleContainer = document.createElement('div');
+  titleContainer.className = 'exercise-title';
+  titleContainer.innerHTML = `
+    <span><i class="fas fa-${exercise.type === 'missing-word' ? 'puzzle-piece' : 'headphones'}"></i> ${exercise.type === 'missing-word' ? 'Fill in the Blank' : 'Listen & Identify Topic'}</span>
+    <div>
+      <span class="topic-name">${topicData.name}</span>
+      <button class="back-btn" id="back-to-topics-btn">
+        <i class="fas fa-arrow-left"></i> Topics
+      </button>
+    </div>
+  `;
+  exerciseContainer.appendChild(titleContainer);
+  setTimeout(() => {
+    const backBtn = document.getElementById('back-to-topics-btn');
+    if (backBtn) backBtn.addEventListener('click', showTopicSelection);
+  }, 0);
+
+  if (exercise.type === 'missing-word') {
+    const randomized = randomizeOptions(exercise.options, exercise.correct);
+    exercise.currentOptions = randomized.options;
+    exercise.currentCorrect = randomized.correctIndex;
+  }
+  if (exercise.type === 'tts') {
+    const topics = [...exercise.topics];
+    const correctTopic = topics[exercise.correct];
+    const shuffledTopics = shuffleArray(topics);
+    const newCorrectIndex = shuffledTopics.indexOf(correctTopic);
+    exercise.currentTopics = shuffledTopics;
+    exercise.currentCorrect = newCorrectIndex;
+  }
+
+  if (exercise.type === 'missing-word') {
+    renderMissingWordExercise(exercise, exercises);
+  } else if (exercise.type === 'tts') {
+    renderTTsExercise(exercise);
+  }
+}
+
+function renderMissingWordExercise(exercise, exercises) {
+  const content = document.createElement('div');
+  content.className = 'exercise-content missing-word-exercise';
+  const sentence = document.createElement('div');
+  sentence.className = 'sentence';
+  sentence.textContent = exercise.sentence;
+  content.appendChild(sentence);
+  const optionsContainer = document.createElement('div');
+  optionsContainer.className = 'options-container';
+  const options = exercise.currentOptions;
+  const correctIndex = exercise.currentCorrect;
+  options.forEach((option, index) => {
+    const optionBtn = document.createElement('button');
+    optionBtn.className = 'option-btn';
+    optionBtn.textContent = option;
+    optionBtn.dataset.index = index;
+    if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
+      optionBtn.disabled = true;
+      if (index === userAnswers[currentExercise]) {
+        optionBtn.classList.add('selected');
+        if (index === correctIndex) optionBtn.classList.add('correct');
+        else optionBtn.classList.add('incorrect');
+      } else if (index === correctIndex) optionBtn.classList.add('correct');
+    }
+    optionBtn.addEventListener('click', () => handleMissingWordAnswer(index, correctIndex, exercise, exercises));
+    optionsContainer.appendChild(optionBtn);
+  });
+  content.appendChild(optionsContainer);
+  const feedback = document.createElement('div');
+  feedback.className = 'feedback';
+  feedback.id = 'feedback';
+  content.appendChild(feedback);
+  exerciseContainer.appendChild(content);
+  addNavigation();
+}
+
+function handleMissingWordAnswer(selectedIndex, correctIndex, exercise, exercises) {
+  userAnswers[currentExercise] = selectedIndex;
+  if (selectedIndex === correctIndex) {
+    points += 10;
+    pointsDisplay.textContent = points;
+  }
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach((btn, index) => {
+    btn.disabled = true;
+    if (index === selectedIndex) {
+      btn.classList.add('selected');
+      if (index === correctIndex) btn.classList.add('correct');
+      else btn.classList.add('incorrect');
+    } else if (index === correctIndex) btn.classList.add('correct');
+  });
+  const feedback = document.getElementById('feedback');
+  if (selectedIndex === correctIndex) {
+    feedback.textContent = `Correct! ${exercise.explanation}`;
+    feedback.className = 'feedback correct';
+    const fullCorrectSentence = exercise.sentence.replace("___", exercise.options[exercise.correct]);
+    setTimeout(() => speakText(fullCorrectSentence), 500);
+  } else {
+    feedback.textContent = `Incorrect. ${exercise.explanation}`;
+    feedback.className = 'feedback incorrect';
+    const fullCorrectSentence = exercise.sentence.replace("___", exercise.options[exercise.correct]);
+    setTimeout(() => speakText(fullCorrectSentence), 1000);
+  }
+  document.querySelector('.btn-next').disabled = false;
+  scrollToNextButton();
+}
+
+function renderTTsExercise(exercise) {
+  const content = document.createElement('div');
+  content.className = 'exercise-content tts-exercise';
+  const instruction = document.createElement('p');
+  instruction.textContent = 'Listen to the Polish sentence and select the correct topic:';
+  instruction.style.marginBottom = '20px';
+  instruction.style.fontSize = '1.1rem';
+  content.appendChild(instruction);
+  const audioControls = document.createElement('div');
+  audioControls.className = 'audio-controls';
+  const playBtn = document.createElement('button');
+  playBtn.className = 'play-btn';
+  playBtn.innerHTML = '<i class="fas fa-play"></i>';
+  playBtn.title = 'Play audio';
+  playBtn.addEventListener('click', () => {
+    speakText(exercise.audioText);
+    playBtn.disabled = true;
+    setTimeout(() => playBtn.disabled = false, 5000);
+  });
+  audioControls.appendChild(playBtn);
+  content.appendChild(audioControls);
+  const topicsContainer = document.createElement('div');
+  topicsContainer.className = 'topics-container';
+  const topics = exercise.currentTopics;
+  const correctIndex = exercise.currentCorrect;
+  topics.forEach((topic, index) => {
+    const topicCard = document.createElement('div');
+    topicCard.className = 'topic-card';
+    topicCard.textContent = topic;
+    topicCard.dataset.index = index;
+    if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
+      topicCard.classList.add('locked');
+      if (index === userAnswers[currentExercise]) topicCard.classList.add('selected');
+      if (userAnswers[currentExercise] !== correctIndex && index === correctIndex) topicCard.classList.add('correct');
+    }
+    topicCard.addEventListener('click', () => handleTTSAnswer(index, correctIndex, exercise));
+    topicsContainer.appendChild(topicCard);
+  });
+  content.appendChild(topicsContainer);
+  const feedback = document.createElement('div');
+  feedback.className = 'feedback';
+  feedback.id = 'feedback';
+  content.appendChild(feedback);
+  exerciseContainer.appendChild(content);
+  addNavigation();
+}
+
+function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
+  userAnswers[currentExercise] = selectedIndex;
+  if (selectedIndex === correctIndex) {
+    points += 10;
+    pointsDisplay.textContent = points;
+  }
+  const cards = document.querySelectorAll('.topic-card');
+  cards.forEach((card, index) => {
+    card.classList.add('locked');
+    if (index === selectedIndex) card.classList.add('selected');
+    if (index === correctIndex) card.classList.add('correct');
+  });
+  const feedback = document.getElementById('feedback');
+  if (selectedIndex === correctIndex) {
+    feedback.textContent = `Correct! ${exercise.explanation}`;
+    feedback.className = 'feedback correct';
+  } else {
+    feedback.textContent = `Incorrect. ${exercise.explanation}`;
+    feedback.className = 'feedback incorrect';
+  }
+  document.querySelector('.btn-next').disabled = false;
+  scrollToNextButton();
+}
+
+function speakText(text) {
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'pl-PL';
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+  speechSynthesis.speak(utterance);
+}
+
+function addNavigation() {
+  const nav = document.createElement('div');
+  nav.className = 'navigation';
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'btn btn-prev';
+  prevBtn.textContent = 'Previous';
+  prevBtn.disabled = currentExercise === 0;
+  prevBtn.addEventListener('click', () => {
+    if (currentExercise > 0) {
+      currentExercise--;
+      loadExercise(currentExercise);
+      updateProgress();
+    }
+  });
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn btn-next';
+  nextBtn.textContent = currentExercise === 4 ? 'Finish Topic' : 'Next';
+  nextBtn.disabled = userAnswers[currentExercise] === undefined || userAnswers[currentExercise] === null;
+  nextBtn.addEventListener('click', () => {
+    if (currentExercise < 4) {
+      currentExercise++;
+      loadExercise(currentExercise);
+      updateProgress();
+    } else {
+      finishTopic();
+    }
+  });
+  nav.appendChild(prevBtn);
+  nav.appendChild(nextBtn);
+  exerciseContainer.appendChild(nav);
+}
+
+function updateProgress() {
+  const totalExercises = 5;
+  const progress = ((currentExercise + 1) / totalExercises) * 100;
+  progressFill.style.width = `${progress}%`;
+  progressText.textContent = `${currentExercise + 1}/${totalExercises}`;
+}
+
+function finishTopic() {
+  if (points > (topicBestScores[currentTopic] || 0)) {
+    topicBestScores[currentTopic] = points;
+    localStorage.setItem('polskiLernenBestScores', JSON.stringify(topicBestScores));
+  }
+  let message = "Keep practicing! 📚";
+  let color = "#f8961e";
+  if (points >= 45) {
+    message = "Outstanding! 🌟";
+    color = "#4ade80";
+  } else if (points >= 35) {
+    message = "Great job! 👏";
+    color = "#4cc9f0";
+  } else if (points >= 25) {
+    message = "Good effort! 💪";
+    color = "#f8961e";
+  }
+  completionMessage.textContent = message;
+  completionMessage.style.color = color;
+  exerciseContainer.classList.add('hidden');
+  progressContainer.classList.add('hidden');
+  finalScore.textContent = points; // ✅ FIXED: only number
+  completionScreen.classList.remove('hidden');
+}
+
+function showTopicSelection() {
+  completionScreen.classList.add('hidden');
+  exerciseContainer.classList.add('hidden');
+  progressContainer.classList.add('hidden');
+  topicSelectionScreen.classList.remove('hidden');
+  renderTopicSelection();
+}
+
+// INIT
+renderLevelSelection();
+newTopicBtn.addEventListener('click', showTopicSelection);
+restartTopicBtn.addEventListener('click', () => startTopicExercises(currentTopic));
 </script>
 </body>
 </html>
