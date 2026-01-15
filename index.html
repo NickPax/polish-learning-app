@@ -344,11 +344,11 @@ background: var(--secondary);
 opacity: 0.6;
 cursor: not-allowed;
 }
-.completion-screen, .topic-selection-screen, .level-selection-screen {
+.completion-screen, .topic-selection-screen, .level-selection-screen, .mode-selection-screen {
 text-align: center;
 padding: 40px 20px;
 }
-.completion-screen h2, .topic-selection-screen h2, .level-selection-screen h2 {
+.completion-screen h2, .topic-selection-screen h2, .level-selection-screen h2, .mode-selection-screen h2 {
 font-size: 2.2rem;
 margin-bottom: 20px;
 }
@@ -478,14 +478,23 @@ height: 40px;
 <!-- LEVEL SELECTION -->
 <div class="level-selection-screen" id="level-selection-screen">
 <h2>Select Your Comprehension Level</h2>
-<p style="max-width:600px; margin:0 auto 30px;">Choose a vocabulary set optimized for real-world listening and reading comprehension.</p>
+<p>Choose a vocabulary set optimized for real-world listening and reading.</p>
 <div class="topic-options" id="level-options-container"></div>
 </div>
 
-<!-- TOPIC SELECTION -->
+<!-- MODE SELECTION -->
+<div class="mode-selection-screen hidden" id="mode-selection-screen">
+<h2>Choose Your Practice Mode</h2>
+<p>Select how you want to practice:</p>
+<div class="topic-options" id="mode-options-container">
+<!-- Filled by JS -->
+</div>
+</div>
+
+<!-- TOPIC SELECTION (for Listening Mode) -->
 <div class="topic-selection-screen hidden" id="topic-selection-screen">
 <h2>Choose a Practice Context</h2>
-<p style="max-width:600px; margin:0 auto 30px;">Select any topic to practice with your chosen vocabulary level.</p>
+<p>Vocabulary comes from your selected level.</p>
 <div class="topic-options" id="topic-options-container"></div>
 </div>
 
@@ -627,15 +636,18 @@ const listeningExercises = {
 
 // DOM elements
 const levelSelectionScreen = document.getElementById('level-selection-screen');
+const modeSelectionScreen = document.getElementById('mode-selection-screen');
 const topicSelectionScreen = document.getElementById('topic-selection-screen');
 const exerciseScreen = document.getElementById('exercise-container');
 const progressContainer = document.getElementById('progress-container');
 const completionScreen = document.getElementById('completion-screen');
 const levelOptionsContainer = document.getElementById('level-options-container');
+const modeOptionsContainer = document.getElementById('mode-options-container');
 const topicOptionsContainer = document.getElementById('topic-options-container');
 const themeToggle = document.getElementById('theme-toggle');
 
 let currentLevel = 1;
+let currentMode = null; // 'vocabulary' or 'listening'
 let currentTopic = null;
 let exercises = [];
 let currentExercise = 0;
@@ -701,14 +713,40 @@ function renderLevelSelection() {
     el.onclick = () => {
       currentLevel = level.num;
       levelSelectionScreen.classList.add('hidden');
-      renderTopicSelection();
-      topicSelectionScreen.classList.remove('hidden');
+      renderModeSelection();
+      modeSelectionScreen.classList.remove('hidden');
     };
     levelOptionsContainer.appendChild(el);
   });
 }
 
-// Render topic selection - ✅ ALL 10 TOPICS
+// Render mode selection
+function renderModeSelection() {
+  modeOptionsContainer.innerHTML = '';
+  const modes = [
+    {type: 'vocabulary', name: "Vocabulary Practice", icon: "book", description: "Practice core function words with fill-in-the-blank exercises."},
+    {type: 'listening', name: "Listening Practice", icon: "headphones", description: "Improve comprehension with authentic Polish sentences."}
+  ];
+  
+  modes.forEach(mode => {
+    const el = document.createElement('div');
+    el.className = 'topic-option';
+    el.innerHTML = `<i class="fas fa-${mode.icon}"></i>${mode.name}<br><small>${mode.description}</small>`;
+    el.onclick = () => {
+      currentMode = mode.type;
+      modeSelectionScreen.classList.add('hidden');
+      if (currentMode === 'vocabulary') {
+        startVocabularyPractice();
+      } else {
+        renderTopicSelection();
+        topicSelectionScreen.classList.remove('hidden');
+      }
+    };
+    modeOptionsContainer.appendChild(el);
+  });
+}
+
+// Render topic selection
 function renderTopicSelection() {
   topicOptionsContainer.innerHTML = '';
   const topics = [
@@ -733,24 +771,21 @@ function renderTopicSelection() {
   });
 }
 
-// Start topic exercises
-function startTopicExercises(topicKey) {
-  topicSelectionScreen.classList.add('hidden');
+// Start vocabulary practice
+function startVocabularyPractice() {
   progressContainer.classList.remove('hidden');
   exerciseScreen.classList.remove('hidden');
   completionScreen.classList.add('hidden');
   
-  currentTopic = topicKey;
   currentExercise = 0;
   points = 0;
   userAnswers = new Array(5).fill(null);
   
-  // Generate 5 exercises: 2 fill-in + 3 listening
+  // Generate 5 fill-in-the-blank exercises using level vocabulary
+  const vocab = vocabLevels[currentLevel];
   exercises = [];
   
-  // Fill-in-the-blank exercises (using level vocabulary)
-  const vocab = vocabLevels[currentLevel];
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 5; i++) {
     const item = vocab[i % vocab.length];
     const sentenceTemplates = [
       `To ___ moja książka.`,
@@ -790,32 +825,35 @@ function startTopicExercises(topicKey) {
     }
   }
   
-  // Listening exercises (from topic pool)
+  document.getElementById('points').textContent = points;
+  updateProgress();
+  loadExercise(currentExercise);
+}
+
+// Start topic exercises (listening mode)
+function startTopicExercises(topicKey) {
+  topicSelectionScreen.classList.add('hidden');
+  progressContainer.classList.remove('hidden');
+  exerciseScreen.classList.remove('hidden');
+  completionScreen.classList.add('hidden');
+  
+  currentTopic = topicKey;
+  currentExercise = 0;
+  points = 0;
+  userAnswers = new Array(5).fill(null);
+  
+  // Generate 5 listening exercises
   const topicListening = listeningExercises[topicKey] || [];
-  for (let i = 0; i < 3 && i < topicListening.length; i++) {
+  exercises = [];
+  
+  for (let i = 0; i < 5 && i < topicListening.length; i++) {
     exercises.push({...topicListening[i]});
   }
   
-  // If we don't have 5 exercises, pad with more fill-in
+  // If we don't have 5, pad with more
   while (exercises.length < 5) {
-    const item = vocab[exercises.length % vocab.length];
-    const sentence = `To ___ interesujące.`;
-    const distractors = vocab
-      .filter(v => v.word !== item.word)
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 3)
-      .map(v => v.word);
-    
-    const options = [item.word, ...distractors].sort(() => 0.5 - Math.random());
-    const correct = options.indexOf(item.word);
-    
-    exercises.push({
-      type: 'missing-word',
-      sentence: sentence.replace("___", "________"),
-      options,
-      correct,
-      explanation: `"${item.word}" means "${item.meaning}".`
-    });
+    const item = topicListening[exercises.length % topicListening.length];
+    exercises.push({...item});
   }
   
   document.getElementById('points').textContent = points;
@@ -823,7 +861,7 @@ function startTopicExercises(topicKey) {
   loadExercise(currentExercise);
 }
 
-// Load exercise (identical to before)
+// Load exercise
 function loadExercise(index) {
   const ex = exercises[index];
   exerciseScreen.innerHTML = '';
@@ -833,20 +871,24 @@ function loadExercise(index) {
   title.innerHTML = `
     <span><i class="fas fa-${ex.type === 'missing-word' ? 'puzzle-piece' : 'headphones'}"></i> ${ex.type === 'missing-word' ? 'Fill in the Blank' : 'Listen & Identify Topic'}</span>
     <div>
-      <span class="topic-name">${getTopicName(currentTopic)}</span>
-      <button class="back-btn" id="back-to-topics-btn">
-        <i class="fas fa-arrow-left"></i> Topics
+      <span class="topic-name">${currentMode === 'vocabulary' ? 'Vocabulary Practice' : getTopicName(currentTopic)}</span>
+      <button class="back-btn" id="back-to-mode-btn">
+        <i class="fas fa-arrow-left"></i> ${currentMode === 'vocabulary' ? 'Back to Mode' : 'Back to Topics'}
       </button>
     </div>
   `;
   exerciseScreen.appendChild(title);
   
   setTimeout(() => {
-    const backBtn = document.getElementById('back-to-topics-btn');
+    const backBtn = document.getElementById('back-to-mode-btn');
     if (backBtn) backBtn.onclick = () => {
       exerciseScreen.classList.add('hidden');
       progressContainer.classList.add('hidden');
-      topicSelectionScreen.classList.remove('hidden');
+      if (currentMode === 'vocabulary') {
+        modeSelectionScreen.classList.remove('hidden');
+      } else {
+        topicSelectionScreen.classList.remove('hidden');
+      }
     };
   }, 0);
   
@@ -1080,10 +1122,18 @@ function finishTopic() {
 // Completion buttons
 document.getElementById('new-topic-btn')?.addEventListener('click', () => {
   completionScreen.classList.add('hidden');
-  topicSelectionScreen.classList.remove('hidden');
+  if (currentMode === 'vocabulary') {
+    modeSelectionScreen.classList.remove('hidden');
+  } else {
+    topicSelectionScreen.classList.remove('hidden');
+  }
 });
 document.getElementById('restart-topic-btn')?.addEventListener('click', () => {
-  startTopicExercises(currentTopic);
+  if (currentMode === 'vocabulary') {
+    startVocabularyPractice();
+  } else {
+    startTopicExercises(currentTopic);
+  }
 });
 document.getElementById('change-level-btn')?.addEventListener('click', () => {
   completionScreen.classList.add('hidden');
