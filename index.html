@@ -355,58 +355,59 @@ h1 {
 <script>
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
-  // === VOCABULARY SETS ===
+  // === REVISED VOCABULARY SETS (Comprehension-Optimized) ===
   const vocabSets = {
     1: [
-      { word: "tak", meaning: "yes" },
-      { word: "nie", meaning: "no" },
-      { word: "proszę", meaning: "please" },
-      { word: "jest", meaning: "is" },
-      { word: "ma", meaning: "has" },
-      { word: "chce", meaning: "wants" },
-      { word: "tu", meaning: "here" },
-      { word: "teraz", meaning: "now" },
-      { word: "no", meaning: "well" },
-      { word: "eee", meaning: "uh" }
+      { word: "tak", meaning: "yes", examples: ["Tak, proszę.", "Tak, rozumiem."] },
+      { word: "nie", meaning: "no", examples: ["Nie, dziękuję.", "Nie, nie chcę."] },
+      { word: "proszę", meaning: "please / you're welcome", examples: ["Proszę o kawę.", "Proszę, wejdź."] },
+      { word: "jest", meaning: "is", examples: ["To jest moja książka.", "Jestem w domu."] },
+      { word: "ma", meaning: "has", examples: ["On ma samochód.", "Ma czas?"] },
+      { word: "chce", meaning: "wants", examples: ["Chcę piwo.", "Chce pomóc."] },
+      { word: "tu", meaning: "here", examples: ["Tu jest stacja.", "Tu się spotykamy."] },
+      { word: "teraz", meaning: "now", examples: ["Teraz idę do pracy.", "Teraz jest dobrze."] },
+      { word: "no", meaning: "well / you know", examples: ["No, to już wiemy.", "No, co dalej?"] },
+      { word: "bardzo", meaning: "very", examples: ["Bardzo smaczne!", "Bardzo się cieszę."] }
     ],
     2: [
-      { word: "myślę", meaning: "I think" },
-      { word: "wiem", meaning: "I know" },
-      { word: "rozumiem", meaning: "I understand" },
-      { word: "mówi", meaning: "says" },
-      { word: "ale", meaning: "but" },
-      { word: "bo", meaning: "because" },
-      { word: "więc", meaning: "so" },
-      { word: "już", meaning: "already" },
-      { word: "jeszcze", meaning: "still" },
-      { word: "bardzo", meaning: "very" }
+      { word: "myślę", meaning: "I think", examples: ["Myślę, że tak.", "Myślę, że to możliwe."] },
+      { word: "wiem", meaning: "I know", examples: ["Wiem, gdzie jesteś.", "Wiem, co mówisz."] },
+      { word: "rozumiem", meaning: "I understand", examples: ["Rozumiem, co masz na myśli.", "Rozumiem, dlaczego jesteś zły."] },
+      { word: "mówi", meaning: "says", examples: ["On mówi prawdę.", "Mówi, że jest zajęty."] },
+      { word: "ale", meaning: "but", examples: ["Chcę, ale nie mogę.", "To fajne, ale drogie."] },
+      { word: "bo", meaning: "because", examples: ["Idę, bo muszę.", "Nie mam, bo zapomniałem."] },
+      { word: "więc", meaning: "so", examples: ["Zrobiłem to, więc jest gotowe.", "Więc co robimy?"] },
+      { word: "już", meaning: "already", examples: ["Już poszedł.", "Już to zrobiłem."] },
+      { word: "jeszcze", meaning: "still / yet", examples: ["Jeszcze nie przyszedł.", "Czy jeszcze masz czas?"] },
+      { word: "może", meaning: "can / may", examples: ["Może pomóc?", "Może być późno."] }
     ],
     3: [
-      { word: "pewnie", meaning: "probably" },
-      { word: "chyba", meaning: "maybe" },
-      { word: "ponieważ", meaning: "because (formal)" },
-      { word: "jednak", meaning: "however" },
-      { word: "mimo że", meaning: "although" },
-      { word: "gdyby", meaning: "if (hypothetical)" },
-      { word: "ważne", meaning: "important" },
-      { word: "trudno", meaning: "it's difficult" },
-      { word: "właśnie", meaning: "just" },
-      { word: "raczej", meaning: "rather" }
+      { word: "pewnie", meaning: "probably", examples: ["Pewnie będzie deszcz.", "Pewnie go znam."] },
+      { word: "chyba", meaning: "maybe / I guess", examples: ["Chyba się mylę.", "Chyba nie ma czasu."] },
+      { word: "ponieważ", meaning: "because (formal)", examples: ["Nie poszedłem, ponieważ byłem chory.", "To działa, ponieważ jest proste."] },
+      { word: "jednak", meaning: "however", examples: ["To trudne, jednak możliwe.", "Chciał, jednak nie mógł."] },
+      { word: "mimo że", meaning: "although", examples: ["Mimo że jest zły, pomaga.", "Mimo że jest późno, czekam."] },
+      { word: "gdyby", meaning: "if (hypothetical)", examples: ["Gdybyś przyszedł, bylibyśmy szczęśliwi.", "Gdyby było słońce, poszłabyś?"] },
+      { word: "ważne", meaning: "important", examples: ["To bardzo ważne.", "Ważne jest, abyś wiedział."] },
+      { word: "trudno", meaning: "it's difficult", examples: ["Trudno mi to powiedzieć.", "Trudno jest znaleźć czas."] },
+      { word: "właśnie", meaning: "just / precisely", examples: ["Właśnie to miałem na myśli.", "Właśnie teraz idę."] },
+      { word: "raczej", meaning: "rather", examples: ["Raczej nie idę.", "Raczej to nie jest prawda."] }
     ],
     4: [
-      { word: "przecież", meaning: "after all" },
-      { word: "właściwie", meaning: "actually" },
-      { word: "oczywiście", meaning: "of course" },
-      { word: "niestety", meaning: "unfortunately" },
-      { word: "na szczęście", meaning: "fortunately" },
-      { word: "powinien", meaning: "should" },
-      { word: "mógłby", meaning: "could" },
-      { word: "trochę", meaning: "a little" },
-      { word: "serio?", meaning: "seriously?" },
-      { word: "naprawdę", meaning: "really" }
+      { word: "przecież", meaning: "after all / you know", examples: ["Przecież to wiadomo!", "Przecież nie mogłeś wiedzieć."] },
+      { word: "właściwie", meaning: "actually", examples: ["Właściwie to nie wiem.", "Właściwie to jest łatwe."] },
+      { word: "oczywiście", meaning: "of course", examples: ["Oczywiście, że tak.", "Oczywiście, pomogę."] },
+      { word: "niestety", meaning: "unfortunately", examples: ["Niestety, nie mogę przyjść.", "Niestety, to się nie uda."] },
+      { word: "na szczęście", meaning: "fortunately", examples: ["Na szczęście, nie było deszczu.", "Na szczęście, wszystko się udało."] },
+      { word: "powinien", meaning: "should", examples: ["Powinieneś to zrobić.", "Powinienem iść."] },
+      { word: "mógłby", meaning: "could / might (polite)", examples: ["Mógłbyś mi pomóc?", "Mógłby to być on."] },
+      { word: "trochę", meaning: "a little", examples: ["Trochę się boję.", "Trochę więcej, proszę."] },
+      { word: "serio?", meaning: "seriously?", examples: ["Serio? Nie wierzę!", "Serio, to robiłeś?"] },
+      { word: "naprawdę", meaning: "really", examples: ["Naprawdę to wiem.", "Naprawdę się cieszę."] }
     ]
   };
 
+  // TOPICS (for context only)
   const topics = {
     travel: { name: "Travel & Directions", icon: "fa-plane" },
     food: { name: "Food & Dining", icon: "fa-utensils" },
@@ -420,18 +421,57 @@ document.addEventListener('DOMContentLoaded', () => {
     media: { name: "News & Media", icon: "fa-newspaper" }
   };
 
-  const sentenceTemplates = [
-    `"___ jest tu?"`,
-    `"___ chce kawę."`,
-    `"___ rozumiem."`,
-    `"___ już poszedł?"`,
-    `"___ bo nie wiem."`,
-    `"___ ale to ważne."`,
-    `"___ powinien to zrobić."`,
-    `"___ niestety, nie mogę."`,
-    `"___ właśnie teraz!"`,
-    `"___ pewnie masz rację."`
-  ];
+  // CONTEXT TEMPLATES (grammatically correct and natural)
+  const sentenceTemplates = {
+    1: [
+      `"___ jest tu?"`,
+      `"___ chce kawę."`,
+      `"___ rozumiem."`,
+      `"___ już poszedł?"`,
+      `"___ bo nie wiem."`,
+      `"___ ale to ważne."`,
+      `"___ powinien to zrobić."`,
+      `"___ niestety, nie mogę."`,
+      `"___ właśnie teraz!"`,
+      `"___ pewnie masz rację."`
+    ],
+    2: [
+      `"Czy ___ rozumiesz?"`,
+      `"On ___, że jest zajęty."`,
+      `"___, ale nie mogę."`,
+      `"___, więc idziemy."`,
+      `"___ już to zrobił?"`,
+      `"Czy ___ jeszcze?"`,
+      `"___ może pomóc?"`,
+      `"___, bo jest późno."`,
+      `"___, więc to nie jest problem."`,
+      `"___, ale to nie jest ważne."`
+    ],
+    3: [
+      `"___, ponieważ jest trudno."`,
+      `"___, jednak możliwe."`,
+      `"___, mimo że jest późno."`,
+      `"___, gdybyś przyszedł."`,
+      `"To ___ ważne."`,
+      `"___ trudno mi to powiedzieć."`,
+      `"___ właśnie to miałem na myśli."`,
+      `"___ raczej nie idę."`,
+      `"___ pewnie się mylisz."`,
+      `"___ chyba nie ma czasu."`
+    ],
+    4: [
+      `"___ przecież to wiadomo!"`,
+      `"___ właściwie to nie wiem."`,
+      `"___ oczywiście, że tak."`,
+      `"___ niestety, nie mogę."`,
+      `"___ na szczęście, wszystko się udało."`,
+      `"___ powinieneś to zrobić."`,
+      `"___ mógłbyś mi pomóc?"`,
+      `"___ trochę się boję."`,
+      `"___ serio? Nie wierzę!"`,
+      `"___ naprawdę się cieszę."`
+    ]
+  };
 
   let currentLevel = 1;
   let currentTopic = null;
@@ -522,12 +562,14 @@ document.addEventListener('DOMContentLoaded', () => {
     exerciseScreen.classList.remove('hidden');
     
     const vocab = vocabSets[currentLevel];
+    const templates = sentenceTemplates[currentLevel];
     exercises = [];
+    
     for (let i = 0; i < 5; i++) {
       const item = vocab[i % vocab.length];
-      const template = sentenceTemplates[i % sentenceTemplates.length];
+      const template = templates[i % templates.length];
       
-      const sentence = template.replace("___", "________");
+      // Create distractors from other words in the set
       const distractors = vocab
         .filter(v => v.word !== item.word)
         .sort(() => 0.5 - Math.random())
@@ -539,10 +581,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       exercises.push({
         type: 'missing-word',
-        sentence,
+        sentence: template.replace("___", "________"),
         options,
         correct,
-        explanation: `"${item.word}" means "${item.meaning}".`
+        explanation: `"${item.word}" means "${item.meaning}". Example: "${item.examples[0]}"` // More helpful than just "means X"
       });
     }
     
@@ -569,7 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     exerciseContainer.appendChild(title);
     
-    // Use setTimeout to ensure back-btn exists before attaching listener
     setTimeout(() => {
       const backBtn = document.getElementById('back-btn');
       if (backBtn) {
