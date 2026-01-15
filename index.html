@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PolskiComprehend – Real Polish Listening & Vocabulary</title>
+<title>PolskiComprehend – Real Polish Through Context</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* === EXACTLY THE SAME CSS AS GERMAN APP === */
@@ -459,21 +459,12 @@ font-size: 1rem;
 <header>
 <div class="logo-container">
 <h1><i class="fas fa-language"></i> PolskiComprehend</h1>
-<p class="subtitle">Master real Polish through listening and high-frequency vocabulary.</p>
+<p class="subtitle">Master real Polish through interactive exercises. Perfect for beginners and intermediate learners!</p>
 </div>
 <div class="theme-toggle" id="theme-toggle">
 <i class="fas fa-moon"></i>
 </div>
 </header>
-
-<!-- LEVEL SELECTION -->
-<div class="topic-selection-screen" id="level-selection-screen">
-<h2>Select Your Comprehension Level</h2>
-<p>Choose a vocabulary set optimized for real-world listening.</p>
-<div class="topic-options" id="level-options-container">
-<!-- Filled by JS -->
-</div>
-</div>
 
 <div class="progress-container hidden" id="progress-container">
 <div class="progress-header">
@@ -490,7 +481,7 @@ font-size: 1rem;
 </div>
 
 <div class="exercise-container hidden" id="exercise-container">
-<!-- Exercises loaded here -->
+<!-- Exercises will be loaded here -->
 </div>
 
 <div class="completion-screen hidden" id="completion-screen">
@@ -503,240 +494,364 @@ font-size: 1rem;
 </div>
 </div>
 
-<div class="topic-selection-screen hidden" id="topic-selection-screen">
-<h2>Choose a Topic to Practice</h2>
-<p>Vocabulary comes from your selected level.</p>
+<div class="topic-selection-screen" id="topic-selection-screen">
+<h2>Choose a Topic to Learn</h2>
+<p>Select any topic to start learning Polish!</p>
 <div class="topic-options" id="topic-options-container">
-<!-- Filled by JS -->
+<!-- Topics will be populated here -->
 </div>
 </div>
 
 <script>
-// === FOUR COMPREHENSION-OPTIMIZED SETS ===
-const vocabSets = {
-  1: ["tak", "nie", "proszę", "jest", "ma", "chce", "tu", "teraz", "no", "bardzo"],
-  2: ["myślę", "wiem", "rozumiem", "mówi", "ale", "bo", "więc", "już", "jeszcze", "może"],
-  3: ["pewnie", "chyba", "ponieważ", "jednak", "mimo że", "gdyby", "ważne", "trudno", "właśnie", "raczej"],
-  4: ["przecież", "właściwie", "oczywiście", "niestety", "na szczęście", "powinien", "mógłby", "trochę", "serio?", "naprawdę"]
-};
-
-// === TOPIC-SPECIFIC EXERCISES (like German app) ===
+// === ALL 10 TOPICS WITH 3 SETS OF 5 EXERCISES EACH ===
 const allTopics = {
-  travel: {
-    name: "Travel & Directions",
-    icon: "fa-plane",
-    sets: [
-      [
-        {type:"missing-word",sentence:"Gdzie jest najbliższy ___?",options:["dworzec","banan","niedźwiedź","książka"],correct:0,explanation:"'Dworzec' means train station."},
-        {type:"tts",audioText:"Przepraszam, jak dojść do muzeum? Czy to daleko stąd?",topics:["Pytanie o drogę","Kupowanie biletów","Rezerwacja hotelu","Wynajem samochodu"],correct:0,explanation:"Asking for directions to the museum."},
-        {type:"missing-word",sentence:"Potrzebuję ___ na trzy noce.",options:["pokój","cukier","gazeta","pociąg"],correct:0,explanation:"'Pokój' means room."},
-        {type:"tts",audioText:"Pociąg do Krakowa odjeżdża z peronu 3. Proszę się pospieszyć!",topics:["Ogłoszenia kolejowe","Informacje lotnicze","Rozkłady autobusów","Taksówki"],correct:0,explanation:"Train announcement."},
-        {type:"missing-word",sentence:"Ile kosztuje bilet do ___?",options:["Warszawy","psa","domu","ręka"],correct:0,explanation:"'Warszawy' is Warsaw in genitive case."}
-      ]
-    ]
-  },
-  food: {
-    name: "Food & Dining",
-    icon: "fa-utensils",
-    sets: [
-      [
-        {type:"missing-word",sentence:"Poproszę butelkę ___.",options:["wody","domu","samochodu","krzesła"],correct:0,explanation:"'Wody' means water."},
-        {type:"tts",audioText:"Zupa jest wyśmienita! Poproszę rachunek.",topics:["Skargi","Chwalenie jedzenia","Pytanie o drogę","Zamawianie ubrań"],correct:1,explanation:"Praising soup and asking for bill."},
-        {type:"missing-word",sentence:"Ile kosztuje to ___?",options:["menu","księżyc","mysz","kapelusz"],correct:0,explanation:"'Menu' is used in restaurants."},
-        {type:"tts",audioText:"Jestem wegetarianinem. Czy macie dania wegetariańskie?",topics:["Dieta","Alergie","Gotowanie w domu","Fast food"],correct:0,explanation:"Asking about vegetarian options."},
-        {type:"missing-word",sentence:"Chciałbym zamówić ___.",options:["piwo","książkę","łóżko","łódź"],correct:0,explanation:"'Piwo' means beer."}
-      ]
-    ]
-  },
-  work: {
-    name: "Work & Office",
-    icon: "fa-briefcase",
-    sets: [
-      [
-        {type:"missing-word",sentence:"Mam ważne ___ z szefem.",options:["spotkanie","słoń","stół","sok"],correct:0,explanation:"'Spotkanie' means meeting."},
-        {type:"tts",audioText:"Czy mógłbyś przesłać mi tę prezentację mailem?",topics:["Prośby","Skargi","Plotki","Rozkazy"],correct:0,explanation:"Polite request for presentation via email."},
-        {type:"missing-word",sentence:"Mój ___ jest dziś bardzo zajęty.",options:["kolega","kot","kubek","klucz"],correct:0,explanation:"'Kolega' means colleague."},
-        {type:"tts",audioText:"Firma rekrutuje nowych pracowników do działu marketingu.",topics:["Praca","Wiadomości firmowe","Plotki","Skargi"],correct:0,explanation:"Job opening in marketing."},
-        {type:"missing-word",sentence:"Muszę napisać ___.",options:["raport","rower","rękawiczki","rakietę"],correct:0,explanation:"'Raport' means report."}
-      ]
-    ]
-  },
-  daily: {
-    name: "Daily Life",
-    icon: "fa-home",
-    sets: [
-      [
-        {type:"missing-word",sentence:"___ jest teraz?",options:["Która godzina","Który pies","Które drzwi","Które auto"],correct:0,explanation:"'Która godzina' means 'What time is it?'"},
-        {type:"tts",audioText:"Nie czuję się dobrze. Mam gorączkę i ból gardła.",topics:["Objawy","Plany","Jedzenie","Pogoda"],correct:0,explanation:"Describing illness symptoms."},
-        {type:"missing-word",sentence:"Idę do ___.",options:["lekarza","lasu","lodu","listu"],correct:0,explanation:"'Lekarza' means doctor (genitive)."},
-        {type:"tts",audioText:"Sport jest dobry dla zdrowia. Codziennie biegam.",topics:["Ćwiczenia","Dieta","Procedury medyczne","Sen"],correct:0,explanation:"Talking about exercise benefits."},
-        {type:"missing-word",sentence:"Potrzebuję ___ tabletek.",options:["tej","ten","to","te"],correct:0,explanation:"'Tej' is feminine singular demonstrative."}
-      ]
-    ]
-  },
-  shopping: {
-    name: "Shopping",
-    icon: "fa-shopping-bag",
-    sets: [
-      [
-        {type:"missing-word",sentence:"Ile to kosztuje ___?",options:["kurtka","rok","chłopak","jogurt"],correct:0,explanation:"'Kurtka' means jacket."},
-        {type:"tts",audioText:"Czy macie te buty w rozmiarze 40?",topics:["Pytanie o rozmiar","Zwrot towaru","Cena","Godziny otwarcia"],correct:0,explanation:"Asking for shoe size."},
-        {type:"missing-word",sentence:"Chciałbym ___ tę spodnie.",options:["zamienić","uczyć","rozważać","ćwiczyć"],correct:0,explanation:"'Zamienić' means to exchange."},
-        {type:"tts",audioText:"Kasa jest po lewej stronie sklepu.",topics:["Szukanie kasy","Zniżki","Dostępność produktów","Układ sklepu"],correct:0,explanation:"Where the cashier is."},
-        {type:"missing-word",sentence:"Czy jest tu ___?",options:["zniżka","deszcz","plecak","restauracja"],correct:0,explanation:"'Zniżka' means discount."}
-      ]
-    ]
-  },
-  family: {
-    name: "Family & Friends",
-    icon: "fa-users",
-    sets: [
-      [
-        {type:"missing-word",sentence:"To moja ___.",options:["siostra","szkoła","but","wąż"],correct:0,explanation:"'Siostra' means sister."},
-        {type:"tts",audioText:"Mój tata pracuje jako lekarz, a mama jest nauczycielką.",topics:["Zawody","Hobby","Codzienne rutyny","Członkowie rodziny"],correct:3,explanation:"Talking about parents."},
-        {type:"missing-word",sentence:"Masz ___?",options:["rodzeństwo","prezenty","gitara","ogród"],correct:0,explanation:"'Rodzeństwo' means siblings."},
-        {type:"tts",audioText:"Moje dziadkowie mieszkają w małej wsi na Mazurach.",topics:["Członkowie rodziny","Plany podróży","Mieszkanie","Pogoda"],correct:0,explanation:"Talking about grandparents."},
-        {type:"missing-word",sentence:"Jutro świętujemy urodziny ___ .",options:["babci","owoc","piec","ucho"],correct:0,explanation:"'Babci' means grandmother's."}
-      ]
-    ]
-  },
-  hobbies: {
-    name: "Hobbies & Leisure",
-    icon: "fa-film",
-    sets: [
-      [
-        {type:"missing-word",sentence:"Gram chętnie na ___.",options:["fortepianie","ser","skrzynia","kulka"],correct:0,explanation:"'Fortepianie' means piano (locative)."},
-        {type:"tts",audioText:"W sobotę idę do kina, żeby obejrzeć nowy film Marvela.",topics:["Kino","Czytanie książek","Sport","Gotowanie"],correct:0,explanation:"Going to the movies."},
-        {type:"missing-word",sentence:"Moim hobby jest ___.",options:["fotografia","okno","ryba","pióro"],correct:0,explanation:"'Fotografia' means photography."},
-        {type:"tts",audioText:"Codzien wieczorem czytam książkę przed snem.",topics:["Czytanie","Pisanie","Malarstwo","Taniec"],correct:0,explanation:"Reading before bed."},
-        {type:"missing-word",sentence:"W weekend często chodzę ___.",options:["na wycieczki","czekać","prać","życzyć"],correct:0,explanation:"'Na wycieczki' means hiking/trips."}
-      ]
-    ]
-  },
-  health: {
-    name: "Health & Body",
-    icon: "fa-heartbeat",
-    sets: [
-      [
-        {type:"missing-word",sentence:"Mój ___ boli.",options:["głowa","gruszka","grzebień","grill"],correct:0,explanation:"'Głowa' means head."},
-        {type:"tts",audioText:"Mam silny ból brzucha i mdłości.",topics:["Objawy","Plany","Jedzenie","Pogoda"],correct:0,explanation:"Describing stomach pain."},
-        {type:"missing-word",sentence:"Weź ___ tabletki trzy razy dziennie.",options:["te","ten","to","ta"],correct:0,explanation:"'Te' is plural demonstrative for 'tabletki'."},
-        {type:"tts",audioText:"Powinieneś pić więcej wody i mniej kawy.",topics:["Wskazówki","Sen","Ćwiczenia","Leki"],correct:0,explanation:"Hydration advice."},
-        {type:"missing-word",sentence:"Idę na ___ do dentysty.",options:["wizytę","wózek","wędkę","wiatr"],correct:0,explanation:"'Wizytę' means appointment."}
-      ]
-    ]
-  },
-  learning: {
-    name: "Learning Polish",
-    icon: "fa-book",
-    sets: [
-      [
-        {type:"missing-word",sentence:"Nie ___ tego słowa.",options:["rozumiem","rząd","rządca","rządowy"],correct:0,explanation:"'Rozumiem' means I understand."},
-        {type:"tts",audioText:"Jak się mówi 'apple' po polsku?",topics:["Słownictwo","Gramatyka","Wymowa","Kultura"],correct:0,explanation:"Asking for translation."},
-        {type:"missing-word",sentence:"Czy możesz to ___?",options:["powtórzyć","pokój","półka","północ"],correct:0,explanation:"'Powtórzyć' means to repeat."},
-        {type:"tts",audioText:"Dziękuję za pomoc! Bez ciebie nie dałbym rady.",topics:["Podziękowania","Przepraszanie","Prośby","Pozdrowienia"],correct:0,explanation:"Expressing gratitude."},
-        {type:"missing-word",sentence:"To jest bardzo ___!",options:["trudne","trawa","traktor","truskawka"],correct:0,explanation:"'Trudne' means difficult."}
-      ]
-    ]
-  },
-  media: {
-    name: "News & Media",
-    icon: "fa-newspaper",
-    sets: [
-      [
-        {type:"missing-word",sentence:"___ powiedział premier.",options:["powiedział","pokój","półka","północ"],correct:0,explanation:"'Powiedział' means he said."},
-        {type:"tts",audioText:"Niestety, wczoraj doszło do powodzi w południowej Polsce.",topics:["Katastrofy","Polityka","Sport","Kultura"],correct:0,explanation:"Reporting a flood disaster."},
-        {type:"missing-word",sentence:"Na szczęście nikt się nie ___.",options:["poranił","port","portal","portfel"],correct:0,explanation:"'Poranił' means got injured."},
-        {type:"tts",audioText:"Według ankiety, 70% Polaków popiera nową reformę.",topics:["Statystyki","Opinie","Prognozy","Historia"],correct:0,explanation:"Presenting survey results."},
-        {type:"missing-word",sentence:"To bardzo ___ informacja.",options:["ważna","wąż","wózek","wędkarz"],correct:0,explanation:"'Ważna' means important."}
-      ]
-    ]
-  }
+food: {
+name:"Food & Dining",
+icon:"fa-utensils",
+sets:[
+[
+{type:"missing-word",sentence:"Poproszę butelkę ___.",options:["wody","domu","samochodu","krzesła"],correct:0,explanation:"'Wody' means water."},
+{type:"tts",audioText:"Zupa jest wyśmienita! Poproszę rachunek.",topics:["Complaining","Praising food","Asking for directions","Ordering clothes"],correct:1,explanation:"The speaker is praising the soup and asking for the bill."},
+{type:"missing-word",sentence:"Ile kosztuje to ___?",options:["menu","księżyc","mysz","kapelusz"],correct:0,explanation:"'Menu' is used in restaurants."},
+{type:"tts",audioText:"Jestem wegetarianinem. Czy macie dania wegetariańskie?",topics:["Dietary needs","Allergies","Cooking at home","Fast food"],correct:0,explanation:"The speaker is asking about vegetarian options."},
+{type:"missing-word",sentence:"Chciałbym zamówić ___.",options:["piwo","książkę","łóżko","łódź"],correct:0,explanation:"'Piwo' means beer."}
+],
+[
+{type:"missing-word",sentence:"Kan I see the ___ please?",options:["Speisekarte","Schere","Schlange","Schüssel"],correct:0,explanation:"'Speisekarte' means menu."},
+{type:"tts",audioText:"Ich hätte gerne das Rindersteak medium gegart, bitte.",topics:["Ordering meat","Asking for drinks","Requesting dessert","Complaining about service"],correct:0,explanation:"The speaker is ordering a steak cooked medium."},
+{type:"missing-word",sentence:"Das Essen war sehr ___.",options:["lecker","langsam","laut","leer"],correct:0,explanation:"'Lecker' means delicious."},
+{type:"tts",audioText:"Haben Sie heute Mittag ein Mittagsmenü?",topics:["Asking about lunch specials","Checking opening hours","Requesting takeout","Asking for reservations"],correct:0,explanation:"The speaker is asking about lunch specials."},
+{type:"missing-word",sentence:"Ich bin ___ und esse kein Fleisch.",options:["vegetarisch","verrückt","verloren","verärgert"],correct:0,explanation:"'Vegetarisch' means vegetarian."}
+],
+[
+{type:"missing-word",sentence:"Noch ein ___ Kaffee, bitte.",options:["Tasse","Tisch","Tuch","Topf"],correct:0,explanation:"'Tasse' means cup."},
+{type:"tts",audioText:"Die Vorspeise war fantastisch! Ich nehme das gleiche Hauptgericht wie gestern.",topics:["Praising food","Complaining","Asking for recommendations","Requesting the bill"],correct:0,explanation:"The speaker is praising the appetizer and ordering the same main course."},
+{type:"missing-word",sentence:"Die Rechnung, ___!",options:["bitte","besser","billig","bunt"],correct:0,explanation:"'Bitte' means please."},
+{type:"tts",audioText:"Entschuldigung, aber in meiner Suppe schwimmt eine Fliege!",topics:["Complaining about food","Ordering dessert","Asking for water","Requesting a table"],correct:0,explanation:"The speaker is complaining about finding a fly in their soup."},
+{type:"missing-word",sentence:"Ich möchte ein Stück ___ bestellen.",options:["Torte","Tasche","Tür","Treppe"],correct:0,explanation:"'Torte' means cake."}
+]
+]
+},
+travel: {
+name:"Travel & Directions",
+icon:"fa-plane",
+sets:[
+[
+{type:"missing-word",sentence:"Gdzie jest najbliższy ___?",options:["dworzec","banan","niedźwiedź","książka"],correct:0,explanation:"'Dworzec' means train station."},
+{type:"tts",audioText:"Przepraszam, jak dojść do muzeum? Czy to daleko stąd?",topics:["Asking for directions","Buying tickets","Checking into a hotel","Renting a car"],correct:0,explanation:"The speaker is asking how to get to the museum."},
+{type:"missing-word",sentence:"Potrzebuję ___ na trzy noce.",options:["pokój","cukier","gazeta","pociąg"],correct:0,explanation:"'Pokój' means room."},
+{type:"tts",audioText:"Pociąg do Krakowa odjeżdża z peronu 3. Proszę się pospieszyć!",topics:["Train announcements","Flight information","Bus schedules","Taxi services"],correct:0,explanation:"This is a train announcement about departure from platform 3."},
+{type:"missing-word",sentence:"Ile kosztuje bilet do ___?",options:["Warszawy","psa","domu","ręka"],correct:0,explanation:"'Warszawy' is Warsaw in genitive case."}
+],
+[
+{type:"missing-word",sentence:"Können Sie mir auf der Karte ___ zeigen?",options:["zeigen","ziehen","zählen","zahlen"],correct:0,explanation:"'Zeigen' means to show."},
+{type:"tts",audioText:"Ich möchte ein einfaches Zimmer mit Dusche und Frühstück buchen.",topics:["Booking a hotel room","Renting a car","Buying souvenirs","Asking for tourist info"],correct:0,explanation:"The speaker is booking a simple room with shower and breakfast."},
+{type:"missing-word",sentence:"Der Flug ___ pünktlich.",options:["startet","steht","steigt","steuert"],correct:0,explanation:"'Startet' means departs (for flights)."},
+{type:"tts",audioText:"Gibt es hier in der Nähe eine Touristeninformation?",topics:["Asking for tourist info","Looking for restaurants","Finding public transport","Locating pharmacies"],correct:0,explanation:"The speaker is asking for a tourist information office."},
+{type:"missing-word",sentence:"Ich habe meinen ___ verloren.",options:["Reisepass","Regenschirm","Rucksack","Ring"],correct:0,explanation:"'Reisepass' means passport."}
+],
+[
+{type:"missing-word",sentence:"Fahren Sie geradeaus bis zur ___ Ampel.",options:["nächsten","neuen","netten","nassen"],correct:0,explanation:"'Nächsten' means next."},
+{type:"tts",audioText:"Entschuldigung, wo kann ich mein Gepäck aufbewahren?",topics:["Asking about luggage storage","Finding restrooms","Locating currency exchange","Requesting wheelchair assistance"],correct:0,explanation:"The speaker is asking where to store their luggage."},
+{type:"missing-word",sentence:"Ich möchte ein ___ zur Altstadt kaufen.",options:["Ticket","Tisch","Tuch","Topf"],correct:0,explanation:"'Ticket' is commonly used in German for public transport."},
+{type:"tts",audioText:"Der Bus fährt alle 15 Minuten vom Hauptbahnhof ab.",topics:["Bus schedules","Train delays","Flight cancellations","Taxi availability"],correct:0,explanation:"The sentence describes bus frequency from the main station."},
+{type:"missing-word",sentence:"Wie komme ich zum ___ Flughafen?",options:["nächsten","neuen","netten","nassen"],correct:0,explanation:"'Nächsten' means nearest."}
+]
+]
+},
+family: {
+name:"Family & Friends",
+icon:"fa-users",
+sets:[
+[
+{type:"missing-word",sentence:"To moja ___.",options:["siostra","szkoła","but","wąż"],correct:0,explanation:"'Siostra' means sister."},
+{type:"tts",audioText:"Mój tata pracuje jako lekarz, a mama jest nauczycielką.",topics:["Professions","Hobbies","Daily routine","Family members"],correct:3,explanation:"The speaker is talking about their parents (family members)."},
+{type:"missing-word",sentence:"Masz ___?",options:["rodzeństwo","prezenty","gitara","ogród"],correct:0,explanation:"'Rodzeństwo' means siblings."},
+{type:"tts",audioText:"Moje dziadkowie mieszkają w małej wsi na Mazurach.",topics:["Family members","Travel plans","Housing","Weather"],correct:0,explanation:"The speaker is talking about their grandparents (family members)."},
+{type:"missing-word",sentence:"Jutro świętujemy urodziny ___ .",options:["babci","owoc","piec","ucho"],correct:0,explanation:"'Babci' means grandmother's."}
+],
+[
+{type:"missing-word",sentence:"Mein ___ heißt Lukas.",options:["Bruder","Brief","Brot","Buch"],correct:0,explanation:"'Bruder' means brother."},
+{type:"tts",audioText:"Meine Cousine kommt nächsten Monat aus Österreich zu Besuch.",topics:["Family visits","Travel plans","Work meetings","School events"],correct:0,explanation:"The speaker is talking about their cousin visiting."},
+{type:"missing-word",sentence:"Meine Eltern wohnen in ___ Haus.",options:["einem","einen","einer","eines"],correct:0,explanation:"'Einem' is the dative case for neuter nouns like 'Haus'."},
+{type:"tts",audioText:"Ich habe zwei Töchter und einen Sohn.",topics:["Family composition","Work colleagues","Pet ownership","Friend groups"],correct:0,explanation:"The speaker is describing their children."},
+{type:"missing-word",sentence:"Mein ___ ist verheiratet.",options:["Onkel","Ofen","Ohr","Ort"],correct:0,explanation:"'Onkel' means uncle."}
+],
+[
+{type:"missing-word",sentence:"Meine ___ arbeitet in einer Bank.",options:["Tante","Tasche","Tür","Treppe"],correct:0,explanation:"'Tante' means aunt."},
+{type:"tts",audioText:"Wir treffen uns jeden Sonntag mit der ganzen Familie zum Abendessen.",topics:["Family traditions","Work schedules","Hobby clubs","School activities"],correct:0,explanation:"The speaker describes a weekly family dinner tradition."},
+{type:"missing-word",sentence:"Mein ___ ist fünf Jahre alt.",options:["Neffe","Nacht","Name","Norden"],correct:0,explanation:"'Neffe' means nephew."},
+{type:"tts",audioText:"Meine Schwiegereltern kommen morgen zu Besuch.",topics:["In-law visits","Friend gatherings","Business meetings","Doctor appointments"],correct:0,explanation:"The speaker mentions their in-laws visiting."},
+{type:"missing-word",sentence:"Ich habe keine ___ mehr.",options:["Großeltern","Geschenke","Gitarre","Garten"],correct:0,explanation:"'Großeltern' means grandparents."}
+]
+]
+},
+shopping: {
+name:"Shopping",
+icon:"fa-shopping-bag",
+sets:[
+[
+{type:"missing-word",sentence:"Ile kosztuje ta ___?",options:["kurtka","rok","chłopak","jogurt"],correct:0,explanation:"'Kurtka' means jacket."},
+{type:"tts",audioText:"Czy macie te buty w rozmiarze 40?",topics:["Asking for size","Returning items","Asking for price","Opening hours"],correct:0,explanation:"The speaker is asking if shoes are available in size 40."},
+{type:"missing-word",sentence:"Chciałbym ___ tę spodnie.",options:["zamienić","uczyć","rozważać","ćwiczyć"],correct:0,explanation:"'Zamienić' means to exchange (return an item)."},
+{type:"tts",audioText:"Kasa jest po lewej stronie sklepu.",topics:["Finding the cashier","Asking for discounts","Product availability","Store layout"],correct:0,explanation:"The speaker is being told where the cashier is located."},
+{type:"missing-word",sentence:"Czy jest tu ___?",options:["zniżka","deszcz","plecak","restauracja"],correct:0,explanation:"'Zniżka' means discount."}
+],
+[
+{type:"missing-word",sentence:"Kann ich mit ___ bezahlen?",options:["Karte","Käse","Kiste","Kugel"],correct:0,explanation:"'Karte' means card (credit/debit)."},
+{type:"tts",audioText:"Entschuldigung, wo finde ich die Damenabteilung?",topics:["Finding departments","Asking for restrooms","Locating exits","Requesting assistance"],correct:0,explanation:"The speaker is asking for the women's department."},
+{type:"missing-word",sentence:"Das ist zu ___.",options:["teuer","toll","traurig","treu"],correct:0,explanation:"'Teuer' means expensive."},
+{type:"tts",audioText:"Haben Sie dieses Kleid auch in Blau?",topics:["Asking for colors","Checking sizes","Requesting discounts","Inquiring about materials"],correct:0,explanation:"The speaker is asking if the dress comes in blue."},
+{type:"missing-word",sentence:"Ich suche ein Geschenk für meine ___.",options:["Mutter","Mond","Maus","Mütze"],correct:0,explanation:"'Mutter' means mother."}
+],
+[
+{type:"missing-word",sentence:"Wo ist die ___?",options:["Umkleidekabine","Universität","Uhr","Übung"],correct:0,explanation:"'Umkleidekabine' means fitting room."},
+{type:"tts",audioText:"Können Sie mir helfen? Ich suche nach einem schwarzen Ledermantel.",topics:["Asking for assistance","Complaining about service","Returning items","Checking prices"],correct:0,explanation:"The speaker is asking for help finding a black leather coat."},
+{type:"missing-word",sentence:"Ich nehme die ___ Farbe.",options:["andere","alte","arme","alle"],correct:0,explanation:"'Andere' means other."},
+{type:"tts",audioText:"Die Öffnungszeiten sind von 9 bis 20 Uhr.",topics:["Store hours","Sale periods","Delivery times","Return policies"],correct:0,explanation:"The sentence states store opening hours."},
+{type:"missing-word",sentence:"Kann ich eine ___ bekommen?",options:["Quittung","Qualle","Quelle","Quark"],correct:0,explanation:"'Quittung' means receipt."}
+]
+]
+},
+hobbies: {
+name:"Hobbies & Leisure",
+icon:"fa-film",
+sets:[
+[
+{type:"missing-word",sentence:"Gram chętnie na ___.",options:["fortepianie","ser","skrzynia","kulka"],correct:0,explanation:"'Fortepianie' means piano (locative)."},
+{type:"tts",audioText:"W sobotę idę do kina, żeby obejrzeć nowy film Marvela.",topics:["Going to the movies","Reading books","Playing sports","Cooking"],correct:0,explanation:"The speaker is going to the cinema to watch a movie."},
+{type:"missing-word",sentence:"Moim hobby jest ___.",options:["fotografia","okno","ryba","pióro"],correct:0,explanation:"'Fotografia' means photography."},
+{type:"tts",audioText:"Codzien wieczorem czytam książkę przed snem.",topics:["Reading","Writing","Painting","Taniec"],correct:0,explanation:"The speaker reads a book every evening before bed."},
+{type:"missing-word",sentence:"W weekend często chodzę ___.",options:["na wycieczki","czekać","prać","życzyć"],correct:0,explanation:"'Na wycieczki' means hiking/trips."}
+],
+[
+{type:"missing-word",sentence:"Ich spiele Fußball im ___.",options:["Verein","Verkehr","Verstand","Vertrag"],correct:0,explanation:"'Verein' means club/team."},
+{type:"tts",audioText:"Meine Lieblingsband spielt heute Abend im Park.",topics:["Attending concerts","Watching sports","Visiting museums","Going to restaurants"],correct:0,explanation:"The speaker mentions their favorite band playing in the park."},
+{type:"missing-word",sentence:"Ich gehe gern ___.",options:["schwimmen","schreiben","schließen","schneiden"],correct:0,explanation:"'Schwimmen' means swimming."},
+{type:"tts",audioText:"Am Sonntag backe ich immer Kuchen für meine Familie.",topics:["Baking","Gardening","Painting","Playing video games"],correct:0,explanation:"The speaker bakes cake every Sunday for their family."},
+{type:"missing-word",sentence:"Ich sammle alte ___.",options:["Münzen","Mützen","Mäuse","Möbel"],correct:0,explanation:"'Münzen' means coins."}
+],
+[
+{type:"missing-word",sentence:"Ich fotografiere gern ___.",options:["Landschaften","Löffel","Lokale","Lieder"],correct:0,explanation:"'Landschaften' means landscapes."},
+{type:"tts",audioText:"Jeden Donnerstag gehe ich zum Tanzen in die Stadthalle.",topics:["Dancing","Swimming","Reading","Cooking"],correct:0,explanation:"The speaker goes dancing every Thursday."},
+{type:"missing-word",sentence:"Ich spiele ___ Gitarre.",options:["die","der","das","den"],correct:0,explanation:"'Die' is the correct article for 'Gitarre'."},
+{type:"tts",audioText:"In meiner Freizeit male ich gerne Aquarellbilder.",topics:["Painting","Singing","Running","Shopping"],correct:0,explanation:"The speaker paints watercolors in their free time."},
+{type:"missing-word",sentence:"Ich höre gern ___ Musik.",options:["klassische","kalte","kaputte","kurze"],correct:0,explanation:"'Klassische' means classical."}
+]
+]
+},
+animals: {
+name:"Animals & Nature",
+icon:"fa-paw",
+sets:[
+[
+{type:"missing-word",sentence:"Der ___ bellt laut.",options:["Hund","Hut","Haus","Hand"],correct:0,explanation:"'Hund' means dog."},
+{type:"tts",audioText:"Im Wald gibt es viele Tiere wie Rehe, Füchse und Eichhörnchen.",topics:["City life","Forest animals","Ocean creatures","Farm animals"],correct:1,explanation:"The sentence describes forest animals."},
+{type:"missing-word",sentence:"Die ___ fliegt hoch am Himmel.",options:["Vogel","Vase","Vogt","Voll"],correct:0,explanation:"'Vogel' means bird."},
+{type:"tts",audioText:"Im Frühling blühen die Blumen und die Bäume bekommen neue Blätter.",topics:["Seasons","Weather","Gardening","Nature cycles"],correct:3,explanation:"The sentence describes natural cycles in spring."},
+{type:"missing-word",sentence:"Ich sehe einen ___ im Zoo.",options:["Löwe","Löffel","Lokal","Lied"],correct:0,explanation:"'Löwe' means lion."}
+],
+[
+{type:"missing-word",sentence:"Die ___ macht Muh.",options:["Kuh","Katze","Kiste","Kugel"],correct:0,explanation:"'Kuh' means cow."},
+{type:"tts",audioText:"Am Strand kann man oft Möwen und Krabben sehen.",topics:["Beach wildlife","Forest animals","Mountain creatures","Desert species"],correct:0,explanation:"The sentence describes animals found at the beach."},
+{type:"missing-word",sentence:"Der ___ klettert auf Bäume.",options:["Affe","Apfel","Arm","Auge"],correct:0,explanation:"'Affe' means monkey."},
+{type:"tts",audioText:"Im Herbst fallen die Blätter von den Bäumen und die Tage werden kürzer.",topics:["Autumn changes","Winter preparations","Spring renewal","Summer activities"],correct:0,explanation:"The sentence describes autumn changes."},
+{type:"missing-word",sentence:"Die ___ summt um die Blumen.",options:["Biene","Banane","Bär","Buch"],correct:0,explanation:"'Biene' means bee."}
+],
+[
+{type:"missing-word",sentence:"Der ___ brüllt laut.",options:["Tiger","Tisch","Tuch","Topf"],correct:0,explanation:"'Tiger' means tiger."},
+{type:"tts",audioText:"Im Winter ziehen viele Vögel in wärmere Länder.",topics:["Bird migration","Hibernation","Plant growth","Ocean currents"],correct:0,explanation:"The sentence describes bird migration in winter."},
+{type:"missing-word",sentence:"Die ___ hat lange Ohren.",options:["Hasen","Hose","Haus","Hand"],correct:0,explanation:"'Hasen' means rabbits."},
+{type:"tts",audioText:"Im Frühling schlüpfen die Küken aus ihren Eiern.",topics:["Spring hatching","Summer breeding","Autumn harvesting","Winter sleeping"],correct:0,explanation:"The sentence describes chicks hatching in spring."},
+{type:"missing-word",sentence:"Der ___ lebt im Dschungel.",options:["Papagei","Papier","Pferd","Pflanze"],correct:0,explanation:"'Papagei' means parrot."}
+]
+]
+},
+work: {
+name:"Work & Office",
+icon:"fa-briefcase",
+sets:[
+[
+{type:"missing-word",sentence:"Mam ważne ___ z szefem.",options:["spotkanie","słoń","stół","sok"],correct:0,explanation:"'Spotkanie' means meeting."},
+{type:"tts",audioText:"Czy mógłbyś przesłać mi tę prezentację mailem?",topics:["Prośby","Skargi","Plotki","Rozkazy"],correct:0,explanation:"Polite request for presentation via email."},
+{type:"missing-word",sentence:"Mój ___ jest dziś bardzo zajęty.",options:["kolega","kot","kubek","klucz"],correct:0,explanation:"'Kolega' means colleague."},
+{type:"tts",audioText:"Firma rekrutuje nowych pracowników do działu marketingu.",topics:["Praca","Wiadomości firmowe","Plotki","Skargi"],correct:0,explanation:"Job opening in marketing."},
+{type:"missing-word",sentence:"Muszę napisać ___.",options:["raport","rower","rękawiczki","rakietę"],correct:0,explanation:"'Raport' means report."}
+],
+[
+{type:"missing-word",sentence:"Ich arbeite als ___.",options:["Ingenieur","Igel","Insel","Idee"],correct:0,explanation:"'Ingenieur' means engineer."},
+{type:"tts",audioText:"Könnten Sie das bitte wiederholen? Ich habe Sie nicht verstanden.",topics:["Asking for clarification","Making complaints","Giving instructions","Sharing personal news"],correct:0,explanation:"The speaker is asking for repetition due to misunderstanding."},
+{type:"missing-word",sentence:"Die ___ beginnt um 9 Uhr.",options:["Arbeit","Arzt","Arm","Auge"],correct:0,explanation:"'Arbeit' means work."},
+{type:"tts",audioText:"Ich muss Überstunden machen, weil das Projekt morgen fertig sein muss.",topics:["Working overtime","Taking vacation","Quitting job","Asking for raise"],correct:0,explanation:"The speaker mentions working overtime to meet a deadline."},
+{type:"missing-word",sentence:"Ich brauche einen neuen ___.",options:["Computer","Cousin","Creme","Cello"],correct:0,explanation:"'Computer' is the same in German."}
+],
+[
+{type:"missing-word",sentence:"Mein ___ ist krank.",options:["Chef","Chor","Chips","Chemie"],correct:0,explanation:"'Chef' means boss."},
+{type:"tts",audioText:"Könnten Sie mir bitte helfen? Ich verstehe diese Excel-Tabelle nicht.",topics:["Asking for help","Complaining about software","Requesting training","Reporting bugs"],correct:0,explanation:"The speaker is asking for help with an Excel spreadsheet."},
+{type:"missing-word",sentence:"Ich habe heute ___ frei.",options:["Urlaub","Uhr","Universität","Übung"],correct:0,explanation:"'Urlaub' means vacation."},
+{type:"tts",audioText:"Die Konferenz findet nächste Woche im Hauptquartier statt.",topics:["Conference announcements","Team meetings","Client visits","Training sessions"],correct:0,explanation:"The sentence announces a conference at headquarters."},
+{type:"missing-word",sentence:"Ich muss eine ___ senden.",options:["E-Mail","Esel","Erdbeere","Ecke"],correct:0,explanation:"'E-Mail' is commonly used in German."}
+]
+]
+},
+health: {
+name:"Health & Body",
+icon:"fa-heartbeat",
+sets:[
+[
+{type:"missing-word",sentence:"Mój ___ boli.",options:["głowa","gruszka","grzebień","grill"],correct:0,explanation:"'Głowa' means head."},
+{type:"tts",audioText:"Mam silny ból brzucha i mdłości.",topics:["Objawy","Plany","Jedzenie","Pogoda"],correct:0,explanation:"Describing stomach pain."},
+{type:"missing-word",sentence:"Weź ___ tabletki trzy razy dziennie.",options:["te","ten","to","ta"],correct:0,explanation:"'Te' is plural demonstrative for 'tabletki'."},
+{type:"tts",audioText:"Powinieneś pić więcej wody i mniej kawy.",topics:["Wskazówki","Sen","Ćwiczenia","Leki"],correct:0,explanation:"Hydration advice."},
+{type:"missing-word",sentence:"Idę na ___ do dentysty.",options:["wizytę","wózek","wędkę","wiatr"],correct:0,explanation:"'Wizytę' means appointment."}
+],
+[
+{type:"missing-word",sentence:"Mam starą ___ Schmerzen.",options:["Bauch","Buch","Bett","Boot"],correct:0,explanation:"'Bauch' means stomach."},
+{type:"tts",audioText:"Ich brauche ein Rezept für Antibiotika.",topics:["Requesting medication","Asking for test results","Scheduling appointments","Discussing diet"],correct:0,explanation:"The speaker needs a prescription for antibiotics."},
+{type:"missing-word",sentence:"Mein ___ pocht.",options:["Herz","Hemd","Hund","Haus"],correct:0,explanation:"'Herz' means heart."},
+{type:"tts",audioText:"Ich sollte mehr Wasser trinken und weniger Kaffee.",topics:["Hydration advice","Sleep recommendations","Exercise routines","Medication schedules"],correct:0,explanation:"The speaker discusses drinking more water and less coffee."},
+{type:"missing-word",sentence:"Ich habe einen ___ Termin.",options:["Arzt","Auto","Apfel","Auge"],correct:0,explanation:"'Arzttermin' means doctor's appointment."}
+],
+[
+{type:"missing-word",sentence:"Mein ___ juckt.",options:["Arm","Apfel","Auto","Auge"],correct:0,explanation:"'Arm' means arm."},
+{type:"tts",audioText:"Ich muss meine Medikamente um 8 Uhr morgens nehmen.",topics:["Medication schedule","Diet plan","Exercise routine","Sleep schedule"],correct:0,explanation:"The speaker mentions taking medication at 8 AM."},
+{type:"missing-word",sentence:"Ich fühle mich ___.",options:["müde","mild","mager","munter"],correct:0,explanation:"'Müde' means tired."},
+{type:"tts",audioText:"Ich habe seit zwei Tagen Durchfall und Erbrechen.",topics:["Describing severe symptoms","Reporting minor aches","Discussing allergies","Talking about sleep"],correct:0,explanation:"The speaker describes severe gastrointestinal symptoms."},
+{type:"missing-word",sentence:"Ich brauche ___ Ruhe.",options:["mehr","mein","meist","mitten"],correct:0,explanation:"'Mehr' means more."}
+]
+]
+},
+school: {
+name:"School & Education",
+icon:"fa-graduation-cap",
+sets:[
+[
+{type:"missing-word",sentence:"Die ___ beginnt um 8 Uhr.",options:["Schule","Schuh","Schlange","Schüssel"],correct:0,explanation:"'Schule' means school."},
+{type:"tts",audioText:"Für die Prüfung müssen wir Kapitel 1 bis 5 lernen.",topics:["Exam preparation","Homework complaints","Teacher praise","Classroom rules"],correct:0,explanation:"The speaker is talking about exam preparation."},
+{type:"missing-word",sentence:"Ich habe eine gute ___ in Mathe bekommen.",options:["Note","Nase","Nacht","Nummer"],correct:0,explanation:"'Note' means grade/mark."},
+{type:"tts",audioText:"In der Pause spielen wir Fußball auf dem Schulhof.",topics:["Recess activities","Classroom lessons","Homework","After-school clubs"],correct:0,explanation:"The sentence describes recess activities."},
+{type:"missing-word",sentence:"Mein ___ hilft mir bei den Hausaufgaben.",options:["Lehrer","Löffel","Lokal","Lied"],correct:0,explanation:"'Lehrer' means teacher."}
+],
+[
+{type:"missing-word",sentence:"Ich gehe in die ___ Klasse.",options:["achte","alte","arme","alle"],correct:0,explanation:"'Achte' means eighth (as in 8th grade)."},
+{type:"tts",audioText:"Die Hausaufgaben für morgen sind auf Seite 45, Aufgabe 3.",topics:["Homework assignments","Test announcements","Field trip details","Club meeting times"],correct:0,explanation:"The speaker gives homework instructions."},
+{type:"missing-word",sentence:"Wir haben heute ___ Unterricht.",options:["Musik","Mutter","Mund","Maus"],correct:0,explanation:"'Musik' means music."},
+{type:"tts",audioText:"Die Klassenarbeit in Geschichte war sehr schwer.",topics:["Test difficulty","Homework load","Teacher behavior","Classroom environment"],correct:0,explanation:"The speaker comments on a difficult history test."},
+{type:"missing-word",sentence:"Ich brauche ein neues ___ Heft.",options:["Mathe","Mutter","Mund","Maus"],correct:0,explanation:"'Mathe' means math."}
+],
+[
+{type:"missing-word",sentence:"Die ___ klingelt um 12 Uhr.",options:["Pause","Puppe","Pfanne","Pflanze"],correct:0,explanation:"'Pause' means break/recess."},
+{type:"tts",audioText:"Unser Physiklehrer erklärt die Versuche immer sehr anschaulich.",topics:["Teacher praise","Subject complaints","Homework issues","Classroom rules"],correct:0,explanation:"The speaker praises their physics teacher's explanations."},
+{type:"missing-word",sentence:"Ich lerne für die ___ Prüfung.",options:["Abschluss","Apfel","Auto","Auge"],correct:0,explanation:"'Abschlussprüfung' means final exam."},
+{type:"tts",audioText:"In der Bibliothek muss man leise sein.",topics:["Library rules","Classroom behavior","Cafeteria etiquette","Playground safety"],correct:0,explanation:"The sentence states a library rule about being quiet."},
+{type:"missing-word",sentence:"Mein ___ Fach ist Biologie.",options:["Lieblings","Langes","Lautes","Leeres"],correct:0,explanation:"'Lieblingsfach' means favorite subject."}
+]
+]
+},
+cities: {
+name:"Cities & Places",
+icon:"fa-city",
+sets:[
+[
+{type:"missing-word",sentence:"Berlin jest ___ Niemiec.",options:["stolicą","stacją","stadionem","sklepem"],correct:0,explanation:"'Stolicą' means capital city."},
+{type:"tts",audioText:"In München gibt es das berühmte Oktoberfest und viele schöne Parks.",topics:["City attractions","Country comparisons","Rural life","Transport systems"],correct:0,explanation:"The sentence describes attractions in Munich."},
+{type:"missing-word",sentence:"Das ___ ist sehr alt und historisch.",options:["Schloss","Schuh","Schlange","Schüssel"],correct:0,explanation:"'Schloss' means castle."},
+{type:"tts",audioText:"Die Altstadt von Heidelberg ist bekannt für ihre romantische Atmosphäre.",topics:["Historic districts","Modern architecture","Industrial areas","Suburban life"],correct:0,explanation:"The sentence describes Heidelberg's historic old town."},
+{type:"missing-word",sentence:"Ich besuche das ___ am Wochenende.",options:["Museum","Mond","Maus","Mütze"],correct:0,explanation:"'Museum' is the same in German."}
+],
+[
+{type:"missing-word",sentence:"Hamburg hat einen großen ___ Hafen.",options:["Seehafen","Schuh","Schlange","Schüssel"],correct:0,explanation:"'Seehafen' means seaport."},
+{type:"tts",audioText:"In Frankfurt gibt es viele Wolkenkratzer und die berühmte Skyline.",topics:["City skylines","Historical sites","Natural landscapes","Rural villages"],correct:0,explanation:"The sentence describes Frankfurt's modern skyline."},
+{type:"missing-word",sentence:"Köln ist berühmt für seinen ___ Dom.",options:["Kölner","Kalter","Kleiner","Krummer"],correct:0,explanation:"'Kölner Dom' is the famous Cologne Cathedral."},
+{type:"tts",audioText:"Dresden wird oft als 'Elbflorenz' bezeichnet wegen ihrer schönen Architektur.",topics:["Architectural nicknames","Industrial cities","Mountain towns","Coastal resorts"],correct:0,explanation:"The sentence explains Dresden's nickname 'Elbflorenz'."},
+{type:"missing-word",sentence:"In ___ gibt es die berühmte Frauenkirche.",options:["Dresden","Dorf","Dach","Decke"],correct:0,explanation:"The Frauenkirche is a famous church in Dresden."}
+],
+[
+{type:"missing-word",sentence:"Die ___ ist die längste Straße in Berlin.",options:["Unter den Linden","Unterhemd","Unterlage","Unterkunft"],correct:0,explanation:"'Unter den Linden' is a famous boulevard in Berlin."},
+{type:"tts",audioText:"Der Schwarzwald ist eine beliebte Urlaubsregion im Südwesten Deutschlands.",topics:["Tourist regions","Urban centers","Industrial zones","Coastal areas"],correct:0,explanation:"The sentence describes the Black Forest as a tourist region."},
+{type:"missing-word",sentence:"Der ___ See ist der größte See in Deutschland.",options:["Bodensee","Boden","Boot","Buch"],correct:0,explanation:"'Bodensee' is Lake Constance, the largest lake in Germany."},
+{type:"tts",audioText:"Die Zugspitze ist der höchste Berg Deutschlands und liegt in den Alpen.",topics:["Mountains","Rivers","Forests","Deserts"],correct:0,explanation:"The sentence identifies Germany's highest mountain."},
+{type:"missing-word",sentence:"Der Rhein ist ein wichtiger ___ in Europa.",options:["Fluss","Fisch","Felsen","Feld"],correct:0,explanation:"'Fluss' means river."}
+]
+]
+}
 };
 
-// === DYNAMICALLY INJECT VOCAB INTO TOPIC EXERCISES ===
-function injectVocabIntoTopics(level) {
-  const vocab = vocabSets[level];
-  const words = [...vocab];
-  
-  Object.values(allTopics).forEach(topic => {
-    const set = topic.sets[0]; // Only one set per topic for simplicity
-    let wordIndex = 0;
-    
-    set.forEach(ex => {
-      if (ex.type === 'missing-word') {
-        // Replace correct answer with vocab word
-        ex.options[ex.correct] = words[wordIndex % words.length];
-        // Update explanation
-        ex.explanation = `'${words[wordIndex % words.length]}' is a high-frequency word from your selected level.`;
-        wordIndex++;
-        
-        // Replace distractors with other vocab words (not the correct one)
-        let distractorIndex = 0;
-        for (let i = 0; i < ex.options.length; i++) {
-          if (i !== ex.correct) {
-            ex.options[i] = words[(wordIndex + distractorIndex) % words.length];
-            // Avoid duplicates
-            while (ex.options[i] === ex.options[ex.correct]) {
-              distractorIndex++;
-              ex.options[i] = words[(wordIndex + distractorIndex) % words.length];
-            }
-            distractorIndex++;
-          }
-        }
-      } else if (ex.type === 'tts') {
-        // For TTS, replace audioText with a sentence using vocab
-        const templates = [
-          `Myślę, że to ${words[wordIndex % words.length]}.`,
-          `On mówi, że ${words[wordIndex % words.length]} jest ważne.`,
-          `Niestety, ${words[wordIndex % words.length]} nie działa.`,
-          `Czy ${words[wordIndex % words.length]} jest możliwe?`,
-          `Powinieneś to zrobić, bo ${words[wordIndex % words.length]}.`
-        ];
-        ex.audioText = templates[wordIndex % templates.length];
-        wordIndex++;
-      }
-    });
-  });
+// Track last used sets per topic to ensure variety
+let topicSetHistory = JSON.parse(localStorage.getItem('polskiLernenSetHistory')) || {};
+
+// Shuffle array helper function
+function shuffleArray(array) {
+const newArray = [...array];
+for (let i = newArray.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+}
+return newArray;
 }
 
-// === REST OF APP (identical to German version) ===
-let topicSetHistory = {};
-function shuffleArray(array) {
-  const newArray = [...array];
-  for (let i = newArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-  }
-  return newArray;
-}
+// Randomize correct answer position
 function randomizeOptions(options, correctIndex) {
-  const correctAnswer = options[correctIndex];
-  const incorrectAnswers = options.filter((_, i) => i !== correctIndex);
-  const shuffledIncorrect = shuffleArray(incorrectAnswers);
-  const correctPos = Math.floor(Math.random() * options.length);
-  const newOptions = [];
-  let incorrectIndex = 0;
-  for (let i = 0; i < options.length; i++) {
-    if (i === correctPos) {
-      newOptions.push(correctAnswer);
-    } else {
-      newOptions.push(shuffledIncorrect[incorrectIndex++]);
-    }
-  }
-  return { options: newOptions, correctIndex: newOptions.indexOf(correctAnswer) };
+const correctAnswer = options[correctIndex];
+const incorrectAnswers = options.filter((_, i) => i !== correctIndex);
+const shuffledIncorrect = shuffleArray(incorrectAnswers);
+const correctPos = Math.floor(Math.random() * options.length);
+const newOptions = [];
+let incorrectIndex = 0;
+for (let i = 0; i < options.length; i++) {
+if (i === correctPos) {
+newOptions.push(correctAnswer);
+} else {
+newOptions.push(shuffledIncorrect[incorrectIndex++]);
 }
+}
+return {
+options: newOptions,
+correctIndex: newOptions.indexOf(correctAnswer)
+};
+}
+
+// Select a random set that hasn't been used recently
 function selectRandomSet(topicKey) {
-  return 0; // Only one set per topic
+const sets = allTopics[topicKey].sets;
+const numSets = sets.length;
+// Initialize history if needed
+if (!topicSetHistory[topicKey]) {
+topicSetHistory[topicKey] = [];
 }
+// Get available sets (not in last 2 used)
+const availableSets = [];
+for (let i = 0; i < numSets; i++) {
+if (!topicSetHistory[topicKey].slice(-2).includes(i)) {
+availableSets.push(i);
+}
+}
+// If all sets were recently used, reset history
+if (availableSets.length === 0) {
+topicSetHistory[topicKey] = [];
+for (let i = 0; i < numSets; i++) {
+availableSets.push(i);
+}
+}
+// Select random from available
+const randomIndex = availableSets[Math.floor(Math.random() * availableSets.length)];
+// Update history
+topicSetHistory[topicKey].push(randomIndex);
+localStorage.setItem('polskiLernenSetHistory', JSON.stringify(topicSetHistory));
+return randomIndex;
+}
+
+// Scroll to next button smoothly
 function scrollToNextButton() {
-  setTimeout(() => {
-    const nextBtn = document.querySelector('.btn-next');
-    if (nextBtn) {
-      nextBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, 150);
+setTimeout(() => {
+const nextBtn = document.querySelector('.btn-next');
+if (nextBtn) {
+nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+}, 100);
+}
+
+// App state
 let currentTopic = null;
 let currentExercise = 0;
 let points = 0;
@@ -745,8 +860,8 @@ let speechSynthesis = window.speechSynthesis;
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
 let topicBestScores = JSON.parse(localStorage.getItem('polskiLernenBestScores')) || {};
 let currentSetIndex = null;
-let currentLevel = 1;
 
+// DOM elements
 const exerciseContainer = document.getElementById('exercise-container');
 const progressContainer = document.getElementById('progress-container');
 const progressFill = document.getElementById('progress-fill');
@@ -760,367 +875,390 @@ const topicOptionsContainer = document.getElementById('topic-options-container')
 const themeToggle = document.getElementById('theme-toggle');
 const newTopicBtn = document.getElementById('new-topic-btn');
 const restartTopicBtn = document.getElementById('restart-topic-btn');
-const levelSelectionScreen = document.getElementById('level-selection-screen');
-const levelOptionsContainer = document.getElementById('level-options-container');
 
+// Set initial theme
 applyTheme();
+
+// Toggle dark mode
 themeToggle.addEventListener('click', () => {
-  isDarkMode = !isDarkMode;
-  localStorage.setItem('darkMode', isDarkMode);
-  applyTheme();
-  const icon = themeToggle.querySelector('i');
-  icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+isDarkMode = !isDarkMode;
+localStorage.setItem('darkMode', isDarkMode);
+applyTheme();
+const icon = themeToggle.querySelector('i');
+icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
 });
 
 function applyTheme() {
-  const root = document.documentElement;
-  if (isDarkMode) {
-    root.style.setProperty('--bg', 'var(--dark-bg)');
-    root.style.setProperty('--text', 'var(--text-dark)');
-    root.style.setProperty('--card', 'var(--card-dark)');
-    root.style.setProperty('--border', 'var(--border-dark)');
-    root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
-    root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.7)');
-    root.style.setProperty('--shadow', 'var(--shadow-dark)');
-    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
-    root.style.setProperty('--feedback-correct-text', 'white');
-    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
-    root.style.setProperty('--feedback-incorrect-text', 'white');
-    root.style.setProperty('--warning', '#fbbf24');
-  } else {
-    root.style.setProperty('--bg', 'var(--light-bg)');
-    root.style.setProperty('--text', 'var(--text-light)');
-    root.style.setProperty('--card', 'var(--card-light)');
-    root.style.setProperty('--border', 'var(--border-light)');
-    root.style.setProperty('--option-bg', 'var(--option-bg-light)');
-    root.style.setProperty('--bg-sentence', '#f1f5ff');
-    root.style.setProperty('--shadow', 'var(--shadow-light)');
-    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
-    root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
-    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
-    root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
-    root.style.setProperty('--warning', '#f8961e');
-  }
+const root = document.documentElement;
+if (isDarkMode) {
+root.style.setProperty('--bg', 'var(--dark-bg)');
+root.style.setProperty('--text', 'var(--text-dark)');
+root.style.setProperty('--card', 'var(--card-dark)');
+root.style.setProperty('--border', 'var(--border-dark)');
+root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
+root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.7)');
+root.style.setProperty('--shadow', 'var(--shadow-dark)');
+root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
+root.style.setProperty('--feedback-correct-text', 'white');
+root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
+root.style.setProperty('--feedback-incorrect-text', 'white');
+root.style.setProperty('--warning', '#fbbf24');
+} else {
+root.style.setProperty('--bg', 'var(--light-bg)');
+root.style.setProperty('--text', 'var(--text-light)');
+root.style.setProperty('--card', 'var(--card-light)');
+root.style.setProperty('--border', 'var(--border-light)');
+root.style.setProperty('--option-bg', 'var(--option-bg-light)');
+root.style.setProperty('--bg-sentence', '#f1f5ff');
+root.style.setProperty('--shadow', 'var(--shadow-light)');
+root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
+root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
+root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
+root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
+root.style.setProperty('--warning', '#f8961e');
+}
 }
 
-// Render level selection
-function renderLevelSelection() {
-  levelOptionsContainer.innerHTML = '';
-  for (let i = 1; i <= 4; i++) {
-    const el = document.createElement('div');
-    el.className = 'topic-option';
-    el.innerHTML = `<i class="fas fa-layer-group"></i> Set ${i}`;
-    el.onclick = () => {
-      currentLevel = i;
-      injectVocabIntoTopics(i);
-      levelSelectionScreen.classList.add('hidden');
-      renderTopicSelection();
-      topicSelectionScreen.classList.remove('hidden');
-    };
-    levelOptionsContainer.appendChild(el);
-  }
-}
-
-function renderTopicSelection() {
-  topicOptionsContainer.innerHTML = '';
-  Object.keys(allTopics).forEach(topicKey => {
-    const topic = allTopics[topicKey];
-    const bestScore = topicBestScores[topicKey] || 0;
-    const topicOption = document.createElement('div');
-    topicOption.className = 'topic-option';
-    topicOption.dataset.topic = topicKey;
-    topicOption.innerHTML = `
-      <i class="fas ${topic.icon}"></i>
-      ${topic.name}
-      ${bestScore > 0 ? `<div class="score-badge">${Math.round(bestScore)}</div>` : ''}
-    `;
-    topicOption.addEventListener('click', () => startTopicExercises(topicKey));
-    topicOptionsContainer.appendChild(topicOption);
-  });
-}
-
-function startTopicExercises(topicKey) {
-  topicSelectionScreen.classList.add('hidden');
-  progressContainer.classList.remove('hidden');
-  exerciseContainer.classList.remove('hidden');
-  completionScreen.classList.add('hidden');
-  currentTopic = topicKey;
-  currentExercise = 0;
-  points = 0;
-  currentSetIndex = 0;
-  const exercises = allTopics[topicKey].sets[currentSetIndex];
-  userAnswers = new Array(exercises.length).fill(null);
-  pointsDisplay.textContent = points;
-  updateProgress();
-  loadExercise(currentExercise);
-}
-
-function loadExercise(index) {
-  const topicData = allTopics[currentTopic];
-  const exercises = topicData.sets[currentSetIndex];
-  const exercise = exercises[index];
-  exerciseContainer.innerHTML = '';
-  const titleContainer = document.createElement('div');
-  titleContainer.className = 'exercise-title';
-  titleContainer.innerHTML = `
-    <span><i class="fas fa-${exercise.type === 'missing-word' ? 'puzzle-piece' : 'headphones'}"></i> ${exercise.type === 'missing-word' ? 'Fill in the Blank' : 'Listen & Identify Topic'}</span>
-    <div>
-      <span class="topic-name">${topicData.name}</span>
-      <button class="back-btn" id="back-to-topics-btn">
-        <i class="fas fa-arrow-left"></i> Topics
-      </button>
-    </div>
-  `;
-  exerciseContainer.appendChild(titleContainer);
-  setTimeout(() => {
-    const backBtn = document.getElementById('back-to-topics-btn');
-    if (backBtn) backBtn.addEventListener('click', showTopicSelection);
-  }, 0);
-
-  if (exercise.type === 'missing-word') {
-    const randomized = randomizeOptions(exercise.options, exercise.correct);
-    exercise.currentOptions = randomized.options;
-    exercise.currentCorrect = randomized.correctIndex;
-  }
-  if (exercise.type === 'tts') {
-    const topics = [...exercise.topics];
-    const correctTopic = topics[exercise.correct];
-    const shuffledTopics = shuffleArray(topics);
-    const newCorrectIndex = shuffledTopics.indexOf(correctTopic);
-    exercise.currentTopics = shuffledTopics;
-    exercise.currentCorrect = newCorrectIndex;
-  }
-
-  if (exercise.type === 'missing-word') {
-    renderMissingWordExercise(exercise, exercises);
-  } else if (exercise.type === 'tts') {
-    renderTTsExercise(exercise);
-  }
-}
-
-function renderMissingWordExercise(exercise, exercises) {
-  const content = document.createElement('div');
-  content.className = 'exercise-content missing-word-exercise';
-  const sentence = document.createElement('div');
-  sentence.className = 'sentence';
-  sentence.textContent = exercise.sentence;
-  content.appendChild(sentence);
-  const optionsContainer = document.createElement('div');
-  optionsContainer.className = 'options-container';
-  const options = exercise.currentOptions;
-  const correctIndex = exercise.currentCorrect;
-  options.forEach((option, index) => {
-    const optionBtn = document.createElement('button');
-    optionBtn.className = 'option-btn';
-    optionBtn.textContent = option;
-    optionBtn.dataset.index = index;
-    if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
-      optionBtn.disabled = true;
-      if (index === userAnswers[currentExercise]) {
-        optionBtn.classList.add('selected');
-        if (index === correctIndex) optionBtn.classList.add('correct');
-        else optionBtn.classList.add('incorrect');
-      } else if (index === correctIndex) optionBtn.classList.add('correct');
-    }
-    optionBtn.addEventListener('click', () => handleMissingWordAnswer(index, correctIndex, exercise, exercises));
-    optionsContainer.appendChild(optionBtn);
-  });
-  content.appendChild(optionsContainer);
-  const feedback = document.createElement('div');
-  feedback.className = 'feedback';
-  feedback.id = 'feedback';
-  content.appendChild(feedback);
-  exerciseContainer.appendChild(content);
-  addNavigation();
-}
-
-function handleMissingWordAnswer(selectedIndex, correctIndex, exercise, exercises) {
-  userAnswers[currentExercise] = selectedIndex;
-  if (selectedIndex === correctIndex) {
-    points += 10;
-    pointsDisplay.textContent = points;
-  }
-  const buttons = document.querySelectorAll('.option-btn');
-  buttons.forEach((btn, index) => {
-    btn.disabled = true;
-    if (index === selectedIndex) {
-      btn.classList.add('selected');
-      if (index === correctIndex) btn.classList.add('correct');
-      else btn.classList.add('incorrect');
-    } else if (index === correctIndex) btn.classList.add('correct');
-  });
-  const feedback = document.getElementById('feedback');
-  if (selectedIndex === correctIndex) {
-    feedback.textContent = `Correct! ${exercise.explanation}`;
-    feedback.className = 'feedback correct';
-    const fullCorrectSentence = exercise.sentence.replace("___", exercise.options[exercise.correct]);
-    setTimeout(() => speakText(fullCorrectSentence), 500);
-  } else {
-    feedback.textContent = `Incorrect. ${exercise.explanation}`;
-    feedback.className = 'feedback incorrect';
-    const fullCorrectSentence = exercise.sentence.replace("___", exercise.options[exercise.correct]);
-    setTimeout(() => speakText(fullCorrectSentence), 1000);
-  }
-  document.querySelector('.btn-next').disabled = false;
-  scrollToNextButton();
-}
-
-function renderTTsExercise(exercise) {
-  const content = document.createElement('div');
-  content.className = 'exercise-content tts-exercise';
-  const instruction = document.createElement('p');
-  instruction.textContent = 'Listen to the Polish sentence and select the correct topic:';
-  instruction.style.marginBottom = '20px';
-  instruction.style.fontSize = '1.1rem';
-  content.appendChild(instruction);
-  const audioControls = document.createElement('div');
-  audioControls.className = 'audio-controls';
-  const playBtn = document.createElement('button');
-  playBtn.className = 'play-btn';
-  playBtn.innerHTML = '<i class="fas fa-play"></i>';
-  playBtn.title = 'Play audio';
-  playBtn.addEventListener('click', () => {
-    speakText(exercise.audioText);
-    playBtn.disabled = true;
-    setTimeout(() => playBtn.disabled = false, 5000);
-  });
-  audioControls.appendChild(playBtn);
-  content.appendChild(audioControls);
-  const topicsContainer = document.createElement('div');
-  topicsContainer.className = 'topics-container';
-  const topics = exercise.currentTopics;
-  const correctIndex = exercise.currentCorrect;
-  topics.forEach((topic, index) => {
-    const topicCard = document.createElement('div');
-    topicCard.className = 'topic-card';
-    topicCard.textContent = topic;
-    topicCard.dataset.index = index;
-    if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
-      topicCard.classList.add('locked');
-      if (index === userAnswers[currentExercise]) topicCard.classList.add('selected');
-      if (userAnswers[currentExercise] !== correctIndex && index === correctIndex) topicCard.classList.add('correct');
-    }
-    topicCard.addEventListener('click', () => handleTTSAnswer(index, correctIndex, exercise));
-    topicsContainer.appendChild(topicCard);
-  });
-  content.appendChild(topicsContainer);
-  const feedback = document.createElement('div');
-  feedback.className = 'feedback';
-  feedback.id = 'feedback';
-  content.appendChild(feedback);
-  exerciseContainer.appendChild(content);
-  addNavigation();
-}
-
-function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
-  userAnswers[currentExercise] = selectedIndex;
-  if (selectedIndex === correctIndex) {
-    points += 10;
-    pointsDisplay.textContent = points;
-  }
-  const cards = document.querySelectorAll('.topic-card');
-  cards.forEach((card, index) => {
-    card.classList.add('locked');
-    if (index === selectedIndex) card.classList.add('selected');
-    if (index === correctIndex) card.classList.add('correct');
-  });
-  const feedback = document.getElementById('feedback');
-  if (selectedIndex === correctIndex) {
-    feedback.textContent = `Correct! ${exercise.explanation}`;
-    feedback.className = 'feedback correct';
-  } else {
-    feedback.textContent = `Incorrect. ${exercise.explanation}`;
-    feedback.className = 'feedback incorrect';
-  }
-  document.querySelector('.btn-next').disabled = false;
-  scrollToNextButton();
-}
-
-function speakText(text) {
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'pl-PL';
-  utterance.rate = 0.9;
-  utterance.pitch = 1;
-  speechSynthesis.speak(utterance);
-}
-
-function addNavigation() {
-  const nav = document.createElement('div');
-  nav.className = 'navigation';
-  const prevBtn = document.createElement('button');
-  prevBtn.className = 'btn btn-prev';
-  prevBtn.textContent = 'Previous';
-  prevBtn.disabled = currentExercise === 0;
-  prevBtn.addEventListener('click', () => {
-    if (currentExercise > 0) {
-      currentExercise--;
-      loadExercise(currentExercise);
-      updateProgress();
-    }
-  });
-  const nextBtn = document.createElement('button');
-  nextBtn.className = 'btn btn-next';
-  nextBtn.textContent = currentExercise === 4 ? 'Finish Topic' : 'Next';
-  nextBtn.disabled = userAnswers[currentExercise] === undefined || userAnswers[currentExercise] === null;
-  nextBtn.addEventListener('click', () => {
-    if (currentExercise < 4) {
-      currentExercise++;
-      loadExercise(currentExercise);
-      updateProgress();
-    } else {
-      finishTopic();
-    }
-  });
-  nav.appendChild(prevBtn);
-  nav.appendChild(nextBtn);
-  exerciseContainer.appendChild(nav);
-}
-
-function updateProgress() {
-  const totalExercises = 5;
-  const progress = ((currentExercise + 1) / totalExercises) * 100;
-  progressFill.style.width = `${progress}%`;
-  progressText.textContent = `${currentExercise + 1}/${totalExercises}`;
-}
-
-function finishTopic() {
-  if (points > (topicBestScores[currentTopic] || 0)) {
-    topicBestScores[currentTopic] = points;
-    localStorage.setItem('polskiLernenBestScores', JSON.stringify(topicBestScores));
-  }
-  let message = "Keep practicing! 📚";
-  let color = "#f8961e";
-  if (points >= 45) {
-    message = "Outstanding! 🌟";
-    color = "#4ade80";
-  } else if (points >= 35) {
-    message = "Great job! 👏";
-    color = "#4cc9f0";
-  } else if (points >= 25) {
-    message = "Good effort! 💪";
-    color = "#f8961e";
-  }
-  completionMessage.textContent = message;
-  completionMessage.style.color = color;
-  exerciseContainer.classList.add('hidden');
-  progressContainer.classList.add('hidden');
-  finalScore.textContent = points; // ✅ FIXED: only number
-  completionScreen.classList.remove('hidden');
-}
-
-function showTopicSelection() {
-  completionScreen.classList.add('hidden');
-  exerciseContainer.classList.add('hidden');
-  progressContainer.classList.add('hidden');
-  topicSelectionScreen.classList.remove('hidden');
-  renderTopicSelection();
-}
-
-// INIT
-renderLevelSelection();
+// Initialize the app
+function initApp() {
+renderTopicSelection();
 newTopicBtn.addEventListener('click', showTopicSelection);
 restartTopicBtn.addEventListener('click', () => startTopicExercises(currentTopic));
+}
+
+// Render topic selection screen
+function renderTopicSelection() {
+topicOptionsContainer.innerHTML = '';
+Object.keys(allTopics).forEach(topicKey => {
+const topic = allTopics[topicKey];
+const bestScore = topicBestScores[topicKey] || 0;
+const topicOption = document.createElement('div');
+topicOption.className = 'topic-option';
+topicOption.dataset.topic = topicKey;
+topicOption.innerHTML = `
+<i class="fas ${topic.icon}"></i>
+${topic.name}
+${bestScore > 0 ? `<div class="score-badge">${Math.round(bestScore)}</div>` : ''}
+`;
+topicOption.addEventListener('click', () => startTopicExercises(topicKey));
+topicOptionsContainer.appendChild(topicOption);
+});
+}
+
+// Start topic exercises
+function startTopicExercises(topicKey) {
+topicSelectionScreen.classList.add('hidden');
+progressContainer.classList.remove('hidden');
+exerciseContainer.classList.remove('hidden');
+completionScreen.classList.add('hidden');
+currentTopic = topicKey;
+currentExercise = 0;
+points = 0;
+currentSetIndex = selectRandomSet(topicKey);
+const exercises = allTopics[topicKey].sets[currentSetIndex];
+userAnswers = new Array(exercises.length).fill(null);
+pointsDisplay.textContent = points;
+updateProgress();
+loadExercise(currentExercise);
+}
+
+// Load and display current exercise
+function loadExercise(index) {
+const topicData = allTopics[currentTopic];
+const exercises = topicData.sets[currentSetIndex];
+const exercise = exercises[index];
+exerciseContainer.innerHTML = '';
+const titleContainer = document.createElement('div');
+titleContainer.className = 'exercise-title';
+titleContainer.innerHTML = `
+<span><i class="fas fa-${exercise.type === 'missing-word' ? 'puzzle-piece' : 'headphones'}"></i> ${exercise.type === 'missing-word' ? 'Fill in the Blank' : 'Listen & Identify Topic'}</span>
+<div>
+<span class="topic-name">${topicData.name}</span>
+<button class="back-btn" id="back-to-topics-btn">
+<i class="fas fa-arrow-left"></i> Topics
+</button>
+</div>
+`;
+exerciseContainer.appendChild(titleContainer);
+setTimeout(() => {
+const backBtn = document.getElementById('back-to-topics-btn');
+if (backBtn) {
+backBtn.addEventListener('click', showTopicSelection);
+}
+}, 0);
+
+if (exercise.type === 'missing-word') {
+const randomized = randomizeOptions(exercise.options, exercise.correct);
+exercise.currentOptions = randomized.options;
+exercise.currentCorrect = randomized.correctIndex;
+}
+if (exercise.type === 'tts') {
+const topics = [...exercise.topics];
+const correctTopic = topics[exercise.correct];
+const shuffledTopics = shuffleArray(topics);
+const newCorrectIndex = shuffledTopics.indexOf(correctTopic);
+exercise.currentTopics = shuffledTopics;
+exercise.currentCorrect = newCorrectIndex;
+}
+
+if (exercise.type === 'missing-word') {
+renderMissingWordExercise(exercise, exercises);
+} else if (exercise.type === 'tts') {
+renderTTsExercise(exercise);
+}
+}
+
+// Render missing word exercise
+function renderMissingWordExercise(exercise, exercises) {
+const content = document.createElement('div');
+content.className = 'exercise-content missing-word-exercise';
+const sentence = document.createElement('div');
+sentence.className = 'sentence';
+sentence.textContent = exercise.sentence;
+content.appendChild(sentence);
+const optionsContainer = document.createElement('div');
+optionsContainer.className = 'options-container';
+const options = exercise.currentOptions;
+const correctIndex = exercise.currentCorrect;
+options.forEach((option, index) => {
+const optionBtn = document.createElement('button');
+optionBtn.className = 'option-btn';
+optionBtn.textContent = option;
+optionBtn.dataset.index = index;
+if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
+optionBtn.disabled = true;
+if (index === userAnswers[currentExercise]) {
+optionBtn.classList.add('selected');
+if (index === correctIndex) {
+optionBtn.classList.add('correct');
+} else {
+optionBtn.classList.add('incorrect');
+}
+} else if (index === correctIndex) {
+optionBtn.classList.add('correct');
+}
+}
+optionBtn.addEventListener('click', () => handleMissingWordAnswer(index, correctIndex, exercise, exercises));
+optionsContainer.appendChild(optionBtn);
+});
+content.appendChild(optionsContainer);
+const feedback = document.createElement('div');
+feedback.className = 'feedback';
+feedback.id = 'feedback';
+content.appendChild(feedback);
+exerciseContainer.appendChild(content);
+addNavigation();
+}
+
+// Handle missing word answer
+function handleMissingWordAnswer(selectedIndex, correctIndex, exercise, exercises) {
+userAnswers[currentExercise] = selectedIndex;
+if (selectedIndex === correctIndex) {
+points += 10;
+pointsDisplay.textContent = points;
+}
+const buttons = document.querySelectorAll('.option-btn');
+buttons.forEach((btn, index) => {
+btn.disabled = true;
+if (index === selectedIndex) {
+btn.classList.add('selected');
+if (index === correctIndex) {
+btn.classList.add('correct');
+} else {
+btn.classList.add('incorrect');
+}
+} else if (index === correctIndex) {
+btn.classList.add('correct');
+}
+});
+const feedback = document.getElementById('feedback');
+if (selectedIndex === correctIndex) {
+feedback.textContent = `Correct! ${exercise.explanation}`;
+feedback.className = 'feedback correct';
+const fullCorrectSentence = exercise.sentence.replace("___", exercise.options[exercise.correct]);
+setTimeout(() => speakText(fullCorrectSentence), 500);
+} else {
+feedback.textContent = `Incorrect. ${exercise.explanation}`;
+feedback.className = 'feedback incorrect';
+const fullCorrectSentence = exercise.sentence.replace("___", exercise.options[exercise.correct]);
+setTimeout(() => speakText(fullCorrectSentence), 1000);
+}
+document.querySelector('.btn-next').disabled = false;
+scrollToNextButton();
+}
+
+// Render TTS exercise
+function renderTTsExercise(exercise) {
+const content = document.createElement('div');
+content.className = 'exercise-content tts-exercise';
+const instruction = document.createElement('p');
+instruction.textContent = 'Listen to the Polish sentence and select the correct topic:';
+instruction.style.marginBottom = '20px';
+instruction.style.fontSize = '1.1rem';
+content.appendChild(instruction);
+const audioControls = document.createElement('div');
+audioControls.className = 'audio-controls';
+const playBtn = document.createElement('button');
+playBtn.className = 'play-btn';
+playBtn.innerHTML = '<i class="fas fa-play"></i>';
+playBtn.title = 'Play audio';
+playBtn.addEventListener('click', () => {
+speakText(exercise.audioText);
+playBtn.disabled = true;
+setTimeout(() => {
+playBtn.disabled = false;
+}, 5000);
+});
+audioControls.appendChild(playBtn);
+content.appendChild(audioControls);
+const topicsContainer = document.createElement('div');
+topicsContainer.className = 'topics-container';
+const topics = exercise.currentTopics;
+const correctIndex = exercise.currentCorrect;
+topics.forEach((topic, index) => {
+const topicCard = document.createElement('div');
+topicCard.className = 'topic-card';
+topicCard.textContent = topic;
+topicCard.dataset.index = index;
+if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
+topicCard.classList.add('locked');
+if (index === userAnswers[currentExercise]) {
+topicCard.classList.add('selected');
+}
+if (userAnswers[currentExercise] !== correctIndex && index === correctIndex) {
+topicCard.classList.add('correct');
+}
+}
+topicCard.addEventListener('click', () => handleTTSAnswer(index, correctIndex, exercise));
+topicsContainer.appendChild(topicCard);
+});
+content.appendChild(topicsContainer);
+const feedback = document.createElement('div');
+feedback.className = 'feedback';
+feedback.id = 'feedback';
+content.appendChild(feedback);
+exerciseContainer.appendChild(content);
+addNavigation();
+}
+
+// Handle TTS answer
+function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
+userAnswers[currentExercise] = selectedIndex;
+if (selectedIndex === correctIndex) {
+points += 10;
+pointsDisplay.textContent = points;
+}
+const cards = document.querySelectorAll('.topic-card');
+cards.forEach((card, index) => {
+card.classList.add('locked');
+if (index === selectedIndex) {
+card.classList.add('selected');
+}
+if (index === correctIndex) {
+card.classList.add('correct');
+}
+});
+const feedback = document.getElementById('feedback');
+if (selectedIndex === correctIndex) {
+feedback.textContent = `Correct! ${exercise.explanation}`;
+feedback.className = 'feedback correct';
+} else {
+feedback.textContent = `Incorrect. ${exercise.explanation}`;
+feedback.className = 'feedback incorrect';
+}
+document.querySelector('.btn-next').disabled = false;
+scrollToNextButton();
+}
+
+// Text-to-speech function
+function speakText(text) {
+speechSynthesis.cancel();
+const utterance = new SpeechSynthesisUtterance(text);
+utterance.lang = 'pl-PL';
+utterance.rate = 0.9;
+utterance.pitch = 1;
+speechSynthesis.speak(utterance);
+}
+
+// Add navigation buttons
+function addNavigation() {
+const nav = document.createElement('div');
+nav.className = 'navigation';
+const prevBtn = document.createElement('button');
+prevBtn.className = 'btn btn-prev';
+prevBtn.textContent = 'Previous';
+prevBtn.disabled = currentExercise === 0;
+prevBtn.addEventListener('click', () => {
+if (currentExercise > 0) {
+currentExercise--;
+loadExercise(currentExercise);
+updateProgress();
+}
+});
+const nextBtn = document.createElement('button');
+nextBtn.className = 'btn btn-next';
+nextBtn.textContent = currentExercise === 4 ? 'Finish Topic' : 'Next';
+nextBtn.disabled = userAnswers[currentExercise] === undefined || userAnswers[currentExercise] === null;
+nextBtn.addEventListener('click', () => {
+if (currentExercise < 4) {
+currentExercise++;
+loadExercise(currentExercise);
+updateProgress();
+} else {
+finishTopic();
+}
+});
+nav.appendChild(prevBtn);
+nav.appendChild(nextBtn);
+exerciseContainer.appendChild(nav);
+}
+
+// Update progress bar and text
+function updateProgress() {
+const totalExercises = 5;
+const progress = ((currentExercise + 1) / totalExercises) * 100;
+progressFill.style.width = `${progress}%`;
+progressText.textContent = `${currentExercise + 1}/${totalExercises}`;
+}
+
+// Finish topic and save score
+function finishTopic() {
+if (points > (topicBestScores[currentTopic] || 0)) {
+topicBestScores[currentTopic] = points;
+localStorage.setItem('polskiLernenBestScores', JSON.stringify(topicBestScores));
+}
+// Dynamic completion message
+let message = "Keep practicing! 📚";
+let color = "#f8961e";
+if (points >= 45) {
+message = "Outstanding! 🌟";
+color = "#4ade80";
+} else if (points >= 35) {
+message = "Great job! 👏";
+color = "#4cc9f0";
+} else if (points >= 25) {
+message = "Good effort! 💪";
+color = "#f8961e";
+}
+completionMessage.textContent = message;
+completionMessage.style.color = color;
+exerciseContainer.classList.add('hidden');
+progressContainer.classList.add('hidden');
+finalScore.textContent = `${points}/50`; // CORRECT FORMAT
+completionScreen.classList.remove('hidden');
+}
+
+// Show topic selection screen
+function showTopicSelection() {
+completionScreen.classList.add('hidden');
+exerciseContainer.classList.add('hidden');
+progressContainer.classList.add('hidden');
+topicSelectionScreen.classList.remove('hidden');
+renderTopicSelection();
+}
+
+// Initialize the app when page loads
+window.addEventListener('load', initApp);
 </script>
 </body>
 </html>
