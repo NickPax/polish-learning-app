@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PolskiComprehend – Real-World Polish</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+:root {
+  --primary: #7e22ce;
+  --secondary: #6b21a8;
+  --success: #4ade80;
+  --light-bg: #f9fafb;
+  --dark-bg: #0f172a;
+  --card-light: #ffffff;
+  --card-dark: #1e293b;
+  --text-light: #1e293b;
+  --text-dark: #f1f5f9;
+  --border-light: #e2e8f0;
+  --border-dark: #334155;
+  --option-bg-light: white;
+  --option-bg-dark: #334155;
+  --correct: #4ade80;
+  --incorrect: #f87171;
+  --feedback-correct-light: #dcfce7;
+  --feedback-correct-dark: #064e3b;
+  --feedback-incorrect-light: #fee2e2;
+  --feedback-incorrect-dark: #7f1d1d;
+  --warning: #fbbf24;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.start-screen, .exercise-screen, .completion-screen {
+  text-align: center;
+  padding: 40px 20px;
+}
+h1 {
+  font-size: 2.2rem;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.subtitle {
+  color: var(--secondary);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto 25px;
+  line-height: 1.5;
+}
+.btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--primary);
+  color: white;
+}
+.btn:hover {
+  background: var(--secondary);
+  transform: translateY(-2px);
+}
+.dropdown-container {
+  margin: 30px 0;
+}
+select {
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--option-bg);
+  color: var(--text);
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  display: block;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b21a8' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+.exercise-container {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin: 20px 0;
+  border: 1px solid var(--border);
+}
+.sentence {
+  font-size: 1.4rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  padding: 15px;
+  background: var(--bg-sentence);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary);
+}
+.options-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+.option-btn {
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: var(--option-bg);
+  font-size: 1.05rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.option-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.option-btn:disabled {
+  opacity: 0.85;
+}
+.option-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+.option-btn.correct { background: var(--correct); color: white; border-color: var(--correct); }
+.option-btn.incorrect { background: var(--incorrect); color: white; border-color: var(--incorrect); }
+
+.feedback {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  display: none;
+  font-weight: 500;
+}
+.feedback.correct { background: var(--feedback-correct); color: var(--feedback-correct-text); display: block; }
+.feedback.incorrect { background: var(--feedback-incorrect); color: var(--feedback-incorrect-text); display: block; }
+
+.nav-buttons {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+.btn-nav {
+  flex: 1;
+  padding: 12px;
+  font-size: 1rem;
+  background: var(--border);
+  color: var(--text);
+}
+.btn-nav:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.final-score {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--warning);
+  margin: 20px 0;
+}
+.hidden { display: none; }
+@media (max-width: 600px) {
+  .nav-buttons { flex-direction: column; }
+  h1 { font-size: 1.8rem; }
+  .btn { width: 100%; max-width: 300px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="theme-toggle" id="theme-toggle">
+    <i class="fas fa-moon"></i>
+  </div>
+
+  <div class="start-screen" id="start-screen">
+    <h1><i class="fas fa-brain"></i> PolskiComprehend</h1>
+    <p class="subtitle">Master real Polish through high-impact vocabulary. Focus on listening comprehension, not textbook topics.</p>
+    
+    <div class="dropdown-container">
+      <label for="level-select" style="display:block; margin-bottom:10px; font-weight:600; color:var(--secondary);">
+        Select Comprehension Level:
+      </label>
+      <select id="level-select">
+        <option value="1">Set 1 – Core Survival & Spoken Glue</option>
+        <option value="2">Set 2 – High-Frequency Expansion (Pareto Core)</option>
+        <option value="3">Set 3 – Precision & Structural Control</option>
+        <option value="4">Set 4 – Pragmatic & Nuance Control</option>
+      </select>
+    </div>
+    
+    <button class="btn" id="start-btn">Start Practice</button>
+  </div>
+
+  <div class="exercise-screen hidden" id="exercise-screen">
+    <div class="progress-header" style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:600; color:var(--secondary);">
+      <span>Exercise <span id="current-ex">1</span>/10</span>
+      <span><i class="fas fa-star"></i> <span id="score">0</span></span>
+    </div>
+    <div class="exercise-container" id="exercise-container">
+      <!-- Filled by JS -->
+    </div>
+    <div class="nav-buttons">
+      <button class="btn-nav" id="prev-btn" disabled>← Previous</button>
+      <button class="btn-nav" id="next-btn" style="background:var(--primary); color:white;">Next →</button>
+    </div>
+  </div>
+
+  <div class="completion-screen hidden" id="completion-screen">
+    <h2>Excellent Work! 🎯</h2>
+    <p>You've practiced 10 high-impact words.</p>
+    <div class="final-score">Score: <span id="final-score">0</span>/100</div>
+    <button class="btn" id="restart-btn" style="margin-top:15px;">Practice Again</button>
+    <button class="btn" style="background:#64748b; margin-top:10px;" id="back-to-start">Choose Another Level</button>
+  </div>
+</div>
+
+<script>
+// === REVISED VOCABULARY SETS (Comprehension-Optimized) ===
+const vocabSets = {
+  1: [
+    { word: "tak", meaning: "yes", rationale: "Universal affirmation; appears in nearly every conversation." },
+    { word: "nie", meaning: "no", rationale: "Essential negation marker—critical for basic comprehension." },
+    { word: "proszę", meaning: "please / you're welcome", rationale: "High-frequency politeness marker in requests and responses." },
+    { word: "jest", meaning: "is", rationale: "Most frequent verb; required to understand descriptions and existence." },
+    { word: "ma", meaning: "has", rationale: "Core verb for possession and obligation ('musi mieć')." },
+    { word: "chce", meaning: "wants", rationale: "Expresses desire—key in service encounters and daily needs." },
+    { word: "tu", meaning: "here", rationale: "Spatial anchor; essential for directions and location." },
+    { word: "teraz", meaning: "now", rationale: "Fundamental time reference in urgent or immediate contexts." },
+    { word: "no", meaning: "well / you know", rationale: "Ubiquitous discourse filler; signals continuation or obviousness." },
+    { word: "eee", meaning: "uh / um", rationale: "Hesitation marker; helps identify real speech vs. scripted audio." }
+  ],
+  2: [
+    { word: "myślę", meaning: "I think", rationale: "Hedges opinions; extremely common in spoken Polish." },
+    { word: "wiem", meaning: "I know", rationale: "Signals certainty; frequent in reassurance and correction." },
+    { word: "rozumiem", meaning: "I understand", rationale: "Critical for comprehension checks in conversations." },
+    { word: "mówi", meaning: "says / speaks", rationale: "Used in reported speech and instructions." },
+    { word: "ale", meaning: "but", rationale: "Most common contrastive conjunction—changes meaning drastically." },
+    { word: "bo", meaning: "because", rationale: "Primary causal connector in informal speech." },
+    { word: "więc", meaning: "so / therefore", rationale: "Indicates consequence; very frequent in narratives." },
+    { word: "już", meaning: "already", rationale: "Aspectual adverb that shifts temporal interpretation." },
+    { word: "jeszcze", meaning: "still / yet", rationale: "Contrasts with 'już'; vital for understanding timing." },
+    { word: "bardzo", meaning: "very", rationale: "Top intensifier—modifies adjectives, adverbs, and emotions." }
+  ],
+  3: [
+    { word: "pewnie", meaning: "probably / surely", rationale: "Epistemic marker of high likelihood." },
+    { word: "chyba", meaning: "I guess / maybe", rationale: "Softens statements; indicates uncertainty." },
+    { word: "ponieważ", meaning: "because (formal)", rationale: "Used in structured explanations and writing." },
+    { word: "jednak", meaning: "however", rationale: "Introduces contrast in complex sentences." },
+    { word: "mimo że", meaning: "although", rationale: "Concessive clause marker—common in news and debates." },
+    { word: "gdyby", meaning: "if (hypothetical)", rationale: "Key for understanding unreal or conditional scenarios." },
+    { word: "ważne", meaning: "important", rationale: "Evaluative adjective used in advice, warnings, priorities." },
+    { word: "trudno", meaning: "it's difficult", rationale: "Common response to challenges or requests." },
+    { word: "właśnie", meaning: "just / precisely", rationale: "Adds focus or immediacy ('I just left!')." },
+    { word: "raczej", meaning: "rather / preferably", rationale: "Expresses preference or likelihood ('He’s rather tall')." }
+  ],
+  4: [
+    { word: "przecież", meaning: "after all / you know", rationale: "Appeals to shared knowledge; softens criticism or reminders." },
+    { word: "właściwie", meaning: "actually / strictly speaking", rationale: "Corrects assumptions or refines meaning." },
+    { word: "oczywiście", meaning: "of course", rationale: "Affirms with emphasis; common in agreement." },
+    { word: "niestety", meaning: "unfortunately", rationale: "Frames bad news or limitations." },
+    { word: "na szczęście", meaning: "fortunately", rationale: "Frames positive outcomes after tension." },
+    { word: "powinien", meaning: "should", rationale: "Expresses advice, expectation, or mild obligation." },
+    { word: "mógłby", meaning: "could / might (polite)", rationale: "Tentative or polite possibility—common in requests." },
+    { word: "trochę", meaning: "a little", rationale: "Downplays intensity ('It’s a little expensive')." },
+    { word: "serio?", meaning: "seriously?", rationale: "Checks sincerity or expresses surprise." },
+    { word: "naprawdę", meaning: "really", rationale: "Adds emotional weight or seeks confirmation." }
+  ]
+};
+
+// Generate 10 exercises per set: mix of missing-word and TTS
+function generateExercises(setId) {
+  const vocab = vocabSets[setId];
+  const exercises = [];
+  
+  // Context templates using ONLY function words + ultra-common nouns
+  const contexts = [
+    `"___ jest tu?"`,
+    `"___ chce kawę, proszę."`,
+    `"___ rozumiem, dziękuję."`,
+    `"___ już poszedł?"`,
+    `"___ bo nie wiem."`,
+    `"___ powinien to zrobić."`,
+    `"___ niestety, nie mogę."`,
+    `"___ właśnie teraz!"`,
+    `"___ ale to ważne."`,
+    `"___ pewnie masz rację."`
+  ];
+  
+  for (let i = 0; i < 10; i++) {
+    const item = vocab[i % vocab.length];
+    
+    if (i % 2 === 0) {
+      // Missing word exercise
+      const sentence = contexts[i % contexts.length].replace("___", "________");
+      const distractors = vocab
+        .filter(v => v.word !== item.word)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map(v => v.word);
+      
+      const options = [item.word, ...distractors].sort(() => 0.5 - Math.random());
+      const correct = options.indexOf(item.word);
+      
+      exercises.push({
+        type: 'missing-word',
+        sentence,
+        options,
+        correct,
+        explanation: `"${item.word}" means "${item.meaning}". ${item.rationale}`
+      });
+    } else {
+      // TTS: hear word, choose meaning
+      const distractors = vocab
+        .filter(v => v.meaning !== item.meaning)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map(v => v.meaning);
+      
+      const meanings = [item.meaning, ...distractors].sort(() => 0.5 - Math.random());
+      const correct = meanings.indexOf(item.meaning);
+      
+      exercises.push({
+        type: 'tts',
+        audioText: item.word,
+        options: meanings,
+        correct,
+        explanation: `"${item.word}" means "${item.meaning}". ${item.rationale}`
+      });
+    }
+  }
+  return exercises;
+}
+
+// === APP STATE ===
+let currentLevel = 1;
+let exercises = [];
+let currentExercise = 0;
+let score = 0;
+let userAnswers = [];
+let isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+// DOM
+const startScreen = document.getElementById('start-screen');
+const exerciseScreen = document.getElementById('exercise-screen');
+const completionScreen = document.getElementById('completion-screen');
+const levelSelect = document.getElementById('level-select');
+const startBtn = document.getElementById('start-btn');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const restartBtn = document.getElementById('restart-btn');
+const backToStart = document.getElementById('back-to-start');
+const themeToggle = document.getElementById('theme-toggle');
+
+// Theme
+applyTheme();
+themeToggle.addEventListener('click', () => {
+  isDarkMode = !isDarkMode;
+  localStorage.setItem('darkMode', isDarkMode);
+  applyTheme();
+  themeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+});
+
+function applyTheme() {
+  const root = document.documentElement;
+  if (isDarkMode) {
+    root.style.setProperty('--bg', 'var(--dark-bg)');
+    root.style.setProperty('--text', 'var(--text-dark)');
+    root.style.setProperty('--card', 'var(--card-dark)');
+    root.style.setProperty('--border', 'var(--border-dark)');
+    root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
+    root.style.setProperty('--bg-sentence', 'rgba(30, 41, 59, 0.6)');
+    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-dark)');
+    root.style.setProperty('--feedback-correct-text', 'white');
+    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-dark)');
+    root.style.setProperty('--feedback-incorrect-text', 'white');
+  } else {
+    root.style.setProperty('--bg', 'var(--light-bg)');
+    root.style.setProperty('--text', 'var(--text-light)');
+    root.style.setProperty('--card', 'var(--card-light)');
+    root.style.setProperty('--border', 'var(--border-light)');
+    root.style.setProperty('--option-bg', 'var(--option-bg-light)');
+    root.style.setProperty('--bg-sentence', '#f8fafc');
+    root.style.setProperty('--feedback-correct', 'var(--feedback-correct-light)');
+    root.style.setProperty('--feedback-correct-text', 'var(--text-light)');
+    root.style.setProperty('--feedback-incorrect', 'var(--feedback-incorrect-light)');
+    root.style.setProperty('--feedback-incorrect-text', 'var(--text-light)');
+  }
+}
+
+// Events
+startBtn.addEventListener('click', () => {
+  currentLevel = parseInt(levelSelect.value);
+  exercises = generateExercises(currentLevel);
+  startPractice();
+});
+
+restartBtn.addEventListener(startPractice);
+backToStart.addEventListener(() => {
+  completionScreen.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+});
+
+function startPractice() {
+  currentExercise = 0;
+  score = 0;
+  userAnswers = new Array(10).fill(null);
+  startScreen.classList.add('hidden');
+  completionScreen.classList.add('hidden');
+  exerciseScreen.classList.remove('hidden');
+  loadExercise();
+}
+
+function loadExercise() {
+  const ex = exercises[currentExercise];
+  const container = document.getElementById('exercise-container');
+  container.innerHTML = '';
+  
+  if (ex.type === 'missing-word') {
+    container.innerHTML = `
+      <div class="sentence">${ex.sentence}</div>
+      <div class="options-container" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    `;
+    const optContainer = document.getElementById('options');
+    ex.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => handleAnswer(i, ex.correct, ex);
+      if (userAnswers[currentExercise] !== null) btn.disabled = true;
+      optContainer.appendChild(btn);
+    });
+  } else {
+    container.innerHTML = `
+      <p>Hear the Polish word and select its meaning:</p>
+      <button class="btn" style="margin:20px auto; display:block; background:var(--primary);" id="play-btn">
+        <i class="fas fa-volume-up"></i> Play
+      </button>
+      <div class="options-container" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    `;
+    document.getElementById('play-btn').onclick = () => speakText(ex.audioText);
+    const optContainer = document.getElementById('options');
+    ex.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => handleAnswer(i, ex.correct, ex);
+      if (userAnswers[currentExercise] !== null) btn.disabled = true;
+      optContainer.appendChild(btn);
+    });
+  }
+  
+  document.getElementById('current-ex').textContent = currentExercise + 1;
+  document.getElementById('score').textContent = score;
+  prevBtn.disabled = currentExercise === 0;
+  nextBtn.textContent = currentExercise === 9 ? 'Finish' : 'Next →';
+  nextBtn.disabled = userAnswers[currentExercise] === null;
+}
+
+function handleAnswer(selected, correct, exercise) {
+  userAnswers[currentExercise] = selected;
+  if (selected === correct) {
+    score += 10;
+    document.getElementById('score').textContent = score;
+  }
+  
+  // Visual feedback
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === selected) btn.classList.add(selected === correct ? 'correct' : 'incorrect');
+    else if (i === correct) btn.classList.add('correct');
+  });
+  
+  document.getElementById('feedback').textContent = exercise.explanation;
+  document.getElementById('feedback').className = `feedback ${selected === correct ? 'correct' : 'incorrect'}`;
+  
+  nextBtn.disabled = false;
+}
+
+nextBtn.addEventListener(() => {
+  if (currentExercise < 9) {
+    currentExercise++;
+    loadExercise();
+  } else {
+    finishPractice();
+  }
+});
+
+prevBtn.addEventListener(() => {
+  if (currentExercise > 0) {
+    currentExercise--;
+    loadExercise();
+  }
+});
+
+function finishPractice() {
+  exerciseScreen.classList.add('hidden');
+  completionScreen.classList.remove('hidden');
+  document.getElementById('final-score').textContent = score;
+}
+
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'pl-PL';
+  utterance.rate = 0.95;
+  utterance.pitch = 1.0;
+  speechSynthesis.speak(utterance);
+}
+
+// Init
+document.getElementById('score').textContent = '0';
+</script>
+</body>
+</html>
