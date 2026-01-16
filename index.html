@@ -788,17 +788,33 @@ function filterExercisesByLevel(exercises) {
 }
 
 function scrollToNextButton() {
-  setTimeout(() => {
-    const nextBtn = document.querySelector('.btn-next');
-    if (nextBtn) {
-      nextBtn.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'nearest'
-      });
-      setTimeout(() => nextBtn.focus(), 300);
-    }
-  }, 150);
+    setTimeout(() => {
+        const nextBtn = document.querySelector('.btn-next');
+        if (nextBtn) {
+            // Method 1: Standard scrollIntoView
+            nextBtn.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            
+            // Method 2: Manual scroll calculation as fallback
+            setTimeout(() => {
+                const rect = nextBtn.getBoundingClientRect();
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const targetPosition = rect.top + scrollTop - 100; // 100px offset from top
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }, 50);
+            
+            // Focus for accessibility
+            setTimeout(() => {
+                nextBtn.focus({preventScroll: true});
+            }, 350);
+        }
+    }, 150);
 }
 
 function applyTheme() {
@@ -1083,6 +1099,7 @@ function handleMissingWordAnswer(selectedIndex, correctIndex, exercise) {
         pointsDisplay.textContent = points;
     }
     
+    // Disable all buttons and show correct/incorrect states
     const buttons = document.querySelectorAll('.option-btn');
     buttons.forEach((btn, index) => {
         btn.disabled = true;
@@ -1098,6 +1115,7 @@ function handleMissingWordAnswer(selectedIndex, correctIndex, exercise) {
         }
     });
     
+    // Show feedback
     const feedback = document.getElementById('feedback');
     if (selectedIndex === correctIndex) {
         feedback.textContent = `Correct! ${exercise.explanation}`;
@@ -1111,7 +1129,53 @@ function handleMissingWordAnswer(selectedIndex, correctIndex, exercise) {
         setTimeout(() => speakText(fullCorrectSentence), 1000);
     }
     
-    document.querySelector('.btn-next').disabled = false;
+    // IMPORTANT FIX: Enable Next button
+    const nextBtn = document.querySelector('.btn-next');
+    if (nextBtn) {
+        nextBtn.disabled = false;
+    }
+    
+    // Scroll to Next button
+    scrollToNextButton();
+}
+
+function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
+    userAnswers[currentExercise] = selectedIndex;
+    
+    if (selectedIndex === correctIndex) {
+        points += 10;
+        pointsDisplay.textContent = points;
+    }
+    
+    // Disable all cards and show correct/incorrect states
+    const cards = document.querySelectorAll('.topic-card');
+    cards.forEach((card, index) => {
+        card.classList.add('locked');
+        if (index === selectedIndex) {
+            card.classList.add('selected');
+        }
+        if (index === correctIndex) {
+            card.classList.add('correct');
+        }
+    });
+    
+    // Show feedback
+    const feedback = document.getElementById('feedback');
+    if (selectedIndex === correctIndex) {
+        feedback.textContent = `Correct! ${exercise.explanation}`;
+        feedback.className = 'feedback correct';
+    } else {
+        feedback.textContent = `Incorrect. ${exercise.explanation}`;
+        feedback.className = 'feedback incorrect';
+    }
+    
+    // IMPORTANT FIX: Enable Next button
+    const nextBtn = document.querySelector('.btn-next');
+    if (nextBtn) {
+        nextBtn.disabled = false;
+    }
+    
+    // Scroll to Next button
     scrollToNextButton();
 }
 
@@ -1209,8 +1273,16 @@ function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
         feedback.className = 'feedback incorrect';
     }
     
-    document.querySelector('.btn-next').disabled = false;
-    scrollToNextButton();
+    // FIX: Enable the Next button immediately after answer
+    const nextBtn = document.querySelector('.btn-next');
+    if (nextBtn) {
+        nextBtn.disabled = false;
+    }
+    
+    // FIX: Call scrollToNextButton after a short delay to ensure DOM is updated
+    setTimeout(() => {
+        scrollToNextButton();
+    }, 300);
 }
 
 function addNavigation() {
@@ -1232,10 +1304,16 @@ function addNavigation() {
     const nextBtn = document.createElement('button');
     nextBtn.className = 'btn btn-next';
     nextBtn.textContent = currentExercise === currentExercises.length - 1 ? 'Finish Topic' : 'Next';
-    nextBtn.disabled = userAnswers[currentExercise] === undefined || userAnswers[currentExercise] === null;
+    nextBtn.disabled = true; // Starts disabled until user answers
     nextBtn.addEventListener('click', () => {
         if (currentExercise < currentExercises.length - 1) {
             currentExercise++;
+            // Reset randomized options for new exercise
+            if (currentExercises[currentExercise]) {
+                delete currentExercises[currentExercise].currentOptions;
+                delete currentExercises[currentExercise].currentTopics;
+                delete currentExercises[currentExercise].currentCorrect;
+            }
             loadExercise();
             updateProgress();
         } else {
