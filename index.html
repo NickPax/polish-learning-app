@@ -789,32 +789,21 @@ function filterExercisesByLevel(exercises) {
 
 function scrollToNextButton() {
     setTimeout(() => {
-        const nextBtn = document.querySelector('.btn-next');
+        // Look specifically in the exercise container for the navigation button
+        const nextBtn = exerciseContainer.querySelector('.navigation .btn-next');
         if (nextBtn) {
-            // Method 1: Standard scrollIntoView
+            nextBtn.disabled = false; // Enable it
             nextBtn.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
             });
-            
-            // Method 2: Manual scroll calculation as fallback
-            setTimeout(() => {
-                const rect = nextBtn.getBoundingClientRect();
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const targetPosition = rect.top + scrollTop - 100; // 100px offset from top
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }, 50);
-            
-            // Focus for accessibility
-            setTimeout(() => {
-                nextBtn.focus({preventScroll: true});
-            }, 350);
+            console.log('Enabled and scrolled to exercise Next button');
+        } else {
+            console.log('Could not find exercise Next button');
+            // Debug: log all .btn-next buttons
+            console.log('All .btn-next buttons:', document.querySelectorAll('.btn-next'));
         }
-    }, 150);
+    }, 200);
 }
 
 function applyTheme() {
