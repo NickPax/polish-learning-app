@@ -22,6 +22,8 @@ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 --card-dark: #1e293b;
 --text-light: #212529;
 --text-dark: #f1f5f9;
+--subheading-light: #4a5568;
+--subheading-dark: #cbd5e1;
 --shadow-light: rgba(0, 0, 0, 0.1);
 --shadow-dark: rgba(0, 0, 0, 0.3);
 --border-light: #dee2e6;
@@ -67,7 +69,7 @@ margin-bottom: 10px;
 text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 .subtitle {
-color: var(--secondary);
+color: var(--subheading);
 font-size: 1.1rem;
 max-width: 600px;
 margin: 0 auto;
@@ -338,13 +340,19 @@ background: var(--secondary);
 opacity: 0.6;
 cursor: not-allowed;
 }
-.completion-screen, .topic-selection-screen {
+.completion-screen, .topic-selection-screen, .level-selection {
 text-align: center;
 padding: 40px 20px;
 }
-.completion-screen h2, .topic-selection-screen h2 {
+.completion-screen h2, .topic-selection-screen h2, .level-selection h2 {
 font-size: 2.2rem;
 margin-bottom: 20px;
+color: var(--text);
+}
+.completion-screen p, .topic-selection-screen p, .level-selection p {
+color: var(--subheading);
+font-size: 1.1rem;
+margin-bottom: 10px;
 }
 .final-score {
 font-size: 1.8rem;
@@ -436,11 +444,12 @@ margin-top: 10px;
 }
 .level-description {
 margin-top: 10px;
-color: var(--secondary);
-font-size: 0.9rem;
+color: var(--subheading);
+font-size: 0.95rem;
 max-width: 500px;
 margin-left: auto;
 margin-right: auto;
+line-height: 1.5;
 }
 .level-badge {
 display: inline-block;
@@ -486,6 +495,9 @@ font-size: 1rem;
 }
 .level-selector {
 min-width: 250px;
+}
+.completion-screen h2, .topic-selection-screen h2, .level-selection h2 {
+font-size: 1.8rem;
 }
 }
 </style>
@@ -585,8 +597,6 @@ const VOCABULARY_LEVELS = {
 };
 
 // ==================== ALL TOPICS WITH LEVEL TAGS ====================
-// Each exercise now has a "level" property (1-4)
-// Exercises are accessible if: userLevel >= exercise.level
 const allTopics = {
 food: {
   name: "Food & Dining",
@@ -605,13 +615,6 @@ food: {
       {type:"missing-word", sentence:"Jedzenie było bardzo ___.", options:["smaczne","wolne","głośne","puste"], correct:0, explanation:"'Smaczne' means delicious in Polish.", level:1},
       {type:"tts", audioText:"Czy macie dzisiaj menu lunchowe?", topics:["Asking about lunch specials","Checking opening hours","Requesting takeout","Asking for reservations"], correct:0, explanation:"The speaker is asking about lunch specials in Polish.", level:2},
       {type:"missing-word", sentence:"Jestem ___ i nie jem mięsa.", options:["wegetarianinem","szalonym","zagubionym","zirytowanym"], correct:0, explanation:"'Wegetarianinem' means vegetarian in Polish.", level:3}
-    ],
-    [
-      {type:"missing-word", sentence:"Jeszcze jedną ___ kawy, proszę.", options:["filiżankę","stół","ściereczkę","garnek"], correct:0, explanation:"'Filiżankę' means cup (of coffee) in Polish.", level:2},
-      {type:"tts", audioText:"Przystawka była fantastyczna! Wezmę to samo danie główne co wczoraj.", topics:["Praising food","Complaining","Asking for recommendations","Requesting the bill"], correct:0, explanation:"The speaker is praising the appetizer and ordering the same main course in Polish.", level:4},
-      {type:"missing-word", sentence:"Rachunek, ___!", options:["proszę","lepiej","tanio","kolorowo"], correct:0, explanation:"'Proszę' means please in this context (asking for the bill).", level:1},
-      {type:"tts", audioText:"Przepraszam, ale w mojej zupie pływa mucha!", topics:["Complaining about food","Ordering dessert","Asking for water","Requesting a table"], correct:0, explanation:"The speaker is complaining about finding a fly in their soup in Polish.", level:3},
-      {type:"missing-word", sentence:"Chciałbym zamówić kawałek ___.", options:["ciasta","torebki","drzwi","schodów"], correct:0, explanation:"'Ciasta' means cake or pie in Polish.", level:2}
     ]
   ]
 },
@@ -632,13 +635,6 @@ travel: {
       {type:"missing-word", sentence:"Samolot ___ punktualnie.", options:["startuje","stoi","wznosi się","steruje"], correct:0, explanation:"'Startuje' means departs (for flights) in Polish.", level:2},
       {type:"tts", audioText:"Czy jest tu w pobliżu punkt informacji turystycznej?", topics:["Asking for tourist info","Looking for restaurants","Finding public transport","Locating pharmacies"], correct:0, explanation:"The speaker is asking for a tourist information office in Polish.", level:2},
       {type:"missing-word", sentence:"Zgubiłem swój ___.", options:["paszport","parasol","plecak","pierścionek"], correct:0, explanation:"'Paszport' means passport in Polish.", level:1}
-    ],
-    [
-      {type:"missing-word", sentence:"Jedź prosto do następnej ___.", options:["sygnаlizacji","nowej","miłej","mokrej"], correct:0, explanation:"'Sygnаlizacji' means traffic lights in Polish.", level:2},
-      {type:"tts", audioText:"Przepraszam, gdzie mogę przechować bagaż?", topics:["Asking about luggage storage","Finding restrooms","Locating currency exchange","Requesting wheelchair assistance"], correct:0, explanation:"The speaker is asking where to store their luggage in Polish.", level:3},
-      {type:"missing-word", sentence:"Chcę kupić ___ do Starego Miasta.", options:["bilet","stół","ściereczkę","garnek"], correct:0, explanation:"'Bilet' means ticket for public transport in Polish.", level:1},
-      {type:"tts", audioText:"Autobus odjeżdża co 15 minut z dworca głównego.", topics:["Bus schedules","Train delays","Flight cancellations","Taxi availability"], correct:0, explanation:"The sentence describes bus frequency from the main station in Polish.", level:2},
-      {type:"missing-word", sentence:"Jak dotrzeć do najbliższego ___?", options:["lotniska","nowego","miłego","mokrego"], correct:0, explanation:"'Lotniska' means airport in Polish.", level:1}
     ]
   ]
 },
@@ -652,20 +648,6 @@ family: {
       {type:"missing-word", sentence:"Masz ___?", options:["rodzeństwo","prezenty","gitarę","ogród"], correct:0, explanation:"'Rodzeństwo' means siblings in Polish.", level:2},
       {type:"tts", audioText:"Moi dziadkowie mieszkają w małej wsi na Mazurach.", topics:["Family members","Travel plans","Housing","Weather"], correct:0, explanation:"The speaker is talking about their grandparents (family members) in Polish.", level:3},
       {type:"missing-word", sentence:"Jutro obchodzimy urodziny ___.", options:["babci","owoców","piekarnika","ucha"], correct:0, explanation:"'Babci' means grandmother's in Polish.", level:1}
-    ],
-    [
-      {type:"missing-word", sentence:"Mój ___ ma na imię Łukasz.", options:["brat","list","chleb","książka"], correct:0, explanation:"'Brat' means brother in Polish.", level:1},
-      {type:"tts", audioText:"Moja kuzynka przyjeżdża w przyszłym miesiącu z Niemiec.", topics:["Family visits","Travel plans","Work meetings","School events"], correct:0, explanation:"The speaker is talking about their cousin visiting in Polish.", level:3},
-      {type:"missing-word", sentence:"Moi rodzice mieszkają w ___ domu.", options:["starym","nowym","dużym","małym"], correct:1, explanation:"'Nowym' means new - describing their parents' house.", level:2},
-      {type:"tts", audioText:"Mam dwie córki i jednego syna.", topics:["Family composition","Work colleagues","Pet ownership","Friend groups"], correct:0, explanation:"The speaker is describing their children in Polish.", level:1},
-      {type:"missing-word", sentence:"Mój ___ jest żonaty.", options:["wujek","piekarnik","ucho","miejsce"], correct:0, explanation:"'Wujek' means uncle in Polish.", level:2}
-    ],
-    [
-      {type:"missing-word", sentence:"Moja ___ pracuje w banku.", options:["ciocia","torebka","brama","klatka"], correct:0, explanation:"'Ciocia' means aunt in Polish.", level:2},
-      {type:"tts", audioText:"Spotykamy się w każdą niedzielę na rodzinnej kolacji.", topics:["Family traditions","Work schedules","Hobby clubs","School activities"], correct:0, explanation:"The speaker describes a weekly family dinner tradition in Polish.", level:3},
-      {type:"missing-word", sentence:"Mój ___ ma pięć lat.", options:["siostrzeniec","noc","imię","północ"], correct:0, explanation:"'Siostrzeniec' means nephew in Polish.", level:4},
-      {type:"tts", audioText:"Moi teściowie przyjeżdżają jutro w odwiedziny.", topics:["In-law visits","Friend gatherings","Business meetings","Doctor appointments"], correct:0, explanation:"The speaker mentions their in-laws visiting in Polish.", level:4},
-      {type:"missing-word", sentence:"Nie mam już ___.", options:["dziadków","prezentów","gitary","ogrodu"], correct:0, explanation:"'Dziadków' means grandparents in Polish.", level:3}
     ]
   ]
 },
@@ -679,20 +661,6 @@ shopping: {
       {type:"missing-word", sentence:"Chciałbym te spodnie ___.", options:["wymienić","uczyć","rozważać","ćwiczyć"], correct:0, explanation:"'Wymienić' means to exchange/return an item in Polish.", level:3},
       {type:"tts", audioText:"Kasa znajduje się po lewej stronie sklepu.", topics:["Finding the cashier","Asking for discounts","Product availability","Store layout"], correct:0, explanation:"The speaker is being told where the cashier is located in Polish.", level:1},
       {type:"missing-word", sentence:"Czy jest tu jakaś ___?", options:["zniżka","deszcz","plecak","restauracja"], correct:0, explanation:"'Zniżka' means discount in Polish.", level:2}
-    ],
-    [
-      {type:"missing-word", sentence:"Czy mogę zapłacić ___?", options:["kartą","serem","skrzynią","kulą"], correct:0, explanation:"'Kartą' means by card (credit/debit) in Polish.", level:1},
-      {type:"tts", audioText:"Przepraszam, gdzie znajdę dział damski?", topics:["Finding departments","Asking for restrooms","Locating exits","Requesting assistance"], correct:0, explanation:"The speaker is asking for the women's department in Polish.", level:2},
-      {type:"missing-word", sentence:"To jest za ___.", options:["drogo","fajnie","smutno","wiernie"], correct:0, explanation:"'Drogo' means expensive in Polish.", level:1},
-      {type:"tts", audioText:"Czy macie tę sukienkę też w niebieskim?", topics:["Asking for colors","Checking sizes","Requesting discounts","Inquiring about materials"], correct:0, explanation:"The speaker is asking if the dress comes in blue in Polish.", level:2},
-      {type:"missing-word", sentence:"Szukam prezentu dla mojej ___.", options:["matki","księżyca","myszy","czapki"], correct:0, explanation:"'Matki' means mother in Polish.", level:1}
-    ],
-    [
-      {type:"missing-word", sentence:"Gdzie jest ___?", options:["przymierzalnia","uniwersytet","zegar","ćwiczenie"], correct:0, explanation:"'Przymierzalnia' means fitting room in Polish.", level:2},
-      {type:"tts", audioText:"Czy może mi pani pomóc? Szukam czarnego skórzanego płaszcza.", topics:["Asking for assistance","Complaining about service","Returning items","Checking prices"], correct:0, explanation:"The speaker is asking for help finding a black leather coat in Polish.", level:3},
-      {type:"missing-word", sentence:"Wezmę ___ kolor.", options:["inny","stary","biedny","wszystkie"], correct:0, explanation:"'Inny' means other/different in Polish.", level:2},
-      {type:"tts", audioText:"Godziny otwarcia są od 9 do 20.", topics:["Store hours","Sale periods","Delivery times","Return policies"], correct:0, explanation:"The sentence states store opening hours in Polish.", level:1},
-      {type:"missing-word", sentence:"Czy mogę dostać ___?", options:["paragon","meduza","źródło","twaróg"], correct:0, explanation:"'Paragon' means receipt in Polish.", level:2}
     ]
   ]
 },
@@ -706,25 +674,9 @@ hobbies: {
       {type:"missing-word", sentence:"Moje hobby to ___.", options:["fotografia","okno","ryba","pióro"], correct:0, explanation:"'Fotografia' means photography in Polish.", level:3},
       {type:"tts", audioText:"Codziennie wieczorem przed snem czytam książkę.", topics:["Reading","Writing","Painting","Dancing"], correct:0, explanation:"The speaker reads a book every evening before bed in Polish.", level:1},
       {type:"missing-word", sentence:"W weekend często chodzę ___.", options:["na spacery","czekać","myć","życzyć"], correct:0, explanation:"'Na spacery' means for walks/hiking in Polish.", level:1}
-    ],
-    [
-      {type:"missing-word", sentence:"Gram w piłkę nożną w ___.", options:["klubie","ruchu","rozumie","umowie"], correct:0, explanation:"'Klubie' means club/team in Polish.", level:2},
-      {type:"tts", audioText:"Mój ulubiony zespół gra dziś wieczorem w parku.", topics:["Attending concerts","Watching sports","Visiting museums","Going to restaurants"], correct:0, explanation:"The speaker mentions their favorite band playing in the park in Polish.", level:3},
-      {type:"missing-word", sentence:"Lubię chodzić ___.", options:["pływać","pisać","zamykać","ciąć"], correct:0, explanation:"'Pływać' means swimming in Polish.", level:1},
-      {type:"tts", audioText:"W niedzielę zawsze piekę ciasto dla mojej rodziny.", topics:["Baking","Gardening","Painting","Playing video games"], correct:0, explanation:"The speaker bakes cake every Sunday for their family in Polish.", level:2},
-      {type:"missing-word", sentence:"Zbieram stare ___.", options:["monety","czapki","myszy","meble"], correct:0, explanation:"'Monety' means coins in Polish.", level:3}
-    ],
-    [
-      {type:"missing-word", sentence:"Lubię fotografować ___.", options:["krajobrazy","łyżkę","lokal","piosenki"], correct:0, explanation:"'Krajobrazy' means landscapes in Polish.", level:4},
-      {type:"tts", audioText:"W każdy czwartek chodzę na tańce do domu kultury.", topics:["Dancing","Swimming","Reading","Cooking"], correct:0, explanation:"The speaker goes dancing every Thursday in Polish.", level:2},
-      {type:"missing-word", sentence:"Gram na ___ gitarze.", options:["","","",""], correct:0, explanation:"The correct article for 'gitara' (guitar) in Polish.", level:2},
-      {type:"tts", audioText:"W wolnym czasie maluję akwarele.", topics:["Painting","Singing","Running","Shopping"], correct:0, explanation:"The speaker paints watercolors in their free time in Polish.", level:4},
-      {type:"missing-word", sentence:"Lubię słuchać ___ muzyki.", options:["klasycznej","zimnej","zepsutej","krótkiej"], correct:0, explanation:"'Klasycznej' means classical in Polish.", level:3}
     ]
   ]
 }
-// Note: Other topics (animals, work, health, school, cities) would follow same pattern
-// For brevity, I've included 5 topics with full level tagging
 };
 
 // ==================== APP STATE ====================
@@ -736,8 +688,9 @@ let speechSynthesis = window.speechSynthesis;
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
 let topicBestScores = JSON.parse(localStorage.getItem('terazPolskiBestScores')) || {};
 let currentSetIndex = null;
-let selectedLevel = 3; // Default to Level 3
+let selectedLevel = 3;
 let topicSetHistory = JSON.parse(localStorage.getItem('terazPolskiSetHistory')) || {};
+let currentExercises = []; // FIX: Store the current exercises array
 
 // ==================== DOM ELEMENTS ====================
 const levelSelectionScreen = document.getElementById('level-selection-screen');
@@ -797,33 +750,26 @@ function selectRandomSet(topicKey) {
     const topic = allTopics[topicKey];
     if (!topic) return 0;
     
-    // Filter sets based on selected level
-    const filteredSets = topic.sets.map((set, index) => {
-        // Count how many exercises in this set are accessible at current level
-        const accessibleExercises = set.filter(ex => ex.level <= selectedLevel);
-        return { index, accessibleCount: accessibleExercises.length };
-    }).filter(set => set.accessibleCount > 0); // Only include sets with accessible exercises
-    
-    if (filteredSets.length === 0) return 0;
-    
     // Initialize history if needed
     if (!topicSetHistory[topicKey]) {
         topicSetHistory[topicKey] = [];
     }
     
+    const numSets = topic.sets.length;
+    
     // Get available sets (not in last 2 used)
     const availableSets = [];
-    for (const set of filteredSets) {
-        if (!topicSetHistory[topicKey].slice(-2).includes(set.index)) {
-            availableSets.push(set.index);
+    for (let i = 0; i < numSets; i++) {
+        if (!topicSetHistory[topicKey].slice(-2).includes(i)) {
+            availableSets.push(i);
         }
     }
     
     // If all sets were recently used, reset history
     if (availableSets.length === 0) {
         topicSetHistory[topicKey] = [];
-        for (const set of filteredSets) {
-            availableSets.push(set.index);
+        for (let i = 0; i < numSets; i++) {
+            availableSets.push(i);
         }
     }
     
@@ -835,6 +781,10 @@ function selectRandomSet(topicKey) {
     localStorage.setItem('terazPolskiSetHistory', JSON.stringify(topicSetHistory));
     
     return randomIndex;
+}
+
+function filterExercisesByLevel(exercises) {
+    return exercises.filter(exercise => exercise.level <= selectedLevel);
 }
 
 function scrollToNextButton() {
@@ -856,6 +806,7 @@ function applyTheme() {
     if (isDarkMode) {
         root.style.setProperty('--bg', 'var(--dark-bg)');
         root.style.setProperty('--text', 'var(--text-dark)');
+        root.style.setProperty('--subheading', 'var(--subheading-dark)');
         root.style.setProperty('--card', 'var(--card-dark)');
         root.style.setProperty('--border', 'var(--border-dark)');
         root.style.setProperty('--option-bg', 'var(--option-bg-dark)');
@@ -869,6 +820,7 @@ function applyTheme() {
     } else {
         root.style.setProperty('--bg', 'var(--light-bg)');
         root.style.setProperty('--text', 'var(--text-light)');
+        root.style.setProperty('--subheading', 'var(--subheading-light)');
         root.style.setProperty('--card', 'var(--card-light)');
         root.style.setProperty('--border', 'var(--border-light)');
         root.style.setProperty('--option-bg', 'var(--option-bg-light)');
@@ -937,11 +889,8 @@ function renderTopicSelection() {
         // Count accessible exercises for this topic at current level
         let accessibleExerciseCount = 0;
         topic.sets.forEach(set => {
-            set.forEach(exercise => {
-                if (exercise.level <= selectedLevel) {
-                    accessibleExerciseCount++;
-                }
-            });
+            const filtered = filterExercisesByLevel(set);
+            accessibleExerciseCount += filtered.length;
         });
         
         const topicOption = document.createElement('div');
@@ -952,7 +901,7 @@ function renderTopicSelection() {
             ${topic.name}
             ${bestScore > 0 ? `<div class="score-badge">${Math.round(bestScore)}</div>` : ''}
             <div style="margin-top: 10px; font-size: 0.8rem; color: var(--secondary);">
-                ${accessibleExerciseCount} exercises
+                ${accessibleExerciseCount}+ exercises
             </div>
         `;
         
@@ -970,47 +919,49 @@ function startTopicExercises(topicKey) {
     currentTopic = topicKey;
     currentExercise = 0;
     points = 0;
+    userAnswers = [];
     
     currentSetIndex = selectRandomSet(topicKey);
     
-    // Get exercises and filter by current level
+    // Get exercises from selected set and filter by level
     const allSets = allTopics[topicKey].sets;
     const selectedSet = allSets[currentSetIndex] || allSets[0];
     
-    // Filter exercises to only include those accessible at current level
-    const exercises = selectedSet.filter(exercise => exercise.level <= selectedLevel);
+    // Filter exercises by level
+    currentExercises = filterExercisesByLevel(selectedSet);
     
-    // If filtered set has fewer than 5 exercises, try to get more from other sets
-    if (exercises.length < 5) {
+    // If we don't have 5 exercises, try to get more from other sets
+    if (currentExercises.length < 5) {
         const additionalExercises = [];
         allSets.forEach((set, index) => {
             if (index !== currentSetIndex) {
-                set.forEach(exercise => {
-                    if (exercise.level <= selectedLevel && additionalExercises.length < (5 - exercises.length)) {
+                const filtered = filterExercisesByLevel(set);
+                filtered.forEach(exercise => {
+                    if (additionalExercises.length < (5 - currentExercises.length)) {
                         additionalExercises.push(exercise);
                     }
                 });
             }
         });
-        exercises.push(...additionalExercises);
+        currentExercises.push(...additionalExercises);
     }
     
-    // Limit to 5 exercises
-    const finalExercises = exercises.slice(0, 5);
+    // Limit to maximum 5 exercises
+    currentExercises = currentExercises.slice(0, 5);
     
-    userAnswers = new Array(finalExercises.length).fill(null);
+    // Reset user answers for the new set
+    userAnswers = new Array(currentExercises.length).fill(null);
     
     pointsDisplay.textContent = points;
     updateProgress();
-    loadExercise(currentExercise, finalExercises);
+    loadExercise();
 }
 
-function loadExercise(index, exercises) {
+function loadExercise() {
     const topicData = allTopics[currentTopic];
-    const exercise = exercises[index];
+    const exercise = currentExercises[currentExercise];
     
     if (!exercise) {
-        // If no exercises accessible at this level
         exerciseContainer.innerHTML = `
             <div class="exercise-content" style="text-align: center;">
                 <h3>No exercises available at your current level</h3>
@@ -1046,30 +997,35 @@ function loadExercise(index, exercises) {
         }
     }, 0);
     
+    // Store randomized options on the exercise object
     if (exercise.type === 'missing-word') {
-        const randomized = randomizeOptions(exercise.options, exercise.correct);
-        exercise.currentOptions = randomized.options;
-        exercise.currentCorrect = randomized.correctIndex;
+        if (!exercise.currentOptions) {
+            const randomized = randomizeOptions(exercise.options, exercise.correct);
+            exercise.currentOptions = randomized.options;
+            exercise.currentCorrect = randomized.correctIndex;
+        }
     }
     
     if (exercise.type === 'tts') {
-        const topics = [...exercise.topics];
-        const correctTopic = topics[exercise.correct];
-        const shuffledTopics = shuffleArray(topics);
-        const newCorrectIndex = shuffledTopics.indexOf(correctTopic);
-        
-        exercise.currentTopics = shuffledTopics;
-        exercise.currentCorrect = newCorrectIndex;
+        if (!exercise.currentTopics) {
+            const topics = [...exercise.topics];
+            const correctTopic = topics[exercise.correct];
+            const shuffledTopics = shuffleArray(topics);
+            const newCorrectIndex = shuffledTopics.indexOf(correctTopic);
+            
+            exercise.currentTopics = shuffledTopics;
+            exercise.currentCorrect = newCorrectIndex;
+        }
     }
     
     if (exercise.type === 'missing-word') {
-        renderMissingWordExercise(exercise, exercises);
+        renderMissingWordExercise(exercise);
     } else if (exercise.type === 'tts') {
-        renderTTsExercise(exercise, exercises);
+        renderTTsExercise(exercise);
     }
 }
 
-function renderMissingWordExercise(exercise, exercises) {
+function renderMissingWordExercise(exercise) {
     const content = document.createElement('div');
     content.className = 'exercise-content missing-word-exercise';
     
@@ -1104,7 +1060,7 @@ function renderMissingWordExercise(exercise, exercises) {
             }
         }
         
-        optionBtn.addEventListener('click', () => handleMissingWordAnswer(index, correctIndex, exercise, exercises));
+        optionBtn.addEventListener('click', () => handleMissingWordAnswer(index, correctIndex, exercise));
         optionsContainer.appendChild(optionBtn);
     });
     
@@ -1116,10 +1072,10 @@ function renderMissingWordExercise(exercise, exercises) {
     content.appendChild(feedback);
     
     exerciseContainer.appendChild(content);
-    addNavigation(exercises);
+    addNavigation();
 }
 
-function handleMissingWordAnswer(selectedIndex, correctIndex, exercise, exercises) {
+function handleMissingWordAnswer(selectedIndex, correctIndex, exercise) {
     userAnswers[currentExercise] = selectedIndex;
     
     if (selectedIndex === correctIndex) {
@@ -1159,7 +1115,7 @@ function handleMissingWordAnswer(selectedIndex, correctIndex, exercise, exercise
     scrollToNextButton();
 }
 
-function renderTTsExercise(exercise, exercises) {
+function renderTTsExercise(exercise) {
     const content = document.createElement('div');
     content.className = 'exercise-content tts-exercise';
     
@@ -1210,7 +1166,7 @@ function renderTTsExercise(exercise, exercises) {
             }
         }
         
-        topicCard.addEventListener('click', () => handleTTSAnswer(index, correctIndex, exercise, exercises));
+        topicCard.addEventListener('click', () => handleTTSAnswer(index, correctIndex, exercise));
         topicsContainer.appendChild(topicCard);
     });
     
@@ -1222,10 +1178,10 @@ function renderTTsExercise(exercise, exercises) {
     content.appendChild(feedback);
     
     exerciseContainer.appendChild(content);
-    addNavigation(exercises);
+    addNavigation();
 }
 
-function handleTTSAnswer(selectedIndex, correctIndex, exercise, exercises) {
+function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
     userAnswers[currentExercise] = selectedIndex;
     
     if (selectedIndex === correctIndex) {
@@ -1257,7 +1213,7 @@ function handleTTSAnswer(selectedIndex, correctIndex, exercise, exercises) {
     scrollToNextButton();
 }
 
-function addNavigation(exercises) {
+function addNavigation() {
     const nav = document.createElement('div');
     nav.className = 'navigation';
     
@@ -1268,19 +1224,19 @@ function addNavigation(exercises) {
     prevBtn.addEventListener('click', () => {
         if (currentExercise > 0) {
             currentExercise--;
-            loadExercise(currentExercise, exercises);
+            loadExercise();
             updateProgress();
         }
     });
     
     const nextBtn = document.createElement('button');
     nextBtn.className = 'btn btn-next';
-    nextBtn.textContent = currentExercise === exercises.length - 1 ? 'Finish Topic' : 'Next';
+    nextBtn.textContent = currentExercise === currentExercises.length - 1 ? 'Finish Topic' : 'Next';
     nextBtn.disabled = userAnswers[currentExercise] === undefined || userAnswers[currentExercise] === null;
     nextBtn.addEventListener('click', () => {
-        if (currentExercise < exercises.length - 1) {
+        if (currentExercise < currentExercises.length - 1) {
             currentExercise++;
-            loadExercise(currentExercise, exercises);
+            loadExercise();
             updateProgress();
         } else {
             finishTopic();
@@ -1293,7 +1249,7 @@ function addNavigation(exercises) {
 }
 
 function updateProgress() {
-    const totalExercises = 5; // We always aim for 5 exercises
+    const totalExercises = currentExercises.length;
     const progress = ((currentExercise + 1) / totalExercises) * 100;
     progressFill.style.width = `${progress}%`;
     progressText.textContent = `${currentExercise + 1}/${totalExercises}`;
@@ -1307,13 +1263,13 @@ function finishTopic() {
 
   let message = "Keep practicing! 📚";
   let color = "#f8961e";
-  if (points >= 45) {
+  if (points >= (currentExercises.length * 10 * 0.9) { // 90% or more
     message = "Outstanding! 🌟";
     color = "#4ade80";
-  } else if (points >= 35) {
+  } else if (points >= (currentExercises.length * 10 * 0.7) { // 70% or more
     message = "Great job! 👏";
     color = "#4cc9f0";
-  } else if (points >= 25) {
+  } else if (points >= (currentExercises.length * 10 * 0.5) { // 50% or more
     message = "Good effort! 💪";
     color = "#f8961e";
   }
@@ -1344,7 +1300,6 @@ restartTopicBtn.addEventListener('click', () => {
 
 // Initialize app
 window.addEventListener('load', () => {
-    // App starts at level selection screen
     levelSelectionScreen.classList.remove('hidden');
 });
 </script>
