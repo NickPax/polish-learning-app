@@ -13,7 +13,8 @@ import {
     scrollToNextButton,
     applyTheme,
     randomizeOptions,
-    shuffleArray
+    shuffleArray,
+    generateTranslation
 } from './ui.js';
 
 // App state
@@ -182,7 +183,7 @@ function loadExercise() {
         <span><i class="fas fa-${exercise.type === 'missing-word' ? 'puzzle-piece' : 'headphones'}"></i> ${exercise.type === 'missing-word' ? 'Fill in the Blank' : 'Listen & Identify Topic'}</span>
         <div>
             <span class="topic-name">${topicData.name}</span>
-            <span class="level-badge" style="font-size: 0.8rem; margin-right: 10px;">Level ${exercise.level}</span>
+            <span class="level-badge" style="font-size: 0.8rem; margin-right: 10px;">Level ${exercise.level || 1}</span>
             <button class="back-btn" id="back-to-topics-btn">
                 <i class="fas fa-arrow-left"></i> Topics
             </button>
@@ -295,6 +296,17 @@ function handleMissingWordAnswer(selectedIndex, correctIndex, exercise) {
     
     showFeedback(selectedIndex === correctIndex, exercise.explanation, exercise, true);
     
+    // Show translation after answer
+    const translationDisplay = document.getElementById('translation-display');
+    if (translationDisplay) {
+        // Generate translation with correct answer filled in
+        const correctAnswer = exercise.options[exercise.correct];
+        const fullSentence = exercise.sentence.replace('___', correctAnswer);
+        const exerciseWithAnswer = { ...exercise, sentence: fullSentence };
+        translationDisplay.textContent = generateTranslation(exerciseWithAnswer);
+        translationDisplay.style.display = 'block';
+    }
+    
     // Enable the Next button - use ID for reliable selection
     const enableNextButton = () => {
         const nextBtn = document.getElementById('exercise-next-btn');
@@ -343,6 +355,12 @@ function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
     
     showFeedback(selectedIndex === correctIndex, exercise.explanation, exercise, false);
     
+    // Show audio text after answer
+    const audioTextDisplay = document.getElementById('audio-text-display');
+    if (audioTextDisplay) {
+        audioTextDisplay.style.display = 'block';
+    }
+    
     // Enable the Next button - use ID for reliable selection
     const enableNextButton = () => {
         const nextBtn = document.getElementById('exercise-next-btn');
@@ -371,7 +389,8 @@ function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
 
 // Finish topic screen
 function finishTopicScreen() {
-    finishTopic(points, currentExercises.length, topicBestScores, currentTopic, completionMessage, finalScore);
+    const levelBadgeElement = document.getElementById('completion-level-badge');
+    finishTopic(points, currentExercises.length, topicBestScores, currentTopic, selectedLevel, completionMessage, finalScore, levelBadgeElement);
     
     if (exerciseContainer) exerciseContainer.classList.add('hidden');
     if (progressContainer) progressContainer.classList.add('hidden');

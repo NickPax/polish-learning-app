@@ -3,6 +3,119 @@ import { speakText } from './tts.js';
 import { topics } from '../data/topics.js';
 import { exercises } from '../data/exercises.js';
 
+// Translation mapping for common Polish sentences
+const translationMap = {
+    "Poproszę butelkę wody.": "I'd like a bottle of water.",
+    "Ile kosztuje menu?": "How much does the menu cost?",
+    "Chciałbym zamówić piwo.": "I'd like to order a beer.",
+    "Czy mogę prosić o kartę dań?": "Can I ask for the menu?",
+    "Jedzenie było bardzo smaczne.": "The food was very delicious.",
+    "Jestem wegetarianinem i nie jem mięsa.": "I am a vegetarian and I don't eat meat.",
+    "Jeszcze jedną filiżankę kawy, proszę.": "Another cup of coffee, please.",
+    "Rachunek, proszę!": "The bill, please!",
+    "Chciałbym zamówić kawałek ciasta.": "I'd like to order a piece of cake.",
+    "Gdzie jest najbliższy dworzec?": "Where is the nearest train station?",
+    "Potrzebuję pokoju na trzy noce.": "I need a room for three nights.",
+    "Ile kosztuje bilet do Warszawy?": "How much does a ticket to Warsaw cost?",
+    "Czy możesz mi pokazać na mapie?": "Can you show me on the map?",
+    "Samolot startuje punktualnie.": "The plane departs on time.",
+    "Zgubiłem swój paszport.": "I lost my passport.",
+    "Jedź prosto do następnej sygnalizacji.": "Go straight to the next traffic lights.",
+    "Chcę kupić bilet do Starego Miasta.": "I want to buy a ticket to the Old Town.",
+    "Jak dotrzeć do najbliższego lotniska?": "How to get to the nearest airport?",
+    "To jest moja siostra.": "This is my sister.",
+    "Masz rodzeństwo?": "Do you have siblings?",
+    "Jutro obchodzimy urodziny babci.": "Tomorrow we're celebrating grandmother's birthday.",
+    "Mój brat ma na imię Łukasz.": "My brother's name is Łukasz.",
+    "Moi rodzice mieszkają w nowym domu.": "My parents live in a new house.",
+    "Mój wujek jest żonaty.": "My uncle is married.",
+    "Moja ciocia pracuje w banku.": "My aunt works in a bank.",
+    "Mój siostrzeniec ma pięć lat.": "My nephew is five years old.",
+    "Nie mam już dziadków.": "I don't have grandparents anymore.",
+    "Ile kosztuje ta kurtka?": "How much does this jacket cost?",
+    "Chciałbym te spodnie wymienić.": "I'd like to exchange these pants.",
+    "Czy jest tu jakaś zniżka?": "Is there a discount here?",
+    "Czy mogę zapłacić kartą?": "Can I pay by card?",
+    "To jest za drogo.": "This is too expensive.",
+    "Szukam prezentu dla mojej matki.": "I'm looking for a gift for my mother.",
+    "Gdzie jest przymierzalnia?": "Where is the fitting room?",
+    "Wezmę inny kolor.": "I'll take a different color.",
+    "Czy mogę dostać paragon?": "Can I get a receipt?",
+    "Lubię grać na pianinie.": "I like to play the piano.",
+    "Moje hobby to fotografia.": "My hobby is photography.",
+    "W weekend często chodzę na spacery.": "On weekends I often go for walks.",
+    "Gram w piłkę nożną w klubie.": "I play football in a club.",
+    "Lubię pływać.": "I like to swim.",
+    "Zbieram stare monety.": "I collect old coins.",
+    "Lubię fotografować krajobrazy.": "I like to photograph landscapes.",
+    "Gram na gitarze.": "I play the guitar.",
+    "Lubię słuchać klasycznej muzyki.": "I like to listen to classical music.",
+    "Pies szczeka głośno.": "The dog barks loudly.",
+    "Ptak lata wysoko na niebie.": "The bird flies high in the sky.",
+    "Widzę lwa w zoo.": "I see a lion in the zoo.",
+    "Krowa robi muuu.": "The cow goes moo.",
+    "Małpa wspina się na drzewa.": "The monkey climbs trees.",
+    "Pszczoła bzyczy wokół kwiatów.": "The bee buzzes around flowers.",
+    "Tygrys ryczy głośno.": "The tiger roars loudly.",
+    "Zające ma długie uszy.": "Rabbits have long ears.",
+    "Papuga żyje w dżungli.": "The parrot lives in the jungle.",
+    "Mam spotkanie z moim szefem.": "I have a meeting with my boss.",
+    "Mój kolega jest dziś bardzo zajęty.": "My colleague is very busy today.",
+    "Muszę napisać raport.": "I have to write a report.",
+    "Pracuję jako inżynier.": "I work as an engineer.",
+    "Praca zaczyna się o 9:00.": "Work starts at 9:00.",
+    "Potrzebuję nowego komputera.": "I need a new computer.",
+    "Mój szef jest chory.": "My boss is sick.",
+    "Mam dziś urlop wolne.": "I have a day off today.",
+    "Muszę wysłać e-mail.": "I have to send an email.",
+    "Boli mnie głowa.": "My head hurts.",
+    "Idę do lekarza.": "I'm going to the doctor.",
+    "Mam silny brzucha ból.": "I have a strong stomach ache.",
+    "Moje serce kołacze.": "My heart is beating.",
+    "Mam lekarską wizytę.": "I have a doctor's appointment.",
+    "Swędzi mnie ramię.": "My arm itches.",
+    "Czuję się zmęczony.": "I feel tired.",
+    "Potrzebuję więcej odpoczynku.": "I need more rest.",
+    "Szkoła zaczyna się o 8:00.": "School starts at 8:00.",
+    "Dostałem dobrą ocenę z matematyki.": "I got a good grade in math.",
+    "Mój nauczyciel pomaga mi w zadaniach.": "My teacher helps me with tasks.",
+    "Chodzę do ósmej klasy.": "I go to eighth grade.",
+    "Mamy dziś muzyki lekcję.": "We have a music lesson today.",
+    "Potrzebuję nowego matematycznego zeszytu.": "I need a new math notebook.",
+    "Przerwa dzwoni o 12:00.": "Break rings at 12:00.",
+    "Uczę się na końcowy egzamin.": "I'm studying for the final exam.",
+    "Mój ulubiony przedmiot to biologia.": "My favorite subject is biology.",
+    "Warszawa jest stolicą Polski.": "Warsaw is the capital of Poland.",
+    "Zamek jest bardzo stare i historyczne.": "The castle is very old and historical.",
+    "Odwiedzam muzeum w weekend.": "I visit the museum on weekends.",
+    "Gdańsk ma duży morski port.": "Gdańsk has a large seaport.",
+    "W Poznaniu są słynne poznańskie koziołki.": "In Poznań there are famous Poznań goats.",
+    "W Wrocławiu jest słynna panorama racławicka.": "In Wrocław there is the famous Racławice Panorama.",
+    "Marszałkowska to najdłuższa ulica w Warszawie.": "Marszałkowska is the longest street in Warsaw.",
+    "Śniardwy jest największym jeziorem w Polsce.": "Śniardwy is the largest lake in Poland.",
+    "Wisła to ważna rzeka w Europie.": "The Vistula is an important river in Europe."
+};
+
+// Translation helper - generates English translation from Polish sentence
+export function generateTranslation(exercise) {
+    if (exercise.translation) {
+        return exercise.translation;
+    }
+    
+    // Get full sentence with correct answer
+    const correctAnswer = exercise.options[exercise.correct];
+    const fullSentence = exercise.sentence.replace('___', correctAnswer);
+    
+    // Look up in translation map
+    if (translationMap[fullSentence]) {
+        return translationMap[fullSentence];
+    }
+    
+    // Fallback: try to find partial match or return placeholder
+    // This allows for easy extension when translations are added to exercises
+    return `[Translation: ${fullSentence}]`;
+}
+
 // Helper functions
 export function shuffleArray(array) {
     const newArray = [...array];
@@ -162,7 +275,10 @@ export function renderTopicSelection(topicBestScores, selectedLevel, onTopicSele
     Object.keys(topics).forEach(topicKey => {
         const topic = topics[topicKey];
         const topicExercises = exercises[topicKey];
-        const bestScore = topicBestScores[topicKey] || 0;
+        // Handle both old format (number) and new format (object with score and level)
+        const scoreData = topicBestScores[topicKey];
+        const bestScore = typeof scoreData === 'object' ? scoreData.score : (scoreData || 0);
+        const scoreLevel = typeof scoreData === 'object' ? scoreData.level : null;
         
         // Count accessible exercises for this topic at current level
         let accessibleExerciseCount = 0;
@@ -176,10 +292,13 @@ export function renderTopicSelection(topicBestScores, selectedLevel, onTopicSele
         const topicOption = document.createElement('div');
         topicOption.className = 'topic-option';
         topicOption.dataset.topic = topicKey;
+        const scoreDisplay = bestScore > 0 
+            ? `<div class="score-badge" title="${scoreLevel ? `Level ${scoreLevel}` : ''}">${Math.round(bestScore)}${scoreLevel ? `<span style="font-size: 0.7em; display: block;">L${scoreLevel}</span>` : ''}</div>` 
+            : '';
         topicOption.innerHTML = `
             <i class="fas ${topic.icon}"></i>
             ${topic.name}
-            ${bestScore > 0 ? `<div class="score-badge">${Math.round(bestScore)}</div>` : ''}
+            ${scoreDisplay}
             <div style="margin-top: 10px; font-size: 0.8rem; color: var(--secondary);">
                 ${accessibleExerciseCount}+ exercises
             </div>
@@ -199,6 +318,29 @@ export function renderMissingWordExercise(exercise, currentExercise, userAnswers
     sentence.className = 'sentence';
     sentence.textContent = exercise.sentence;
     content.appendChild(sentence);
+    
+    // Translation display (shown after answer)
+    const translationDisplay = document.createElement('div');
+    translationDisplay.id = 'translation-display';
+    translationDisplay.className = 'translation-display';
+    translationDisplay.style.display = 'none';
+    translationDisplay.style.marginTop = '10px';
+    translationDisplay.style.marginBottom = '15px';
+    translationDisplay.style.padding = '8px 12px';
+    translationDisplay.style.fontSize = '0.9rem';
+    translationDisplay.style.color = 'var(--subheading)';
+    translationDisplay.style.fontStyle = 'italic';
+    translationDisplay.style.borderLeft = '3px solid var(--border)';
+    translationDisplay.style.backgroundColor = 'var(--option-bg)';
+    
+    // Generate translation - will be updated when answer is submitted
+    translationDisplay.textContent = generateTranslation(exercise);
+    content.appendChild(translationDisplay);
+    
+    // Show translation if user has already answered
+    if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
+        translationDisplay.style.display = 'block';
+    }
     
     const optionsContainer = document.createElement('div');
     optionsContainer.className = 'options-container';
@@ -269,6 +411,27 @@ export function renderTTsExercise(exercise, currentExercise, userAnswers, onAnsw
     
     audioControls.appendChild(playBtn);
     content.appendChild(audioControls);
+    
+    // Audio text display (shown after answer)
+    const audioTextDisplay = document.createElement('div');
+    audioTextDisplay.id = 'audio-text-display';
+    audioTextDisplay.className = 'audio-text-display';
+    audioTextDisplay.style.display = 'none';
+    audioTextDisplay.style.marginTop = '15px';
+    audioTextDisplay.style.marginBottom = '15px';
+    audioTextDisplay.style.padding = '10px';
+    audioTextDisplay.style.fontSize = '1rem';
+    audioTextDisplay.style.color = 'var(--subheading)';
+    audioTextDisplay.style.fontStyle = 'italic';
+    audioTextDisplay.style.borderTop = '1px solid var(--border)';
+    audioTextDisplay.style.borderBottom = '1px solid var(--border)';
+    audioTextDisplay.textContent = exercise.audioText;
+    content.appendChild(audioTextDisplay);
+    
+    // Show audio text if user has already answered
+    if (userAnswers[currentExercise] !== undefined && userAnswers[currentExercise] !== null) {
+        audioTextDisplay.style.display = 'block';
+    }
     
     const topicsContainer = document.createElement('div');
     topicsContainer.className = 'topics-container';
@@ -359,9 +522,14 @@ export function showFeedback(isCorrect, explanation, exercise, isMissingWord) {
 }
 
 // Finish topic screen
-export function finishTopic(points, totalExercises, topicBestScores, currentTopic, completionMessage, finalScore) {
-    if (points > (topicBestScores[currentTopic] || 0)) {
-        topicBestScores[currentTopic] = points;
+export function finishTopic(points, totalExercises, topicBestScores, currentTopic, selectedLevel, completionMessage, finalScore, levelBadgeElement) {
+    // Handle both old format (number) and new format (object with score and level)
+    const currentBest = topicBestScores[currentTopic];
+    const currentBestScore = typeof currentBest === 'object' ? currentBest.score : (currentBest || 0);
+    
+    // Save new best score with level if it's better
+    if (points > currentBestScore) {
+        topicBestScores[currentTopic] = { score: points, level: selectedLevel };
         localStorage.setItem('terazPolskiBestScores', JSON.stringify(topicBestScores));
     }
 
@@ -385,5 +553,11 @@ export function finishTopic(points, totalExercises, topicBestScores, currentTopi
     }
     if (finalScore) {
         finalScore.textContent = points;
+    }
+    
+    // Display level badge if element provided
+    if (levelBadgeElement) {
+        levelBadgeElement.textContent = `Level ${selectedLevel}`;
+        levelBadgeElement.style.display = 'inline-block';
     }
 }
