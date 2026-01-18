@@ -36,18 +36,28 @@ export function randomizeOptions(options, correctIndex) {
     };
 }
 
-export function scrollToNextButton() {
-    setTimeout(() => {
-        const nextBtn = document.querySelector('.btn-next');
-        if (nextBtn) {
-            nextBtn.scrollIntoView({
+export function scrollToNextButton(buttonElement) {
+    const scrollToBtn = (btn) => {
+        if (btn) {
+            btn.scrollIntoView({
                 behavior: 'smooth',
                 block: 'center',
                 inline: 'nearest'
             });
-            setTimeout(() => nextBtn.focus(), 300);
+            setTimeout(() => btn.focus(), 300);
         }
-    }, 150);
+    };
+    
+    if (buttonElement) {
+        // If button is provided, use it directly
+        setTimeout(() => scrollToBtn(buttonElement), 150);
+    } else {
+        // Otherwise, try to find it by ID first, then fallback to class
+        setTimeout(() => {
+            const nextBtn = document.getElementById('exercise-next-btn') || document.querySelector('.navigation .btn-next');
+            scrollToBtn(nextBtn);
+        }, 150);
+    }
 }
 
 // Theme management
@@ -309,6 +319,7 @@ export function addNavigation(currentExercise, totalExercises, userAnswers, onPr
     
     const nextBtn = document.createElement('button');
     nextBtn.className = 'btn btn-next';
+    nextBtn.id = 'exercise-next-btn';
     nextBtn.textContent = currentExercise === totalExercises - 1 ? 'Finish Topic' : 'Next';
     nextBtn.disabled = userAnswers[currentExercise] === undefined || userAnswers[currentExercise] === null;
     nextBtn.addEventListener('click', onNext);

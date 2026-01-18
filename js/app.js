@@ -295,14 +295,30 @@ function handleMissingWordAnswer(selectedIndex, correctIndex, exercise) {
     
     showFeedback(selectedIndex === correctIndex, exercise.explanation, exercise, true);
     
-    // Enable the Next button - use setTimeout to ensure DOM is updated
-    setTimeout(() => {
-        const nextBtn = exerciseContainer ? exerciseContainer.querySelector('.navigation .btn-next') : document.querySelector('.navigation .btn-next');
+    // Enable the Next button - use ID for reliable selection
+    const enableNextButton = () => {
+        const nextBtn = document.getElementById('exercise-next-btn');
         if (nextBtn) {
             nextBtn.disabled = false;
+            return nextBtn;
         }
-        scrollToNextButton();
-    }, 100);
+        return null;
+    };
+    
+    // Try immediately
+    let nextBtn = enableNextButton();
+    
+    // Also try after a short delay to ensure DOM is ready
+    if (!nextBtn) {
+        setTimeout(() => {
+            nextBtn = enableNextButton();
+            if (nextBtn) {
+                scrollToNextButton(nextBtn);
+            }
+        }, 100);
+    } else {
+        scrollToNextButton(nextBtn);
+    }
 }
 
 // Handle TTS answer
@@ -327,14 +343,30 @@ function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
     
     showFeedback(selectedIndex === correctIndex, exercise.explanation, exercise, false);
     
-    // Enable the Next button - use setTimeout to ensure DOM is updated
-    setTimeout(() => {
-        const nextBtn = exerciseContainer ? exerciseContainer.querySelector('.navigation .btn-next') : document.querySelector('.navigation .btn-next');
+    // Enable the Next button - use ID for reliable selection
+    const enableNextButton = () => {
+        const nextBtn = document.getElementById('exercise-next-btn');
         if (nextBtn) {
             nextBtn.disabled = false;
+            return nextBtn;
         }
-        scrollToNextButton();
-    }, 100);
+        return null;
+    };
+    
+    // Try immediately
+    let nextBtn = enableNextButton();
+    
+    // Also try after a short delay to ensure DOM is ready
+    if (!nextBtn) {
+        setTimeout(() => {
+            nextBtn = enableNextButton();
+            if (nextBtn) {
+                scrollToNextButton(nextBtn);
+            }
+        }, 100);
+    } else {
+        scrollToNextButton(nextBtn);
+    }
 }
 
 // Finish topic screen
