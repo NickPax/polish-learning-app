@@ -183,7 +183,7 @@ function loadExercise() {
         <span><i class="fas fa-${exercise.type === 'missing-word' ? 'puzzle-piece' : 'headphones'}"></i> ${exercise.type === 'missing-word' ? 'Fill in the Blank' : 'Listen & Identify Topic'}</span>
         <div>
             <span class="topic-name">${topicData.name}</span>
-            <span class="level-badge" style="font-size: 0.8rem; margin-right: 10px;">Level ${exercise.level || 1}</span>
+            <span class="level-badge" style="font-size: 0.8rem; margin-right: 10px;">Level ${selectedLevel}</span>
             <button class="back-btn" id="back-to-topics-btn">
                 <i class="fas fa-arrow-left"></i> Topics
             </button>

@@ -292,8 +292,12 @@ export function renderTopicSelection(topicBestScores, selectedLevel, onTopicSele
         const topicOption = document.createElement('div');
         topicOption.className = 'topic-option';
         topicOption.dataset.topic = topicKey;
+        const levelClass = scoreLevel ? `level-${scoreLevel}` : '';
         const scoreDisplay = bestScore > 0 
-            ? `<div class="score-badge" title="${scoreLevel ? `Level ${scoreLevel}` : ''}">${Math.round(bestScore)}${scoreLevel ? `<span style="font-size: 0.7em; display: block;">L${scoreLevel}</span>` : ''}</div>` 
+            ? `<div class="score-badge ${levelClass}" title="${scoreLevel ? `Score: ${Math.round(bestScore)} at Level ${scoreLevel}` : `Score: ${Math.round(bestScore)}`}">
+                <div style="font-size: 0.9rem; line-height: 1.1;">${Math.round(bestScore)}</div>
+                ${scoreLevel ? `<div style="font-size: 0.65rem; line-height: 1; margin-top: 2px; opacity: 0.95;">L${scoreLevel}</div>` : ''}
+            </div>` 
             : '';
         topicOption.innerHTML = `
             <i class="fas ${topic.icon}"></i>
