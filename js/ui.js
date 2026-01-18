@@ -275,10 +275,23 @@ export function renderTopicSelection(topicBestScores, selectedLevel, onTopicSele
     Object.keys(topics).forEach(topicKey => {
         const topic = topics[topicKey];
         const topicExercises = exercises[topicKey];
-        // Handle both old format (number) and new format (object with score and level)
+        
+        // Handle both old format (number or {score, level}) and new format (object with level1, level2, etc.)
         const scoreData = topicBestScores[topicKey];
-        const bestScore = typeof scoreData === 'object' ? scoreData.score : (scoreData || 0);
-        const scoreLevel = typeof scoreData === 'object' ? scoreData.level : null;
+        let scoresByLevel = {};
+        
+        if (scoreData) {
+            if (typeof scoreData === 'number') {
+                // Old format: just a number (no level info)
+                // We can't determine which level, so we'll skip showing it
+            } else if (scoreData.level !== undefined) {
+                // Old format: {score, level} - migrate to new format
+                scoresByLevel[`level${scoreData.level}`] = { score: scoreData.score };
+            } else {
+                // New format: {level1: {score}, level2: {score}, ...}
+                scoresByLevel = scoreData;
+            }
+        }
         
         // Count accessible exercises for this topic at current level
         let accessibleExerciseCount = 0;
@@ -289,20 +302,37 @@ export function renderTopicSelection(topicBestScores, selectedLevel, onTopicSele
             });
         }
         
+        // Create corner badges for each level (top-left=1, top-right=2, bottom-right=3, bottom-left=4)
+        const cornerBadges = [];
+        const positions = [
+            { level: 1, position: 'top-left', color: '#10b981' },
+            { level: 2, position: 'top-right', color: '#3b82f6' },
+            { level: 3, position: 'bottom-right', color: '#f59e0b' },
+            { level: 4, position: 'bottom-left', color: '#ef4444' }
+        ];
+        
+        positions.forEach(({ level, position, color }) => {
+            const levelKey = `level${level}`;
+            const levelScore = scoresByLevel[levelKey];
+            if (levelScore && levelScore.score > 0) {
+                cornerBadges.push(
+                    `<div class="corner-badge corner-${position} level-${level}" 
+                          style="background: ${color};" 
+                          title="Level ${level}: ${Math.round(levelScore.score)} points">
+                        <div style="font-size: 0.75rem; font-weight: bold; line-height: 1.1;">${Math.round(levelScore.score)}</div>
+                        <div style="font-size: 0.55rem; line-height: 1; margin-top: 1px; opacity: 0.9;">L${level}</div>
+                    </div>`
+                );
+            }
+        });
+        
         const topicOption = document.createElement('div');
         topicOption.className = 'topic-option';
         topicOption.dataset.topic = topicKey;
-        const levelClass = scoreLevel ? `level-${scoreLevel}` : '';
-        const scoreDisplay = bestScore > 0 
-            ? `<div class="score-badge ${levelClass}" title="${scoreLevel ? `Score: ${Math.round(bestScore)} at Level ${scoreLevel}` : `Score: ${Math.round(bestScore)}`}">
-                <div style="font-size: 0.9rem; line-height: 1.1;">${Math.round(bestScore)}</div>
-                ${scoreLevel ? `<div style="font-size: 0.65rem; line-height: 1; margin-top: 2px; opacity: 0.95;">L${scoreLevel}</div>` : ''}
-            </div>` 
-            : '';
         topicOption.innerHTML = `
+            ${cornerBadges.join('')}
             <i class="fas ${topic.icon}"></i>
             ${topic.name}
-            ${scoreDisplay}
             <div style="margin-top: 10px; font-size: 0.8rem; color: var(--secondary);">
                 ${accessibleExerciseCount}+ exercises
             </div>
@@ -527,19 +557,38 @@ export function showFeedback(isCorrect, explanation, exercise, isMissingWord) {
 
 // Finish topic screen
 export function finishTopic(points, totalExercises, topicBestScores, currentTopic, selectedLevel, completionMessage, finalScore, levelBadgeElement) {
-    // Handle both old format (number) and new format (object with score and level)
-    const currentBest = topicBestScores[currentTopic];
-    const currentBestScore = typeof currentBest === 'object' ? currentBest.score : (currentBest || 0);
-    const currentBestLevel = typeof currentBest === 'object' ? currentBest.level : null;
+    // Initialize topic scores if needed
+    if (!topicBestScores[currentTopic]) {
+        topicBestScores[currentTopic] = {};
+    }
     
-    // Save new score if:
-    // 1. Score is higher, OR
-    // 2. Level is higher (completing at higher level is an achievement, even with same/lower score)
-    const shouldSave = points > currentBestScore || 
-                      (currentBestLevel === null || selectedLevel > currentBestLevel);
+    // Handle migration from old format
+    const currentTopicData = topicBestScores[currentTopic];
+    if (typeof currentTopicData === 'number') {
+        // Old format: just a number - convert to new format (but we don't know the level)
+        topicBestScores[currentTopic] = {};
+    } else if (currentTopicData && currentTopicData.level !== undefined) {
+        // Old format: {score, level} - migrate to new format
+        const oldLevel = currentTopicData.level;
+        const oldScore = currentTopicData.score;
+        topicBestScores[currentTopic] = {
+            [`level${oldLevel}`]: { score: oldScore }
+        };
+    }
     
-    if (shouldSave) {
-        topicBestScores[currentTopic] = { score: points, level: selectedLevel };
+    // Ensure it's an object
+    if (typeof topicBestScores[currentTopic] !== 'object' || Array.isArray(topicBestScores[currentTopic])) {
+        topicBestScores[currentTopic] = {};
+    }
+    
+    // Get current score for this level
+    const levelKey = `level${selectedLevel}`;
+    const currentLevelScore = topicBestScores[currentTopic][levelKey];
+    const currentLevelBest = currentLevelScore ? currentLevelScore.score : 0;
+    
+    // Save new score if it's better than current score for this level
+    if (points > currentLevelBest) {
+        topicBestScores[currentTopic][levelKey] = { score: points };
         localStorage.setItem('terazPolskiBestScores', JSON.stringify(topicBestScores));
     }
 
