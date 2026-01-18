@@ -295,12 +295,14 @@ function handleMissingWordAnswer(selectedIndex, correctIndex, exercise) {
     
     showFeedback(selectedIndex === correctIndex, exercise.explanation, exercise, true);
     
-    const nextBtn = document.querySelector('.btn-next');
-    if (nextBtn) {
-        nextBtn.disabled = false;
-    }
-    
-    scrollToNextButton();
+    // Enable the Next button - use setTimeout to ensure DOM is updated
+    setTimeout(() => {
+        const nextBtn = exerciseContainer ? exerciseContainer.querySelector('.navigation .btn-next') : document.querySelector('.navigation .btn-next');
+        if (nextBtn) {
+            nextBtn.disabled = false;
+        }
+        scrollToNextButton();
+    }, 100);
 }
 
 // Handle TTS answer
@@ -325,14 +327,14 @@ function handleTTSAnswer(selectedIndex, correctIndex, exercise) {
     
     showFeedback(selectedIndex === correctIndex, exercise.explanation, exercise, false);
     
-    const nextBtn = document.querySelector('.btn-next');
-    if (nextBtn) {
-        nextBtn.disabled = false;
-    }
-    
+    // Enable the Next button - use setTimeout to ensure DOM is updated
     setTimeout(() => {
+        const nextBtn = exerciseContainer ? exerciseContainer.querySelector('.navigation .btn-next') : document.querySelector('.navigation .btn-next');
+        if (nextBtn) {
+            nextBtn.disabled = false;
+        }
         scrollToNextButton();
-    }, 300);
+    }, 100);
 }
 
 // Finish topic screen
