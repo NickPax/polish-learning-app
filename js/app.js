@@ -43,6 +43,7 @@ const themeToggle = document.getElementById('theme-toggle');
 const newTopicBtn = document.getElementById('new-topic-btn');
 const restartTopicBtn = document.getElementById('restart-topic-btn');
 const backToLevelsBtn = document.getElementById('back-to-levels-btn');
+const resetProgressBtn = document.getElementById('reset-progress-btn');
 
 // Initialize theme
 applyTheme(isDarkMode);
@@ -444,6 +445,49 @@ function initApp() {
     
     if (backToLevelsBtn) {
         backToLevelsBtn.addEventListener('click', showLevelSelection);
+    }
+    
+    if (resetProgressBtn) {
+        resetProgressBtn.addEventListener('click', resetProgress);
+    }
+}
+
+// Reset all progress and clear localStorage
+function resetProgress() {
+    const confirmed = confirm(
+        'Are you sure you want to reset all progress?\n\n' +
+        'This will clear:\n' +
+        '• All topic scores\n' +
+        '• Exercise history\n\n' +
+        'This action cannot be undone.'
+    );
+    
+    if (confirmed) {
+        // Clear all localStorage items related to the app
+        localStorage.removeItem('terazPolskiBestScores');
+        localStorage.removeItem('terazPolskiSetHistory');
+        // Note: We keep 'darkMode' so theme preference is preserved
+        
+        // Reset app state
+        topicBestScores = {};
+        topicSetHistory = {};
+        
+        // Refresh the topic selection screen to show no scores
+        if (topicSelectionScreen && !topicSelectionScreen.classList.contains('hidden')) {
+            renderTopicSelection(topicBestScores, selectedLevel, startTopicExercises);
+        }
+        
+        // Show a brief confirmation
+        const originalText = resetProgressBtn.innerHTML;
+        resetProgressBtn.innerHTML = '<i class="fas fa-check"></i> Reset Complete!';
+        resetProgressBtn.style.color = 'var(--correct)';
+        resetProgressBtn.style.borderColor = 'var(--correct)';
+        
+        setTimeout(() => {
+            resetProgressBtn.innerHTML = originalText;
+            resetProgressBtn.style.color = '';
+            resetProgressBtn.style.borderColor = '';
+        }, 2000);
     }
 }
 

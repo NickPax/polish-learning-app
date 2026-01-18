@@ -530,9 +530,15 @@ export function finishTopic(points, totalExercises, topicBestScores, currentTopi
     // Handle both old format (number) and new format (object with score and level)
     const currentBest = topicBestScores[currentTopic];
     const currentBestScore = typeof currentBest === 'object' ? currentBest.score : (currentBest || 0);
+    const currentBestLevel = typeof currentBest === 'object' ? currentBest.level : null;
     
-    // Save new best score with level if it's better
-    if (points > currentBestScore) {
+    // Save new score if:
+    // 1. Score is higher, OR
+    // 2. Level is higher (completing at higher level is an achievement, even with same/lower score)
+    const shouldSave = points > currentBestScore || 
+                      (currentBestLevel === null || selectedLevel > currentBestLevel);
+    
+    if (shouldSave) {
         topicBestScores[currentTopic] = { score: points, level: selectedLevel };
         localStorage.setItem('terazPolskiBestScores', JSON.stringify(topicBestScores));
     }

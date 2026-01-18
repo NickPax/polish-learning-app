@@ -158,6 +158,23 @@ gap: 5px;
 .back-btn:hover {
 color: var(--primary);
 }
+.reset-btn {
+background: none;
+border: 1px solid var(--incorrect);
+color: var(--incorrect);
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 5px;
+padding: 8px 15px;
+border-radius: 8px;
+transition: all 0.2s;
+}
+.reset-btn:hover {
+background: var(--incorrect);
+color: white;
+}
 .exercise-content {
 flex: 1;
 display: flex;
