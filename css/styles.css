@@ -498,7 +498,8 @@ color: var(--text);
 font-size: 1.1rem;
 font-weight: 600;
 cursor: pointer;
-min-width: 300px;
+width: 100%;
+max-width: 300px;
 margin-top: 10px;
 }
 .level-description {
@@ -552,9 +553,6 @@ gap: 10px;
 .restart-btn, .new-topic-btn {
 padding: 10px 20px;
 font-size: 1rem;
-}
-.level-selector {
-min-width: 250px;
 }
 .completion-screen h2, .topic-selection-screen h2, .level-selection h2 {
 font-size: 1.8rem;
